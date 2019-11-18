@@ -1,0 +1,32 @@
+name:                hmenu
+version:             0.01
+synopsis:            Small wrapper around dmenu
+license:             GPL-3
+author:              Slot
+maintainer:          soliditsallgood@tuta.io
+homepage:            to-come
+
+default-extensions:
+  - OverloadedStrings
+
+ghc-options:
+  -O2
+  -Wall
+  -Wcompat
+  -Wincomplete-record-updates
+  -Wincomplete-uni-patterns
+  -Wredundant-constraints
+
+dependencies:
+  - base
+  - dmenu
+  - mtl
+  - directory
+  - text
+  - process
+  - containers
+
+executables:
+  hmenu:
+    source-dirs: src
+    main: hmenu.hs

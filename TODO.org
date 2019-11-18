@@ -1,0 +1,6 @@
+* hmenu                                                               :hmenu:
+** TODO fork DMenu and make use of Data.Set instead of Data.List
+** TODO profile to see if converting to text and back is worth it performance wise
+** TODO Use [[https://github.com/kowainik/tomland][tomland]] to parse a .toml config file
+** TODO Write readme
+** TODO Upload this somewhere

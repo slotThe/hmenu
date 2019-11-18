@@ -1,0 +1,36 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: e6db25a268d869ef4b34cf59d102e6d0255ff06c36535a8b6f62b63e83c45cb7
+
+name:                hmenu
+version:             0.01
+synopsis:            Small wrapper around dmenu
+homepage:            to-come
+license:             GPL-3
+license-file:        LICENSE
+author:              Slot
+maintainer:          soliditsallgood@tuta.io
+build-type:          Simple
+
+executable hmenu
+  hs-source-dirs:
+      src
+  default-extensions: OverloadedStrings
+  ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
+  main-is: hmenu.hs
+  other-modules:
+      Core.Util
+      Paths_hmenu
+  default-language: Haskell2010
+  build-depends:
+      base
+    , containers
+    , directory
+    , dmenu
+    , mtl
+    , process
+    , text
