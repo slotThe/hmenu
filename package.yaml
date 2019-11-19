@@ -8,6 +8,9 @@ homepage:            to-come
 
 default-extensions:
   - OverloadedStrings
+  - NamedFieldPuns
+  - MultiWayIf
+  - FlexibleContexts
 
 ghc-options:
   -O2
@@ -25,6 +28,7 @@ dependencies:
   - text
   - process
   - containers
+  - tomland
 
 executables:
   hmenu:

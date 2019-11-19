@@ -29,4 +29,4 @@ addPrefix prefix xs | null xs   = ""
 
 -- | Clean a string up until (and including) the first colon.
 clean :: String -> String
-clean = drop 1 . dropWhile (/= ':')
+clean = (" " ++) . drop 1 . dropWhile (/= ':')
