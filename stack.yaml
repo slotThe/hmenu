@@ -2,8 +2,9 @@ resolver: lts-14.14
 
 packages:
 - .
+- /home/slot/repos/haskell-dmenu/
 
-extra-deps:
-  - dmenu-0.3.1.1@sha256:e7fa1f6a1a78a9f2e68dc7d0209565ee1856f12823480967025de9ea5eb221f0,1055
+# extra-deps:
+#   - dmenu-0.3.1.1@sha256:e7fa1f6a1a78a9f2e68dc7d0209565ee1856f12823480967025de9ea5eb221f0,1055
 
 allow-newer: true
