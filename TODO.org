@@ -6,4 +6,8 @@
     not test them together).
   - [ ] Write readme
   - [ ] Upload this somewhere
+  - [ ] Implement new config option to select directories (essentially have
+    dmenu act as a file browser for selected directories, this can be used
+    e.g. to access a video dir and play videos from there without needing to do
+    this in a shell script.)
   - [X] Implement a naive config
