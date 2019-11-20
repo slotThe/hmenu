@@ -40,7 +40,7 @@ data Config = Config
 
 -- | Empty config type with all the default values.
 emptyConfig :: Config
-emptyConfig = Config "cfg:" [] "xdg-open"
+emptyConfig = Config "file:" [] "xdg-open"
 
 -- | Parse the toml.
 configCodec :: TomlCodec Config'
@@ -56,22 +56,23 @@ getUserConfig = do
     xdgConfDir <- xdgConfig
     let cfgFile = xdgConfDir ++ "/hmenu.toml"
     isFile <- doesFileExist cfgFile
-    -- If file doesn't exist we return an empty config.
+    -- If file doesn't exist we return an empty type with default values,
+    -- otherwise we try to parse the config and see what's there.
     if not isFile
         then return emptyConfig
         else do
             -- Read and evaluate file
             tomlFile <- T.readFile cfgFile
-            let res = Toml.decode configCodec tomlFile
-            case res of
+            case Toml.decode configCodec tomlFile of
                 -- If parsing failed just use default settings.
                 Left _ -> return emptyConfig
                 -- If no config, fill in default values.
                 Right Config'{ cfilePrefix, cfiles, copen } -> return Config
                     { filePrefix = fromMaybe defPrefix cfilePrefix
-                    , files      = fromMaybe []        cfiles
+                    , files      = fromMaybe defFiles  cfiles
                     , open       = fromMaybe defOpen   copen
                     }
   where
     defPrefix = filePrefix emptyConfig
     defOpen   = open       emptyConfig
+    defFiles  = files      emptyConfig

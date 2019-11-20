@@ -1,8 +1,8 @@
 module Main where
 
 -- Local imports
+import Core.Toml (Config(Config), filePrefix, files, getUserConfig, open)
 import Core.Util (addPrefix, clean, splitOnColon)
-import Core.Toml
 
 -- DMenu
 import           DMenu (Color(..), MonadDMenu, (.=))
@@ -40,7 +40,7 @@ addConfigWith = (((++) .) .) . userFiles
 -- | User defined files.
 userFiles
     :: String   -- ^ "home" prefix
-    -> String    -- ^ cfg prefix
+    -> String   -- ^ cfg prefix
     -> [String] -- ^ User defined configs
     -> [String]
 userFiles home pref = map ((pref ++) . addPrefix home)
@@ -70,11 +70,11 @@ main = do
     exe  <- getExecutables
     Config{ files, filePrefix, open } <- getUserConfig
 
-    -- TODO This looks rather ugly
-    let e = addConfigWith home filePrefix files exe
+    -- Get all executables and interweave it with the users configuration.
+    let getExes = addConfigWith home filePrefix files exe
 
-    -- remove duplicates, then sort.
-    let exes = sort . nubOrd $ e
+    -- Remove duplicates, then sort.
+    let exes = sort . nubOrd $ getExes
 
     -- Let the user select something from the list.
     selection <- DMenu.select setOptions exes
@@ -90,10 +90,10 @@ main = do
 -- | Options for dmenu.
 setOptions :: MonadDMenu m => m ()
 setOptions = do
-    DMenu.numLines .= 0
+    DMenu.numLines        .= 0
     DMenu.caseInsensitive .= True
-    DMenu.font .= "Inconsolata Regular-10"
-    DMenu.normalBGColor .= HexColor 0x282A36
-    DMenu.normalFGColor .= HexColor 0xBBBBBB
+    DMenu.font            .= "Inconsolata Regular-10"
+    DMenu.normalBGColor   .= HexColor 0x282A36
+    DMenu.normalFGColor   .= HexColor 0xBBBBBB
     DMenu.selectedBGColor .= HexColor 0x8BE9FD
     DMenu.selectedFGColor .= HexColor 0x000000

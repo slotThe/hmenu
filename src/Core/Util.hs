@@ -5,14 +5,14 @@ module Core.Util
     )
 where
 
-{- | Adapted from: https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:words
-   Split a string into a list of strings, with the split point being a colon
-   (:).
--}
+-- | Adapted from: https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:words
+-- Split a string into a list of strings, with the split point being a colon.
 splitOnColon :: String -> [String]
-splitOnColon s = case dropWhile isColon s of
-    "" -> []
-    s' -> w : splitOnColon s'' where (w, s'') = break isColon s'
+splitOnColon s =
+    case dropWhile isColon s of
+        "" -> []
+        s' -> w : splitOnColon s''
+            where (w, s'') = break isColon s'
   where
     isColon :: Char -> Bool
     isColon = (== ':')
@@ -22,10 +22,12 @@ splitOnColon s = case dropWhile isColon s of
    conveniently use relative paths (starting from '$HOME') if that is desired.
 -}
 addPrefix :: String -> String -> String
-addPrefix prefix xs | null xs   = ""
-                    | x == '/'  = xs
-                    | otherwise = prefix <> xs
-    where x = head xs
+addPrefix prefix xs
+    | null xs   = ""
+    | x == '/'  = xs
+    | otherwise = prefix <> xs
+  where
+    x = head xs
 
 -- | Clean a string up until (and including) the first colon.
 clean :: String -> String
