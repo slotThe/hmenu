@@ -10,6 +10,7 @@ import qualified DMenu
 
 -- Other imports
 import Control.Monad (void)
+import Data.Bool (bool)
 import Data.Containers.ListUtils (nubOrd)
 import Data.List (isPrefixOf, sort)
 import System.Directory (doesPathExist, listDirectory)
@@ -46,21 +47,17 @@ userFiles home pref = map ((pref ++) . addPrefix home)
 
 -- | Get all executables from all dirs in `$PATH`.
 getExecutables :: IO [String]
-getExecutables =
-    fmap concat . traverse listExistentDir . splitOnColon =<< path
--- getExecutables = do
---     pathDirs <- splitOnColon <$> path
---     mconcat $ map listExistentDir pathDirs
+getExecutables = fmap concat . traverse listExistentDir . splitOnColon =<< path
 
 {- | Only try listing the directory if it actually exists.
    This is for all the people who have non-existent dirs in their path for some
    reason.
 -}
 listExistentDir :: FilePath -> IO [FilePath]
-listExistentDir fp = doesPathExist fp >>= \pathExists ->
-    if pathExists
-        then listDirectory fp
-        else return []
+listExistentDir fp =
+    bool (pure [])
+         (listDirectory fp)
+          =<< doesPathExist fp
 
 -- | spawn a command and forget about it.
 spawn :: String -> IO ()
