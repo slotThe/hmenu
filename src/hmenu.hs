@@ -2,7 +2,7 @@ module Main where
 
 -- Local imports
 import Core.Toml (Config(Config), filePrefix, files, getUserConfig, open)
-import Core.Util (addPrefix, clean, splitOnColon)
+import Core.Util (clean, splitOnColon, tryAddPrefix)
 
 -- DMenu
 import           DMenu (Color(..), MonadDMenu, (.=))
@@ -19,31 +19,22 @@ import System.Process (spawnCommand)
 
 
 -- | PATH
-path :: IO String
+path :: IO FilePath
 path = getEnv "PATH"
 
 -- | HOME
-userHome :: IO String
+userHome :: IO FilePath
 userHome = (++ "/") <$> getEnv "HOME"
 
--- | Add user defined configuration to *something* (this will be the stuff
--- extracted from path).
--- TODO This looks rather ugly
-addConfigWith
-    :: String   -- ^ Home prefix
-    -> String   -- ^ Config prefix
-    -> [String] -- ^ User defined config
-    -> [String] -- ^ executables from path
-    -> [String] -- ^ everything thrown together
-addConfigWith = (((++) .) .) . userFiles
-
 -- | User defined files.
-userFiles
-    :: String   -- ^ "home" prefix
-    -> String   -- ^ cfg prefix
-    -> [String] -- ^ User defined configs
-    -> [String]
-userFiles home pref = map ((pref ++) . addPrefix home)
+userConfig
+    :: FilePath  -- ^ Prefix for $HOME.
+    -> FilePath  -- ^ Prefix for an option.
+    -> [String]  -- ^ User defined strings for option.
+    -> [String]  -- ^ Properly formatted names.
+userConfig home pref = map (addPrefix . tryAddPrefix home)
+  where
+    addPrefix = (pref ++)
 
 -- | Get all executables from all dirs in `$PATH`.
 getExecutables :: IO [String]
@@ -71,7 +62,7 @@ main = do
     Config{ files, filePrefix, open } <- getUserConfig
 
     -- Get all executables and interweave it with the users configuration.
-    let getExes = addConfigWith home filePrefix files exe
+    let getExes = userConfig home filePrefix files <> exe
 
     -- Remove duplicates, then sort.
     let exes = sort . nubOrd $ getExes

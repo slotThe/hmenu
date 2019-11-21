@@ -1,6 +1,6 @@
 module Core.Util
     ( splitOnColon
-    , addPrefix
+    , tryAddPrefix
     , clean
     )
 where
@@ -21,8 +21,8 @@ splitOnColon s =
    This will ensure the user can specify absolute paths to files, but also
    conveniently use relative paths (starting from '$HOME') if that is desired.
 -}
-addPrefix :: String -> String -> String
-addPrefix prefix xs
+tryAddPrefix :: String -> String -> String
+tryAddPrefix prefix xs
     | null xs   = ""
     | x == '/'  = xs
     | otherwise = prefix <> xs

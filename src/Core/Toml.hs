@@ -11,17 +11,13 @@ import qualified Toml
 import qualified Data.Text.IO as T
 
 -- Other imports
-import Data.Maybe
+import Data.Maybe (fromMaybe)
 import System.Directory
     ( XdgDirectory(XdgConfig)
     , doesFileExist
     , getXdgDirectory
     )
 
-
--- | XDG_CONFIG
-xdgConfig :: IO FilePath
-xdgConfig = getXdgDirectory XdgConfig ""
 
 -- | Type that the parsed toml gets shoved into
 data Config' = Config'
@@ -38,6 +34,10 @@ data Config = Config
     , open       :: !String
     }
 
+-- | XDG_CONFIG
+xdgConfig :: IO FilePath
+xdgConfig = getXdgDirectory XdgConfig ""
+
 -- | Empty config type with all the default values.
 emptyConfig :: Config
 emptyConfig = Config "file:" [] "xdg-open"
@@ -50,18 +50,22 @@ configCodec = Config'
     <*> Toml.dioptional (Toml.string "open")                .= copen
 
 -- | Try to find a user config and, if it exists, parse it.
--- | TODO: Rewrite this
+-- | TODO: There is probably a better solution for this
 getUserConfig :: IO Config
 getUserConfig = do
     xdgConfDir <- xdgConfig
+
+    -- Default path where to look for the config file.
+    -- ~/.config/hmenu.toml
     let cfgFile = xdgConfDir ++ "/hmenu.toml"
+
+    -- If file doesn't exist we return a type with default values, otherwise we
+    -- try to parse the config and see what's there.
     isFile <- doesFileExist cfgFile
-    -- If file doesn't exist we return an empty type with default values,
-    -- otherwise we try to parse the config and see what's there.
     if not isFile
         then return emptyConfig
         else do
-            -- Read and evaluate file
+            -- Read and evaluate file.
             tomlFile <- T.readFile cfgFile
             case Toml.decode configCodec tomlFile of
                 -- If parsing failed just use default settings.
