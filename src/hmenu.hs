@@ -75,7 +75,7 @@ main = do
         Left  _ -> return () -- silently fail
         -- TODO I should probably handle this with dedicated types.
         Right s -> if
-            | filePrefix `isPrefixOf` s -> spawn . (open ++) . clean $ s
+            | filePrefix `isPrefixOf` s -> spawn . open . clean $ s
             | otherwise                 -> spawn s
 
 -- | Options for dmenu.

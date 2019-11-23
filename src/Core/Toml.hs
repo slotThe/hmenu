@@ -31,7 +31,7 @@ data Config' = Config'
 data Config = Config
     { filePrefix :: !String
     , files      :: ![String]
-    , open       :: !String
+    , open       :: !ShowS
     }
 
 -- | XDG_CONFIG
@@ -40,7 +40,7 @@ xdgConfig = getXdgDirectory XdgConfig ""
 
 -- | Empty config type with all the default values.
 emptyConfig :: Config
-emptyConfig = Config "file:" [] "xdg-open"
+emptyConfig = Config "file:" [] ("xdg-open" ++)
 
 -- | Parse the toml.
 configCodec :: TomlCodec Config'
@@ -74,7 +74,7 @@ getUserConfig = do
                 Right Config'{ cfilePrefix, cfiles, copen } -> return Config
                     { filePrefix = fromMaybe defPrefix cfilePrefix
                     , files      = fromMaybe defFiles  cfiles
-                    , open       = fromMaybe defOpen   copen
+                    , open       = maybe defOpen (++) copen
                     }
   where
     defPrefix = filePrefix emptyConfig
