@@ -1,13 +1,9 @@
-* General [1/4]                                                       :hmenu:
-  - [ ] profile to see if using Text and/org Set is worth it
+* General [2/4]                                                       :hmenu:
+  - [ ] Write readme
+  - [ ] Upload this somewhere
+  - [X] Implement a naive config
+  - [X] profile to see if using Text and/or Set is worth it
     NOTE: Preliminary testing showed that this has no influence performance wise
     (my guess is that a list of size ~10k is just not big enough for this to
     matter), and does in fact increase memory usage a bit (in both cases, did
     not test them together).
-  - [ ] Write readme
-  - [ ] Upload this somewhere
-  - [ ] Implement new config option to select directories (essentially have
-    hmenu act as a file browser for selected directories, this can be used
-    e.g. to access a video dir and play videos from there without needing to do
-    this in a shell script.)
-  - [X] Implement a naive config
