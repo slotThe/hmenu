@@ -1,15 +1,16 @@
 module Main where
 
 -- Local imports
-import Core.Toml (Config(Config), filePrefix, files, getUserConfig, open)
+import Core.Toml
 import Core.Util (clean, splitOnColon, tryAddPrefix)
 
 -- DMenu
-import           DMenu (Color(..), MonadDMenu, (.=))
+import           DMenu (MonadDMenu, (.=))
 import qualified DMenu
 
 -- Other imports
 import Control.Monad (void)
+import Control.Monad.Trans (MonadIO)
 import Data.Bool (bool)
 import Data.Containers.ListUtils (nubOrd)
 import Data.List (isPrefixOf, sort)
@@ -79,12 +80,23 @@ main = do
             | otherwise                 -> spawn s
 
 -- | Options for dmenu.
-setOptions :: MonadDMenu m => m ()
+-- FIXME: This is kind of a hack to allow me to use user-defined stuff.
+setOptions :: (MonadIO m, MonadDMenu m) => m ()
 setOptions = do
-    DMenu.numLines        .= 0
-    DMenu.caseInsensitive .= True
-    DMenu.font            .= "Inconsolata Regular-10"
-    DMenu.normalBGColor   .= HexColor 0x282A36
-    DMenu.normalFGColor   .= HexColor 0xBBBBBB
-    DMenu.selectedBGColor .= HexColor 0x8BE9FD
-    DMenu.selectedFGColor .= HexColor 0x000000
+    -- Get user set configuration.
+    Config { numLines
+           , caseIns
+           , font
+           , normBgCol
+           , normFgCol
+           , selBgCol
+           , selFgCol
+           } <- getUserConfig
+
+    DMenu.numLines        .= numLines
+    DMenu.caseInsensitive .= caseIns
+    DMenu.font            .= font
+    DMenu.normalBGColor   .= normBgCol
+    DMenu.normalFGColor   .= normFgCol
+    DMenu.selectedBGColor .= selBgCol
+    DMenu.selectedFGColor .= selFgCol
