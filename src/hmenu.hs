@@ -81,6 +81,8 @@ main = do
 
 -- | Options for dmenu.
 -- FIXME: This is kind of a hack to allow me to use user-defined stuff.
+-- TODO: Should this even be here or is it more sane to let users specify this
+--       as normal command line arguments?
 setOptions :: (MonadIO m, MonadDMenu m) => m ()
 setOptions = do
     -- Get user set configuration.

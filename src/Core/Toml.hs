@@ -60,19 +60,18 @@ xdgConfig :: MonadIO m => m FilePath
 xdgConfig = io $ getXdgDirectory XdgConfig ""
 
 -- | Empty config type with all the default values.
--- TODO I should probably use dmenu's default values here instead of my own.
 emptyConfig :: Config
 emptyConfig = Config
     { filePrefix = "file:"
     , files      = []
     , open       = ("xdg-open" ++)
-    , numLines   = 0
+    , numLines   = (-1)
     , caseIns    = True
-    , font       = "Inconsolata Regular-10"
-    , normBgCol  = HexColor 0x282A36
-    , normFgCol  = HexColor 0xBBBBBB
-    , selBgCol   = HexColor 0x8BE9FD
-    , selFgCol   = HexColor 0x000000
+    , font       = ""
+    , normBgCol  = HexColor (-1)
+    , normFgCol  = HexColor (-1)
+    , selBgCol   = HexColor (-1)
+    , selFgCol   = HexColor (-1)
     }
 
 -- | Parse the toml.
