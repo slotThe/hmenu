@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 944d9fb5a90458228b773f4de2a04accd7db43aa9e29889ab1fb8251f9e7725b
+-- hash: 4f132178214350d7a82b69e9fdfe90a44ba4886b316019ffb4f50ce49fe024a5
 
 name:                hmenu
-version:             0.1
+version:             0.1.1
 synopsis:            A small wrapper around dmenu
 homepage:            to-come
 license:             GPL-3
@@ -30,6 +30,7 @@ executable hmenu
   default-language: Haskell2010
   build-depends:
       base
+    , containers
     , directory
     , mtl
     , process

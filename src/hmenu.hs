@@ -83,9 +83,11 @@ selectWith opts entries = do
         readCreateProcessWithExitCode
             (proc dmenuExe opts)
             (unlines entries)
-    pure $ case exitCode of
-      ExitSuccess   -> Right $ head $ lines sOut
-      ExitFailure i -> Left (i, sErr)
+
+    return $ case exitCode of
+        -- Take first (selected) word or return the error message.
+        ExitSuccess   -> Right $ takeWhile (/= '\\') sOut
+        ExitFailure i -> Left (i, sErr)
 
 -- | Execute dmenu and then do stuff.
 main :: IO ()
