@@ -4,6 +4,9 @@ module Core.Util
     , clean
     ) where
 
+-- Other imports
+import System.FilePath ((</>))
+
 {- | Split a string into a list of strings, with the split point being a colon.
 
    Adapted from:
@@ -23,11 +26,11 @@ splitOnColon s =
    This will ensure the user can specify absolute paths to files, but also
    conveniently use relative paths (starting from '$HOME') if that is desired.
 -}
-tryAddPrefix :: String -> String -> String
+tryAddPrefix :: FilePath -> FilePath -> FilePath
 tryAddPrefix prefix xs
     | null xs   = ""
     | x == '/'  = xs
-    | otherwise = prefix <> xs
+    | otherwise = prefix </> xs
   where
     x = head xs
 

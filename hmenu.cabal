@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4f132178214350d7a82b69e9fdfe90a44ba4886b316019ffb4f50ce49fe024a5
+-- hash: 3cc3423ae330930a08947e140fad56e31f4b6de33f26d0e6bf26311b99b5cb67
 
 name:                hmenu
 version:             0.1.1
@@ -32,6 +32,7 @@ executable hmenu
       base
     , containers
     , directory
+    , filepath
     , mtl
     , process
     , text

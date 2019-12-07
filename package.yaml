@@ -29,6 +29,7 @@ dependencies:
   - process
   - containers
   - tomland
+  - filepath
 
 executables:
   hmenu:
