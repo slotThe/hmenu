@@ -3,12 +3,12 @@ module Core.Toml
     , getUserConfig
     ) where
 
+-- Text
+import qualified Data.Text.IO as T
+
 -- Tomland
 import           Toml (TomlCodec, (.=))
 import qualified Toml
-
--- Text
-import qualified Data.Text.IO as T
 
 -- Other imports
 import Control.Monad.Trans (MonadIO, liftIO)

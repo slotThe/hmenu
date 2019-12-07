@@ -1,7 +1,7 @@
 module Main where
 
 -- Local imports
-import Core.Toml (dmenuExe, Config(Config), filePrefix, files, getUserConfig, open)
+import Core.Toml (Config(Config), dmenuExe, filePrefix, files, getUserConfig, open)
 import Core.Util (clean, splitOnColon, tryAddPrefix)
 
 -- Other imports
@@ -15,7 +15,6 @@ import System.Environment (getArgs, getEnv)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
 import System.Process (proc, readCreateProcessWithExitCode, spawnCommand)
 
-
 {- | When a spawned process fails, this type is used to represent the exit code
    and @stderr@ output.
 
@@ -23,26 +22,54 @@ import System.Process (proc, readCreateProcessWithExitCode, spawnCommand)
 -}
 type ProcessError = (Int, String)
 
--- | PATH
+-- | Execute dmenu and then do stuff.
+main :: IO ()
+main = do
+    -- Command line arguments, these get passed straight so dmenu.
+    opts <- getArgs
+
+    home <- userHome
+    exe  <- getExecutables
+    Config{ files, filePrefix, open } <- getUserConfig
+
+    -- Interweave the extracted executables in '$PATH' with the users
+    -- configuration.
+    let getExes = formatUserPaths home filePrefix files <> exe
+
+    -- Remove duplicates, then sort.
+    let exes = sort . nubOrd $ getExes
+
+    -- Let the user select something from the list.
+    selection <- selectWith opts exes
+
+    -- Process output.
+    case selection of
+        Left  _ -> return ()  -- silently fail
+        -- TODO I should probably handle this with dedicated types.
+        Right s -> if
+            | filePrefix `isPrefixOf` s -> spawn . open . clean $ s
+            | otherwise                 -> spawn s
+
+-- | '$PATH'
 path :: IO FilePath
 path = getEnv "PATH"
 
--- | HOME
+-- | '$HOME'
 userHome :: IO FilePath
-userHome = (++ "/") <$> getEnv "HOME"
+userHome = getEnv "HOME"
 
--- | User defined files.
-userConfig
-    :: FilePath  -- ^ Prefix for $HOME.
-    -> FilePath  -- ^ Prefix for an option.
-    -> [String]  -- ^ User defined strings for option.
-    -> [String]  -- ^ Properly formatted names.
-userConfig home pref = map (addPrefix . tryAddPrefix home)
+-- | Process user defined files, add the appropriate prefixes if needed.
+formatUserPaths
+    :: FilePath    -- ^ Prefix for '$HOME'.
+    -> String      -- ^ Prefix for an option.
+    -> [FilePath]  -- ^ User defined strings for option.
+    -> [FilePath]  -- ^ Properly formatted paths.
+formatUserPaths home pref = map (addPrefix . tryAddPrefix home)
   where
     addPrefix = (pref ++)
 
--- | Get all executables from all dirs in `$PATH`.
-getExecutables :: IO [String]
+-- | Get all executables from all dirs in '$PATH'.
+getExecutables :: IO [FilePath]
 getExecutables = fmap concat . traverse listExistentDir . splitOnColon =<< path
 
 {- | Only try listing the directory if it actually exists.
@@ -68,7 +95,7 @@ spawn = void . spawnCommand
 selectWith
     :: [String]
     -- ^ List of options to give to dmenu.
-    -> [String]
+    -> [FilePath]
     -- ^ List from which the user should select.
     -> IO (Either ProcessError String)
     -- ^ The selection made by the user, or a 'ProcessError', if the user
@@ -76,40 +103,13 @@ selectWith
 selectWith opts entries = do
     -- Get the user specified executable.
     -- Default: "dmenu"
-    Config{ dmenuExe } <- getUserConfig
+    Config{ dmenuExe = dmenu } <- getUserConfig
 
-    -- TODO properly comment this
+    -- Spawn the process with the available options and entries.
     (exitCode, sOut, sErr) <-
-        readCreateProcessWithExitCode
-            (proc dmenuExe opts)
-            (unlines entries)
+        readCreateProcessWithExitCode (proc dmenu opts) (unlines entries)
 
     return $ case exitCode of
         -- Take first (selected) word or return the error message.
         ExitSuccess   -> Right $ takeWhile (/= '\\') sOut
         ExitFailure i -> Left (i, sErr)
-
--- | Execute dmenu and then do stuff.
-main :: IO ()
-main = do
-    opts <- getArgs
-    home <- userHome
-    exe  <- getExecutables
-    Config{ files, filePrefix, open } <- getUserConfig
-
-    -- Get all executables and interweave it with the users configuration.
-    let getExes = userConfig home filePrefix files <> exe
-
-    -- Remove duplicates, then sort.
-    let exes = sort . nubOrd $ getExes
-
-    -- Let the user select something from the list.
-    selection <- selectWith opts exes
-
-    -- Process output.
-    case selection of
-        Left  _ -> return () -- silently fail
-        -- TODO I should probably handle this with dedicated types.
-        Right s -> if
-            | filePrefix `isPrefixOf` s -> spawn . open . clean $ s
-            | otherwise                 -> spawn s
