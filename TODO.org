@@ -1,6 +1,6 @@
-* General [2/4]                                                       :hmenu:
-  - [ ] Write readme
+* General [3/4]                                                       :hmenu:
   - [ ] Upload this somewhere
+  - [X] Write simple readme
   - [X] Implement a naive config
   - [X] profile to see if using Text and/or Set is worth it
     NOTE: Preliminary testing showed that this has no influence performance wise
