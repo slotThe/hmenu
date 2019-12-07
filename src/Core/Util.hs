@@ -2,11 +2,13 @@ module Core.Util
     ( splitOnColon
     , tryAddPrefix
     , clean
-    )
-where
+    ) where
 
--- | Adapted from: https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:words
--- Split a string into a list of strings, with the split point being a colon.
+{- | Split a string into a list of strings, with the split point being a colon.
+
+   Adapted from:
+     https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:words
+-}
 splitOnColon :: String -> [String]
 splitOnColon s =
     case dropWhile isColon s of
