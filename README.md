@@ -13,6 +13,8 @@ very much right now, but this might change in the near future.
 -   A custom opening script.
 -   Your custom dmenu executable.
 
+See the `example.toml` for an example configuration.
+
 At the moment, all arguments that passed to `hmenu` will be directly forwarded
 to `dmenu` (this may change in the future when we get our own command line
 options), so you may specify options in the following way:

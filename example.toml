@@ -1,0 +1,13 @@
+### hmenu config file.
+
+# Script with which to open files.
+open = "my-open-script"
+
+# Prefix that will appear in front of the files in dmenu.
+file-prefix = "f:"
+
+# Actual files to open, config files in my case.
+files =
+    # Path is relative to $HOME
+    [ ".config/hmenu.toml"
+    ]
