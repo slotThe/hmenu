@@ -28,7 +28,7 @@ main = do
     -- Command line arguments, these get passed straight so dmenu.
     opts <- getArgs
 
-    home <- userHome
+    home <- getEnv "HOME"
     exe  <- getExecutables
     Config{ files, filePrefix, open } <- getUserConfig
 
@@ -44,47 +44,11 @@ main = do
 
     -- Process output.
     case selection of
-        Left  _ -> return ()  -- silently fail
+        Left  _ -> pure ()  -- silently fail
         -- TODO I should probably handle this with dedicated types.
         Right s -> if
             | filePrefix `isPrefixOf` s -> spawn . open . clean $ s
             | otherwise                 -> spawn s
-
--- | '$PATH'
-path :: IO FilePath
-path = getEnv "PATH"
-
--- | '$HOME'
-userHome :: IO FilePath
-userHome = getEnv "HOME"
-
--- | Process user defined files, add the appropriate prefixes if needed.
-formatUserPaths
-    :: FilePath    -- ^ Prefix for '$HOME'.
-    -> String      -- ^ Prefix for an option.
-    -> [FilePath]  -- ^ User defined strings for option.
-    -> [FilePath]  -- ^ Properly formatted paths.
-formatUserPaths home pref = map (addPrefix . tryAddPrefix home)
-  where
-    addPrefix = (pref ++)
-
--- | Get all executables from all dirs in '$PATH'.
-getExecutables :: IO [FilePath]
-getExecutables = fmap concat . traverse listExistentDir . splitOnColon =<< path
-
-{- | Only try listing the directory if it actually exists.
-   This is for all the people who have non-existent dirs in their path for some
-   reason.
--}
-listExistentDir :: FilePath -> IO [FilePath]
-listExistentDir fp =
-    bool (pure [])
-         (listDirectory fp)
-          =<< doesPathExist fp
-
--- | spawn a command and forget about it.
-spawn :: String -> IO ()
-spawn = void . spawnCommand
 
 {- | Run dmenu with the given command line optinos and a list of entries from
    which the user should choose.
@@ -109,7 +73,36 @@ selectWith opts entries = do
     (exitCode, sOut, sErr) <-
         readCreateProcessWithExitCode (proc dmenu opts) (unlines entries)
 
-    return $ case exitCode of
+    pure $ case exitCode of
         -- Take first (selected) word or return the error message.
         ExitSuccess   -> Right $ takeWhile (/= '\\') sOut
         ExitFailure i -> Left (i, sErr)
+
+-- | Process user defined files, add the appropriate prefixes if needed.
+formatUserPaths
+    :: FilePath    -- ^ Prefix for '$HOME'.
+    -> String      -- ^ Prefix for an option.
+    -> [FilePath]  -- ^ User defined strings for option.
+    -> [FilePath]  -- ^ Properly formatted paths.
+formatUserPaths home pref = map (addPrefix . tryAddPrefix home)
+  where
+    addPrefix = (pref ++)
+
+-- | Get all executables from all dirs in '$PATH'.
+getExecutables :: IO [FilePath]
+getExecutables =
+    fmap concat . traverse listExistentDir . splitOnColon =<< getEnv "PATH"
+
+{- | Only try listing the directory if it actually exists.
+   This is for all the people who have non-existent dirs in their path for some
+   reason.
+-}
+listExistentDir :: FilePath -> IO [FilePath]
+listExistentDir fp =
+    bool (pure [])
+         (listDirectory fp)
+          =<< doesPathExist fp
+
+-- | spawn a command and forget about it.
+spawn :: String -> IO ()
+spawn = void . spawnCommand
