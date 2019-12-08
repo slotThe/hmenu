@@ -59,8 +59,7 @@ configCodec = Config'
     <*> Toml.dioptional (Toml.string "executable"         ) .= cdmenuExe
 
 -- | Try to find a user config and, if it exists, parse it.
--- | TODO: There is probably a better solution for this
-getUserConfig :: MonadIO m => m Config
+getUserConfig :: IO Config
 getUserConfig = do
     -- Default path where to look for the config file.
     -- ~/.config/hmenu.toml
