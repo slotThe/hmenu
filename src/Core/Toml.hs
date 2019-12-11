@@ -70,25 +70,24 @@ getUserConfig = do
     -- try to parse the config and see what's there.
     isFile <- io $ doesFileExist cfgFile
     if not isFile
-        then return emptyConfig
+        then pure emptyConfig
         -- Read and evaluate file.
         else do
             tomlFile <- io $ T.readFile cfgFile
-            case Toml.decode configCodec tomlFile of
+            pure $ case Toml.decode configCodec tomlFile of
                 -- If parsing failed just use default settings.
-                Left _ -> return emptyConfig
+                Left  _   -> emptyConfig
                 -- If no config, fill in default values.
-                Right Config' { cfilePrefix
-                              , cfiles
-                              , copen
-                              , cdmenuExe
-                              } ->
-                    return Config
-                        { filePrefix = fromMaybe defPrefix cfilePrefix
-                        , files      = fromMaybe defFiles  cfiles
-                        , dmenuExe   = fromMaybe defDmenu  cdmenuExe
-                        , open       = maybe defOpen (++) copen
-                        }
+                Right cfg -> makeConfig cfg
+
+makeConfig :: Config' -> Config
+makeConfig Config'{ cfilePrefix, cfiles, copen, cdmenuExe } =
+    Config
+        { filePrefix = fromMaybe defPrefix cfilePrefix
+        , files      = fromMaybe defFiles  cfiles
+        , dmenuExe   = fromMaybe defDmenu  cdmenuExe
+        , open       = maybe defOpen (++) copen
+        }
   where
     defPrefix = filePrefix emptyConfig
     defOpen   = open       emptyConfig
