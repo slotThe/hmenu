@@ -1,20 +1,20 @@
 # hmenu
 
 hmenu is a small wrapper for dmenu to make certain things easier.  It can't do
-very much right now, but this might change in the near future.
+very much right now, though I guess that's the point of it.
 
 
 # Features
 
+1.  Display commands in order of usage.
+2.  Optional config file where one may specify the following:
+    -   Files one wishes to edit (Custom prefix for files available).
+    -   A custom opening script.
+    -   Custom dmenu executable.
+
 `hmenu` is configured using a `.toml` file in an `hmenu` directory inside
-`XDG_CONFIG_HOME` directory (probably `~/.config/hmenu`).  In this config file
-you may specify:
-
--   Files you wish to edit (Custom prefix for files available).
--   A custom opening script.
--   Your custom dmenu executable.
-
-See the `example.toml` for an example configuration.
+`XDG_CONFIG_HOME` directory (probably `~/.config/hmenu`).  See the
+`example.toml` for an example configuration.
 
 At the moment, all arguments that passed to `hmenu` will be directly forwarded
 to `dmenu` (this may change in the future when we get our own command line
