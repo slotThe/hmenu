@@ -1,6 +1,7 @@
 module Core.Toml
     ( Config(..)
     , getUserConfig
+    , hmenuPath
     ) where
 
 -- Text
@@ -11,9 +12,10 @@ import           Toml (TomlCodec, (.=))
 import qualified Toml
 
 -- Other imports
-import Control.Monad.Trans (MonadIO, liftIO)
+import Data.Functor ((<&>))
 import Data.Maybe (fromMaybe)
 import System.Directory (XdgDirectory(XdgConfig), doesFileExist, getXdgDirectory)
+import System.FilePath ((</>))
 
 
 -- | Type that the parsed toml gets shoved into
@@ -42,13 +44,14 @@ emptyConfig = Config
     , dmenuExe   = "dmenu"
     }
 
--- | Convenience
-io :: MonadIO m => IO a -> m a
-io = liftIO
+-- | XDG_CONFIG_HOME
+xdgConfig :: IO FilePath
+xdgConfig = getXdgDirectory XdgConfig ""
 
--- | XDG_CONFIG
-xdgConfig :: MonadIO m => m FilePath
-xdgConfig = io $ getXdgDirectory XdgConfig ""
+-- | Path to the hmenu directory.
+-- '~/.config/hmenu'
+hmenuPath :: IO FilePath
+hmenuPath = xdgConfig <&> (</> "hmenu")
 
 -- | Parse the toml.
 configCodec :: TomlCodec Config'
@@ -62,17 +65,16 @@ configCodec = Config'
 getUserConfig :: IO Config
 getUserConfig = do
     -- Default path where to look for the config file.
-    -- ~/.config/hmenu.toml
-    xdgConfDir <- xdgConfig
-    let cfgFile = xdgConfDir ++ "/hmenu.toml"
+    -- '~/.config/hmenu/hmenu.toml'
+    cfgFile <- hmenuPath <&> (</> "hmenu.toml")
 
     -- If file doesn't exist we return a type with default values, otherwise we
     -- try to parse the config and see what's there.
     isFile <- io $ doesFileExist cfgFile
     if not isFile
         then pure emptyConfig
-        -- Read and evaluate file.
         else do
+            -- Read and evaluate file.
             tomlFile <- io $ T.readFile cfgFile
             pure $ case Toml.decode configCodec tomlFile of
                 -- If parsing failed just use default settings.

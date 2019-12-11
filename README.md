@@ -6,8 +6,9 @@ very much right now, but this might change in the near future.
 
 # Features
 
-`hmenu` is configured using a `.toml` file in your `XDG_CONFIG` directory
-(probably `~/.config/`).  In this config file you may specify:
+`hmenu` is configured using a `.toml` file in an `hmenu` directory inside
+`XDG_CONFIG_HOME` directory (probably `~/.config/hmenu`).  In this config file
+you may specify:
 
 -   Files you wish to edit (Custom prefix for files available).
 -   A custom opening script.

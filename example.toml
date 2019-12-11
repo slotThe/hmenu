@@ -13,5 +13,5 @@ file-prefix = "f:"
 # Actual files to open.
 files =
     # Path is relative to $HOME
-    [ ".config/hmenu.toml"
+    [ ".config/hmenu/hmenu.toml"
     ]
