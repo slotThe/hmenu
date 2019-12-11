@@ -44,7 +44,7 @@ emptyConfig = Config
     , dmenuExe   = "dmenu"
     }
 
--- | XDG_CONFIG_HOME
+-- | XDG_CONFIG
 xdgConfig :: IO FilePath
 xdgConfig = getXdgDirectory XdgConfig ""
 
@@ -70,12 +70,12 @@ getUserConfig = do
 
     -- If file doesn't exist we return a type with default values, otherwise we
     -- try to parse the config and see what's there.
-    isFile <- io $ doesFileExist cfgFile
+    isFile <- doesFileExist cfgFile
     if not isFile
         then pure emptyConfig
         else do
             -- Read and evaluate file.
-            tomlFile <- io $ T.readFile cfgFile
+            tomlFile <- T.readFile cfgFile
             pure $ case Toml.decode configCodec tomlFile of
                 -- If parsing failed just use default settings.
                 Left  _   -> emptyConfig
