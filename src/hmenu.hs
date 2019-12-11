@@ -2,7 +2,7 @@ module Main where
 
 -- Local imports
 import Core.Toml (Config(Config), dmenuExe, filePrefix, files, getUserConfig, open)
-import Core.Util (clean, splitOnColon, tryAddPrefix)
+import Core.Util (clean, tryAddPrefix)
 
 -- Other imports
 import Control.Monad (void)
@@ -13,6 +13,7 @@ import Data.String (unlines)
 import System.Directory (doesPathExist, listDirectory)
 import System.Environment (getArgs, getEnv)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
+import System.FilePath (getSearchPath)
 import System.Process (proc, readCreateProcessWithExitCode, spawnCommand)
 
 {- | When a spawned process fails, this type is used to represent the exit code
@@ -91,7 +92,7 @@ formatUserPaths home pref = map (addPrefix . tryAddPrefix home)
 -- | Get all executables from all dirs in '$PATH'.
 getExecutables :: IO [FilePath]
 getExecutables =
-    fmap concat . traverse listExistentDir . splitOnColon =<< getEnv "PATH"
+    fmap concat . traverse listExistentDir =<< getSearchPath
 
 {- | Only try listing the directory if it actually exists.
    This is for all the people who have non-existent dirs in their path for some

@@ -1,26 +1,11 @@
 module Core.Util
-    ( splitOnColon
-    , tryAddPrefix
+    ( tryAddPrefix
     , clean
     ) where
 
 -- Other imports
 import System.FilePath ((</>))
 
-{- | Split a string into a list of strings, with the split point being a colon.
-
-   Adapted from:
-     https://hackage.haskell.org/package/base-4.12.0.0/docs/Prelude.html#v:words
--}
-splitOnColon :: String -> [String]
-splitOnColon s =
-    case dropWhile isColon s of
-        "" -> []
-        s' -> w : splitOnColon s''
-            where (w, s'') = break isColon s'
-  where
-    isColon :: Char -> Bool
-    isColon = (== ':')
 
 {- | Add a prefix to a string if the string is not starting with "/".
    This will ensure the user can specify absolute paths to files, but also
