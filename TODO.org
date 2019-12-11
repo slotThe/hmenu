@@ -1,4 +1,5 @@
 * General [5/5]                                                       :hmenu:
+  - [ ] Command line options for deciding when to refresh the cache.
   - [X] Display commands in order of usage
   - [X] Upload this somewhere
   - [X] Write simple readme
