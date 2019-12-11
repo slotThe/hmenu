@@ -1,4 +1,5 @@
-* General [4/4]                                                       :hmenu:
+* General [5/5]                                                       :hmenu:
+  - [X] Display commands in order of usage
   - [X] Upload this somewhere
   - [X] Write simple readme
   - [X] Implement a naive config

@@ -2,6 +2,7 @@ module Core.Toml
     ( Config(..)
     , getUserConfig
     , hmenuPath
+    , histFile
     ) where
 
 -- Text
@@ -52,6 +53,11 @@ xdgConfig = getXdgDirectory XdgConfig ""
 -- '~/.config/hmenu'
 hmenuPath :: IO FilePath
 hmenuPath = xdgConfig <&> (</> "hmenu")
+
+-- | Path to the history file.
+-- '~/.config/hmenu/histFile'
+histFile :: IO FilePath
+histFile = hmenuPath <&> (</> "histFile")
 
 -- | Parse the toml.
 configCodec :: TomlCodec Config'

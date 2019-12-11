@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3cc3423ae330930a08947e140fad56e31f4b6de33f26d0e6bf26311b99b5cb67
+-- hash: cd2796a44d6b968cb2a989d77b6e09a9e789299a44ee163f20fd784827953562
 
 name:                hmenu
 version:             0.1.1
@@ -24,6 +24,7 @@ executable hmenu
   ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
   main-is: hmenu.hs
   other-modules:
+      Core.Select
       Core.Toml
       Core.Util
       Paths_hmenu

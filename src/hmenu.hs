@@ -1,27 +1,34 @@
-module Main where
+module Main
+    ( main
+    ) where
 
 -- Local imports
-import Core.Toml (Config(Config), dmenuExe, filePrefix, files, getUserConfig, open)
-import Core.Util (clean, tryAddPrefix)
+import Core.Select
+    ( decideSelection
+    , formatUserPaths
+    , getExecutables
+    , makeNewEntries
+    , selectWith
+    , sortByValues
+    , tryRead
+    )
+import Core.Toml
+    ( Config(Config)
+    , dmenuExe
+    , filePrefix
+    , files
+    , getUserConfig
+    , histFile
+    , hmenuPath
+    )
+
+-- Map
+import qualified Data.Map.Strict as Map
 
 -- Other imports
-import Control.Monad (void)
-import Data.Bool (bool)
-import Data.Containers.ListUtils (nubOrd)
-import Data.List (isPrefixOf, sort)
-import Data.String (unlines)
-import System.Directory (doesPathExist, listDirectory)
+import System.Directory (createDirectoryIfMissing)
 import System.Environment (getArgs, getEnv)
-import System.Exit (ExitCode(ExitFailure, ExitSuccess))
-import System.FilePath (getSearchPath)
-import System.Process (proc, readCreateProcessWithExitCode, spawnCommand)
 
-{- | When a spawned process fails, this type is used to represent the exit code
-   and @stderr@ output.
-
-   See: https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs
--}
-type ProcessError = (Int, String)
 
 -- | Execute dmenu and then do stuff.
 main :: IO ()
@@ -29,81 +36,39 @@ main = do
     -- Command line arguments, these get passed straight so dmenu.
     opts <- getArgs
 
-    home <- getEnv "HOME"
-    exe  <- getExecutables
-    Config{ files, filePrefix, open } <- getUserConfig
+    -- Create the 'hmenu' directory (and all parents) if necessary.
+    createDirectoryIfMissing True =<< hmenuPath
 
-    -- Interweave the extracted executables in '$PATH' with the users
-    -- configuration.
-    let getExes = formatUserPaths home filePrefix files <> exe
+    -- Try to parse the config file (if it exists).
+    cfg@Config{ dmenuExe = dmenu, filePrefix, files } <- getUserConfig
 
-    -- Remove duplicates, then sort.
-    let exes = sort . nubOrd $ getExes
+
+    {- TODO: Doing the following *after* the user has selected something may be
+             better (in terms of perceived speed), though 'hmenu' would "lag
+             behind" for one execution when things are updated.
+       NOTE: This might be a non-issue as command line arguments for running
+             with or without a cache update are planned anyways.
+    -}
+
+    -- Files the user added in the config file.
+    home  <- getEnv "HOME"
+    let uFiles = formatUserPaths home filePrefix files
+
+    -- Everything new as a map.
+    execs <- getExecutables
+    let newFiles = makeNewEntries (uFiles <> execs)
+
+    -- New map where everything old (i.e. not in the PATH or the config anymore)
+    -- is thrown out and anything new is added to the map.
+    file <- tryRead =<< histFile
+    let inters = file `Map.intersection` newFiles
+    let newMap = inters <> newFiles
 
     -- Let the user select something from the list.
-    selection <- selectWith opts exes
+    selection <- selectWith opts (sortByValues newMap) dmenu
 
     -- Process output.
     case selection of
-        Left  _ -> pure ()  -- silently fail
-        -- TODO I should probably handle this with dedicated types.
-        Right s -> if
-            | filePrefix `isPrefixOf` s -> spawn . open . clean $ s
-            | otherwise                 -> spawn s
-
-{- | Run dmenu with the given command line optinos and a list of entries from
-   which the user should choose.
-
-   Originally 'select' in here:
-       https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs
--}
-selectWith
-    :: [String]
-    -- ^ List of options to give to dmenu.
-    -> [FilePath]
-    -- ^ List from which the user should select.
-    -> IO (Either ProcessError String)
-    -- ^ The selection made by the user, or a 'ProcessError', if the user
-    -- canceled.
-selectWith opts entries = do
-    -- Get the user specified executable.
-    -- Default: "dmenu"
-    Config{ dmenuExe = dmenu } <- getUserConfig
-
-    -- Spawn the process with the available options and entries.
-    (exitCode, sOut, sErr) <-
-        readCreateProcessWithExitCode (proc dmenu opts) (unlines entries)
-
-    pure $ case exitCode of
-        -- Take first (selected) word or return the error message.
-        ExitSuccess   -> Right $ takeWhile (/= '\\') sOut
-        ExitFailure i -> Left (i, sErr)
-
--- | Process user defined files, add the appropriate prefixes if needed.
-formatUserPaths
-    :: FilePath    -- ^ Prefix for '$HOME'.
-    -> String      -- ^ Prefix for an option.
-    -> [FilePath]  -- ^ User defined strings for option.
-    -> [FilePath]  -- ^ Properly formatted paths.
-formatUserPaths home pref = map (addPrefix . tryAddPrefix home)
-  where
-    addPrefix = (pref ++)
-
--- | Get all executables from all dirs in '$PATH'.
-getExecutables :: IO [FilePath]
-getExecutables =
-    fmap concat . traverse listExistentDir =<< getSearchPath
-
-{- | Only try listing the directory if it actually exists.
-   This is for all the people who have non-existent dirs in their path for some
-   reason.
--}
-listExistentDir :: FilePath -> IO [FilePath]
-listExistentDir fp =
-    bool (pure [])
-         (listDirectory fp)
-          =<< doesPathExist fp
-
--- | spawn a command and forget about it.
-spawn :: String -> IO ()
-spawn = void . spawnCommand
+        Left  _ -> pure () -- silently fail
+        -- Process output.
+        Right s -> decideSelection s cfg newMap
