@@ -1,10 +1,10 @@
 name:                hmenu
-version:             0.1.1
+version:             0.2.0
 synopsis:            A small wrapper around dmenu
 license:             GPL-3
 author:              Slot
 maintainer:          soliditsallgood@tuta.io
-homepage:            to-come
+homepage:            https://gitlab.com/slotThe/hmenu
 tested-with:         GHC == 8.6.5
 
 default-extensions:
