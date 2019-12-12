@@ -72,6 +72,5 @@ main = do
 
     -- Process output.
     case selection of
-        Left  _ -> pure () -- silently fail
-        -- Process output.
-        Right s -> decideSelection s cfg newMap
+        Left  _ -> pure ()  -- silently fail
+        Right s -> decideSelection s cfg newMap  -- Process output.

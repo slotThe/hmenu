@@ -114,7 +114,8 @@ listExistentDir fp =
          (getDirContents fp)
           =<< doesPathExist (BS.unpack fp)
   where
-    getDirContents = (map snd <$>) . getDirectoryContents
+    getDirContents =
+        fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
 
 -- | spawn a command and forget about it.
 spawn :: ByteString -> IO ()
