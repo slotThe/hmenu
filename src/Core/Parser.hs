@@ -4,63 +4,39 @@ module Core.Parser
 
 -- ByteString
 import           Data.ByteString       (ByteString)
-import qualified Data.ByteString       as B
 import qualified Data.ByteString.Char8 as BS
 
--- Qualified imports
-import qualified Text.Megaparsec.Byte.Lexer as L
-
 -- Other imports
-import Data.Void (Void)
-import Data.Word (Word8)
-import Text.Megaparsec
-    ( ParseErrorBundle
-    , Parsec
-    , between
-    , choice
-    , runParser
+import Data.Attoparsec.ByteString.Char8
+    ( Parser
+    , char8
+    , decimal
+    , eitherResult
+    , parse
     , sepBy
-    , some
+    , string
+    , takeTill
     )
-import Text.Megaparsec.Byte (alphaNumChar, char, space, string)
 
 
--- | Simple parser type.
-type Parser a = Parsec Void ByteString a
+getHist :: FilePath -> IO (Either String [(ByteString, Int)])
+getHist file = eitherResult . parse pMap <$> BS.readFile file
 
 pMap :: Parser [(ByteString, Int)]
 pMap = do
-  _ <- string "fromList "
-  between (char 91) (char 93) (pKeyValue `sepBy` char 44)
+    _ <- string "fromList "
+    between (char8 '[') (char8 ']') (pKeyValue `sepBy` char8 ',')
 
 pKeyValue :: Parser (ByteString, Int)
 pKeyValue =
-    between (char 40) (char 41) $ do
-        b <- between (char 34) (char 34) (bsome posixChar)
-        _ <- char 44
+    between (char8 '(') (char8 ')') $ do
+        b <- between (char8 '\"') (char8 '\"') $ takeTill (== '\"')
+        _ <- char8 ','
         v <- integer
         return (b, v)
-  where
-    posixChar = choice
-        [ alphaNumChar
-        , char 43
-        , char 45
-        , char 46
-        , char 47
-        , char 58
-        , char 91
-        , char 93
-        , char 95
-        ]
-
--- | Convert a Character parser to a Text parser.
-bsome :: Parser Word8 -> Parser ByteString
-bsome = fmap B.pack . some
 
 integer :: Parser Int
-integer = L.lexeme space L.decimal
+integer = decimal
 
-getHist
-    :: FilePath
-    -> IO (Either (ParseErrorBundle ByteString Void) [(ByteString, Int)])
-getHist file = runParser pMap "" <$> BS.readFile file
+between :: Applicative m => m open -> m close -> m a -> m a
+between open close p = open *> p <* close

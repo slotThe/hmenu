@@ -32,7 +32,7 @@ dependencies:
   - filepath
   - posix-paths
   - bytestring
-  - megaparsec
+  - attoparsec
 
 executables:
   hmenu:
