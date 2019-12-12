@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cd2796a44d6b968cb2a989d77b6e09a9e789299a44ee163f20fd784827953562
+-- hash: a9e9e6077d40016bbbfd6848d73867d26d11c0def43ed3ad326665906d90880b
 
 name:                hmenu
 version:             0.1.1
@@ -24,6 +24,7 @@ executable hmenu
   ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
   main-is: hmenu.hs
   other-modules:
+      Core.Parser
       Core.Select
       Core.Toml
       Core.Util
@@ -31,10 +32,13 @@ executable hmenu
   default-language: Haskell2010
   build-depends:
       base
+    , bytestring
     , containers
     , directory
     , filepath
-    , mtl
+    , megaparsec
+    , posix-paths
     , process
+    , process-extras
     , text
     , tomland

@@ -5,6 +5,9 @@ module Core.Toml
     , histFile
     ) where
 
+-- ByteString
+import Data.ByteString (ByteString)
+
 -- Text
 import qualified Data.Text.IO as T
 
@@ -19,20 +22,23 @@ import System.Directory (XdgDirectory(XdgConfig), doesFileExist, getXdgDirectory
 import System.FilePath ((</>))
 
 
+-- ShowS for ByteString.
+type ShowBS = ByteString -> ByteString
+
 -- | Type that the parsed toml gets shoved into
 data Config' = Config'
-    { cfilePrefix :: !(Maybe String)
-    , cfiles      :: !(Maybe [String])
-    , copen       :: !(Maybe String)
+    { cfilePrefix :: !(Maybe ByteString)
+    , cfiles      :: !(Maybe [ByteString])
+    , copen       :: !(Maybe ByteString)
     , cdmenuExe   :: !(Maybe String)
     }
 
 -- | Type we create from the parsed toml with certain default values in place on
 -- 'Nothing'.
 data Config = Config
-    { filePrefix :: !String
-    , files      :: ![String]
-    , open       :: !ShowS
+    { filePrefix :: !ByteString
+    , files      :: ![ByteString]
+    , open       :: !ShowBS
     , dmenuExe   :: !String
     }
 
@@ -41,7 +47,7 @@ emptyConfig :: Config
 emptyConfig = Config
     { filePrefix = "file:"
     , files      = []
-    , open       = ("xdg-open" ++)
+    , open       = ("xdg-open" <>)
     , dmenuExe   = "dmenu"
     }
 
@@ -62,10 +68,10 @@ histFile = hmenuPath <&> (</> "histFile")
 -- | Parse the toml.
 configCodec :: TomlCodec Config'
 configCodec = Config'
-    <$> Toml.dioptional (Toml.string "file-prefix"        ) .= cfilePrefix
-    <*> Toml.dioptional (Toml.arrayOf Toml._String "files") .= cfiles
-    <*> Toml.dioptional (Toml.string "open"               ) .= copen
-    <*> Toml.dioptional (Toml.string "executable"         ) .= cdmenuExe
+    <$> Toml.dioptional (Toml.byteString "file-prefix"        ) .= cfilePrefix
+    <*> Toml.dioptional (Toml.arrayOf Toml._ByteString "files") .= cfiles
+    <*> Toml.dioptional (Toml.byteString "open"               ) .= copen
+    <*> Toml.dioptional (Toml.string "executable"             ) .= cdmenuExe
 
 -- | Try to find a user config and, if it exists, parse it.
 getUserConfig :: IO Config
@@ -94,7 +100,7 @@ makeConfig Config'{ cfilePrefix, cfiles, copen, cdmenuExe } =
         { filePrefix = fromMaybe defPrefix cfilePrefix
         , files      = fromMaybe defFiles  cfiles
         , dmenuExe   = fromMaybe defDmenu  cdmenuExe
-        , open       = maybe defOpen (++) copen
+        , open       = maybe defOpen (<>) copen
         }
   where
     defPrefix = filePrefix emptyConfig

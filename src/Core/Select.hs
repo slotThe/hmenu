@@ -1,5 +1,3 @@
-{-# LANGUAGE TypeApplications #-}
-
 module Core.Select
     ( decideSelection
     , formatUserPaths
@@ -11,8 +9,13 @@ module Core.Select
     ) where
 
 -- Local imports
+import Core.Parser (getHist)
 import Core.Toml (Config(Config), filePrefix, histFile, open)
 import Core.Util (clean, tryAddPrefix)
+
+-- ByteString
+import           Data.ByteString       (ByteString)
+import qualified Data.ByteString.Char8 as BS
 
 -- Map
 import           Data.Map.Strict (Map)
@@ -21,35 +24,37 @@ import qualified Data.Map.Strict as Map
 -- Other imports
 import Control.Monad (void)
 import Data.Bool (bool)
-import Data.List (isPrefixOf, sortBy)
-import System.Directory (doesFileExist, doesPathExist, listDirectory)
+import Data.List (sortBy)
+import System.Directory (doesFileExist, doesPathExist)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
 import System.FilePath (getSearchPath)
-import System.Process (proc, readCreateProcessWithExitCode, spawnCommand)
+import System.Posix.Directory.Traversals
+import System.Process (proc, spawnCommand)
+import System.Process.ByteString (readCreateProcessWithExitCode)
 
 
 {- | When a spawned process fails, this type is used to represent the exit code
    and @stderr@ output.
    See: https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs
 -}
-type ProcessError = (Int, String)
+type ProcessError = (Int, ByteString)
 
 -- | Type for a single item, a list of which will be fed to dmenu.
-type Item = Map String Int
+type Item = Map ByteString Int
 
 -- | Decide what to actually do with the user selection from dmenu.
 decideSelection
-    :: String  -- ^ What the user picked.
-    -> Config  -- ^ User defined configuration.
-    -> Item    -- ^ Map prior to selection.
+    :: ByteString  -- ^ What the user picked.
+    -> Config      -- ^ User defined configuration.
+    -> Item        -- ^ Map prior to selection.
     -> IO ()
 decideSelection selection Config{ filePrefix, open } itemMap = do
     -- Adjust the value based on the users selection.
     let update = Map.adjust succ selection itemMap
 
     -- TODO I should probably handle this with dedicated types.
-    if | filePrefix `isPrefixOf` selection -> spawn . open . clean $ selection
-       | otherwise -> spawn selection
+    if | filePrefix `BS.isPrefixOf` selection -> spawn . open . clean $ selection
+       | otherwise                            -> spawn selection
 
     -- Write the new map to the hist file.
     histFile >>= (`writeFile` show update)
@@ -63,57 +68,64 @@ decideSelection selection Config{ filePrefix, open } itemMap = do
 selectWith
     :: [String]
     -- ^ List of options to give to dmenu.
-    -> [String]
+    -> [ByteString]
     -- ^ List from which the user should select.
     -> String
     -- ^ The dmenu executable.
-    -> IO (Either ProcessError String)
+    -> IO (Either ProcessError ByteString)
     -- ^ The selection made by the user, or a 'ProcessError', if the user
     -- canceled.
 selectWith opts entries dmenu = do
     -- Spawn the process with the available options and entries.
     (exitCode, sOut, sErr) <-
-        readCreateProcessWithExitCode (proc dmenu opts) (unlines entries)
+        readCreateProcessWithExitCode (proc dmenu opts) (BS.unlines entries)
 
     pure $ case exitCode of
         -- Take first (selected) word or return the error message.
-        ExitSuccess   -> Right $ takeWhile (/= '\n') sOut
+        ExitSuccess   -> Right $ BS.takeWhile (/= '\n') sOut
         ExitFailure i -> Left (i, sErr)
-
 
 -- | Try to read a file that contains a map.  Return an empty map if the file
 -- doesn't exist.
 tryRead :: FilePath -> IO Item
 tryRead file =
     bool (pure Map.empty)
-         (read @Item <$> readFile file)
+         tryParseFile
          =<< doesFileExist file
+  where
+    tryParseFile = do
+        f <- getHist =<< histFile
+        pure $ case f of
+            Left  _   -> Map.empty
+            Right lst -> Map.fromList lst
 
 -- | Get all executables from all dirs in '$PATH'.
-getExecutables :: IO [FilePath]
+getExecutables :: IO [ByteString]
 getExecutables =
-    fmap concat . traverse listExistentDir =<< getSearchPath
+    fmap concat . traverse listExistentDir =<< map BS.pack <$> getSearchPath
 
 {- | Only try listing the directory if it actually exists.
    This is for all the people who have non-existent dirs in their path for some
    reason.
 -}
-listExistentDir :: FilePath -> IO [FilePath]
+listExistentDir :: ByteString -> IO [ByteString]
 listExistentDir fp =
     bool (pure [])
-         (listDirectory fp)
-          =<< doesPathExist fp
+         (getDirContents fp)
+          =<< doesPathExist (BS.unpack fp)
+  where
+    getDirContents = (map snd <$>) . getDirectoryContents
 
 -- | spawn a command and forget about it.
-spawn :: String -> IO ()
-spawn = void . spawnCommand
+spawn :: ByteString -> IO ()
+spawn = void . spawnCommand . BS.unpack
 
 -- | Turn a list into an 'Item' and set all starting values to 0.
-makeNewEntries :: [String] -> Item
+makeNewEntries :: [ByteString] -> Item
 makeNewEntries xs = Map.fromList [(x, 0) | x <- xs]
 
 -- | Sort an item by its values and return the list of keys.
-sortByValues :: Item -> [String]
+sortByValues :: Item -> [ByteString]
 sortByValues it =
     map fst
         . sortBy (\(_,a) (_,b) -> compare b a)
@@ -121,10 +133,10 @@ sortByValues it =
 
 -- | Process user defined files, add the appropriate prefixes if needed.
 formatUserPaths
-    :: FilePath    -- ^ Prefix for '$HOME'.
-    -> String      -- ^ Prefix for an option.
-    -> [FilePath]  -- ^ User defined strings for option.
-    -> [FilePath]  -- ^ Properly formatted paths.
+    :: ByteString    -- ^ Prefix for '$HOME'.
+    -> ByteString    -- ^ Prefix for an option.
+    -> [ByteString]  -- ^ User defined strings for option.
+    -> [ByteString]  -- ^ Properly formatted paths.
 formatUserPaths home pref = map (addPrefix . tryAddPrefix home)
   where
-    addPrefix = (pref ++)
+    addPrefix = (pref <>)

@@ -23,13 +23,16 @@ ghc-options:
 
 dependencies:
   - base
-  - mtl
   - directory
   - text
   - process
+  - process-extras
   - containers
   - tomland
   - filepath
+  - posix-paths
+  - bytestring
+  - megaparsec
 
 executables:
   hmenu:

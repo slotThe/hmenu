@@ -22,6 +22,9 @@ import Core.Toml
     , hmenuPath
     )
 
+-- ByteString
+import qualified Data.ByteString.Char8 as BS
+
 -- Map
 import qualified Data.Map.Strict as Map
 
@@ -33,7 +36,7 @@ import System.Environment (getArgs, getEnv)
 -- | Execute dmenu and then do stuff.
 main :: IO ()
 main = do
-    -- Command line arguments, these get passed straight so dmenu.
+    -- Command line arguments, these get passed straight to dmenu.
     opts <- getArgs
 
     -- Create the 'hmenu' directory (and all parents) if necessary.
@@ -51,7 +54,7 @@ main = do
     -}
 
     -- Files the user added in the config file.
-    home  <- getEnv "HOME"
+    home  <- BS.pack <$> getEnv "HOME"
     let uFiles = formatUserPaths home filePrefix files
 
     -- Everything new as a map.
