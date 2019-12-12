@@ -46,13 +46,7 @@ main = do
     cfg@Config{ dmenuExe = dmenu, filePrefix, files } <- getUserConfig
 
 
-    {- TODO: Doing the following *after* the user has selected something may be
-             better (in terms of perceived speed), though 'hmenu' would "lag
-             behind" for one execution when things are updated.
-       NOTE: This might be a non-issue as command line arguments for running
-             with or without a cache update are planned anyways.
-    -}
-
+    -- See Note [Caching]
     -- Files the user added in the config file.
     home  <- BS.pack <$> getEnv "HOME"
     let uFiles = formatUserPaths home filePrefix files
@@ -74,3 +68,15 @@ main = do
     case selection of
         Left  _ -> pure ()  -- silently fail
         Right s -> decideSelection s cfg newMap  -- Process output.
+
+{- Note [Caching]
+   ~~~~~~~~~~~~~~~~~~~~~~
+   Doing the caching *after* the user has selected something may be
+   better (in terms of perceived speed), though 'hmenu' would "lag
+   behind" for one execution when things are updated.
+
+   NOTE: This might be a non-issue as command line arguments for running
+         with or without a cache update are planned anyways.
+   NOTE: As of version 0.2.0 we're almost as fast as before being able to keep
+         track of often used commands, so neither of this may be necessary.
+-}

@@ -100,7 +100,7 @@ makeConfig Config'{ cfilePrefix, cfiles, copen, cdmenuExe } =
         { filePrefix = fromMaybe defPrefix cfilePrefix
         , files      = fromMaybe defFiles  cfiles
         , dmenuExe   = fromMaybe defDmenu  cdmenuExe
-        , open       = maybe defOpen (<>) copen
+        , open       = maybe defOpen mappend copen
         }
   where
     defPrefix = filePrefix emptyConfig

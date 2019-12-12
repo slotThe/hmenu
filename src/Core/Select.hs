@@ -28,7 +28,7 @@ import Data.List (sortBy)
 import System.Directory (doesFileExist, doesPathExist)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
 import System.FilePath (getSearchPath)
-import System.Posix.Directory.Traversals
+import System.Posix.Directory.Traversals (getDirectoryContents)
 import System.Process (proc, spawnCommand)
 import System.Process.ByteString (readCreateProcessWithExitCode)
 
@@ -90,16 +90,18 @@ selectWith opts entries dmenu = do
 tryRead :: FilePath -> IO Item
 tryRead file =
     bool (pure Map.empty)
-         tryParseFile
+         (tryParseFile file)
          =<< doesFileExist file
   where
-    tryParseFile = do
-        f <- getHist =<< histFile
-        pure $ case f of
+    tryParseFile :: FilePath -> IO Item
+    tryParseFile f = do
+        hist <- getHist f
+        pure $ case hist of
             Left  _   -> Map.empty
             Right lst -> Map.fromList lst
 
 -- | Get all executables from all dirs in '$PATH'.
+-- TODO: Would be nice to write/find a Bytestring version of 'getSearchPath'.
 getExecutables :: IO [ByteString]
 getExecutables =
     fmap concat . traverse listExistentDir =<< map BS.pack <$> getSearchPath
