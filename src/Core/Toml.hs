@@ -27,8 +27,7 @@ type ShowBS = ByteString -> ByteString
 
 -- | Type that the parsed toml gets shoved into
 data Config' = Config'
-    { cfilePrefix :: !(Maybe ByteString)
-    , cfiles      :: !(Maybe [ByteString])
+    { cfiles      :: !(Maybe [ByteString])
     , copen       :: !(Maybe ByteString)
     , cdmenuExe   :: !(Maybe String)
     }
@@ -36,8 +35,7 @@ data Config' = Config'
 -- | Type we create from the parsed toml with certain default values in place on
 -- 'Nothing'.
 data Config = Config
-    { filePrefix :: !ByteString
-    , files      :: ![ByteString]
+    { files      :: ![ByteString]
     , open       :: !ShowBS
     , dmenuExe   :: !String
     }
@@ -45,8 +43,7 @@ data Config = Config
 -- | Empty config type with all the default values.
 emptyConfig :: Config
 emptyConfig = Config
-    { filePrefix = "file:"
-    , files      = []
+    { files      = []
     , open       = ("xdg-open" <>)
     , dmenuExe   = "dmenu"
     }
@@ -68,8 +65,7 @@ histFile = hmenuPath <&> (</> "histFile")
 -- | Parse the toml.
 configCodec :: TomlCodec Config'
 configCodec = Config'
-    <$> Toml.dioptional (Toml.byteString "file-prefix"        ) .= cfilePrefix
-    <*> Toml.dioptional (Toml.arrayOf Toml._ByteString "files") .= cfiles
+    <$> Toml.dioptional (Toml.arrayOf Toml._ByteString "files") .= cfiles
     <*> Toml.dioptional (Toml.byteString "open"               ) .= copen
     <*> Toml.dioptional (Toml.string "executable"             ) .= cdmenuExe
 
@@ -95,15 +91,13 @@ getUserConfig = do
 -- | Build up a config based on what the parser could find, substitute in
 -- default values for fields that were not able to parse/missing.
 makeConfig :: Config' -> Config
-makeConfig Config'{ cfilePrefix, cfiles, copen, cdmenuExe } =
+makeConfig Config'{ cfiles, copen, cdmenuExe } =
     Config
-        { filePrefix = fromMaybe defPrefix cfilePrefix
-        , files      = fromMaybe defFiles  cfiles
-        , dmenuExe   = fromMaybe defDmenu  cdmenuExe
+        { files      = fromMaybe defFiles cfiles
+        , dmenuExe   = fromMaybe defDmenu cdmenuExe
         , open       = maybe defOpen mappend copen
         }
   where
-    defPrefix = filePrefix emptyConfig
     defOpen   = open       emptyConfig
     defFiles  = files      emptyConfig
     defDmenu  = dmenuExe   emptyConfig

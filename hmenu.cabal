@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0831d549a09c0d4533322ee043a80abcddbc86c1465f39a599cb9e09e131f527
+-- hash: 454fac0cdb713663119c06a458fac27d03cd7f2add10fbc1fd620f3544c942c0
 
 name:                hmenu
-version:             0.2.0
+version:             0.2.1
 synopsis:            A small wrapper around dmenu
 homepage:            https://gitlab.com/slotThe/hmenu
 license:             GPL-3

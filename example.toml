@@ -7,11 +7,11 @@ executable = "/path/to/other/dmenu/executable/if/not/in/PATH"
 # Script with which to open files.
 open = "my-open-script"
 
-# Prefix that will appear in front of the files in dmenu.
-file-prefix = "f:"
-
 # Actual files to open.
 files =
-    # Path is relative to $HOME
+    # All of these work, any path not starting with '/' or '~' will get $HOME
+    # slapped in front of it.
     [ ".config/hmenu/hmenu.toml"
+    , "~.config/hmenu/hmenu.toml"
+    , "/home/USER/.config/hmenu/hmenu.toml"
     ]

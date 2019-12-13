@@ -8,7 +8,7 @@ very much right now, though I guess that's the point of it.
 
 1.  Display commands in order of usage.
 2.  Optional config file where one may specify the following:
-    -   Files one wishes to edit (Custom prefix for files available).
+    -   Files one wishes to edit.
     -   A custom opening script.
     -   Custom dmenu executable.
 

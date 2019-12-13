@@ -1,6 +1,5 @@
 module Core.Util
     ( tryAddPrefix
-    , clean
     ) where
 
 -- ByteString
@@ -18,11 +17,8 @@ import System.Posix.FilePath ((</>))
 tryAddPrefix :: ByteString -> ByteString -> ByteString
 tryAddPrefix prefix xs
     | BS.null xs = ""
-    | x == '/'   = xs
+    | xIsSpecial = xs
     | otherwise  = prefix </> xs
   where
+    xIsSpecial = x `elem` ['/', '~']
     x = BS.head xs
-
--- | Clean a string up until (and including) the first colon.
-clean :: ByteString -> ByteString
-clean = (" " <>) . BS.drop 1 . BS.dropWhile (/= ':')

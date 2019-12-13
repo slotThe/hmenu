@@ -15,7 +15,6 @@ import Core.Select
 import Core.Toml
     ( Config(Config)
     , dmenuExe
-    , filePrefix
     , files
     , getUserConfig
     , histFile
@@ -46,12 +45,12 @@ main = do
     createDirectoryIfMissing True =<< hmenuPath
 
     -- Try to parse the config file (if it exists).
-    cfg@Config{ dmenuExe, filePrefix, files } <- getUserConfig
+    cfg@Config{ dmenuExe, files } <- getUserConfig
 
     -- See Note [Caching]
     -- Files the user added in the config file.
     home  <- BS.pack <$> getEnv "HOME"
-    let userFiles = formatUserPaths home filePrefix files
+    let userFiles = formatUserPaths home files
 
     -- Everything new as a map.
     -- 'mappend' for maps is the union (as expected).
@@ -62,7 +61,7 @@ main = do
     -- anymore) is thrown out and anything new is added to the map.
     hist <- tryRead =<< histFile
     let inters = hist `Map.intersection` pathPlus
-    let newMap = inters <> pathPlus
+        newMap = inters <> pathPlus
 
     -- Let the user select something from the list.
     selection <- selectWith opts (sortByValues newMap) dmenuExe

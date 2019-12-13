@@ -10,8 +10,8 @@ module Core.Select
 
 -- Local imports
 import Core.Parser (getHist)
-import Core.Toml (Config(Config), filePrefix, histFile, open)
-import Core.Util (clean, tryAddPrefix)
+import Core.Toml (Config(Config), histFile, open)
+import Core.Util (tryAddPrefix)
 
 -- ByteString
 import           Data.ByteString       (ByteString)
@@ -48,13 +48,14 @@ decideSelection
     -> Config      -- ^ User defined configuration.
     -> Items       -- ^ Map prior to selection.
     -> IO ()
-decideSelection selection Config{ filePrefix, open } itemMap = do
+decideSelection selection Config{ open } itemMap = do
     -- Adjust the value based on the users selection.
     let update = selection `updateValueIn` itemMap
 
     -- TODO I should probably handle this with dedicated types.
-    if | filePrefix `BS.isPrefixOf` selection -> spawn . open . clean $ selection
-       | otherwise                            -> spawn selection
+    if | any (`BS.isPrefixOf` selection) ["/", "~"] ->
+           spawn . open . (" " <>) $ selection
+       | otherwise -> spawn selection
 
     -- Write the new map to the hist file.
     histFile >>= (`writeFile` show update)
@@ -142,9 +143,6 @@ sortByValues it =
 -- | Process user defined files, add the appropriate prefixes if needed.
 formatUserPaths
     :: ByteString    -- ^ Prefix for '$HOME'.
-    -> ByteString    -- ^ Prefix for an option.
     -> [ByteString]  -- ^ User defined strings for option.
     -> [ByteString]  -- ^ Properly formatted paths.
-formatUserPaths home pref = map (addPrefix . tryAddPrefix home)
-  where
-    addPrefix = (pref <>)
+formatUserPaths home = map (tryAddPrefix home)
