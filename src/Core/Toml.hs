@@ -43,9 +43,9 @@ data Config = Config
 -- | Empty config type with all the default values.
 emptyConfig :: Config
 emptyConfig = Config
-    { files      = []
-    , open       = ("xdg-open" <>)
-    , dmenuExe   = "dmenu"
+    { files    = []
+    , open     = ("xdg-open" <>)
+    , dmenuExe = "dmenu"
     }
 
 -- | XDG_CONFIG
@@ -93,11 +93,11 @@ getUserConfig = do
 makeConfig :: Config' -> Config
 makeConfig Config'{ cfiles, copen, cdmenuExe } =
     Config
-        { files      = fromMaybe defFiles cfiles
-        , dmenuExe   = fromMaybe defDmenu cdmenuExe
-        , open       = maybe defOpen mappend copen
+        { files    = fromMaybe defFiles cfiles
+        , dmenuExe = fromMaybe defDmenu cdmenuExe
+        , open     = maybe defOpen mappend copen
         }
   where
-    defOpen   = open       emptyConfig
-    defFiles  = files      emptyConfig
-    defDmenu  = dmenuExe   emptyConfig
+    defOpen  = open     emptyConfig
+    defFiles = files    emptyConfig
+    defDmenu = dmenuExe emptyConfig

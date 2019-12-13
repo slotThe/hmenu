@@ -38,7 +38,7 @@ pKeyValue =
         k <- between (char8 '\"') (char8 '\"') $ takeTill (== '\"')
         _ <- char8 ','
         v <- decimal
-        return (k, v)
+        pure (k, v)
 
 -- | Parse something of the form 'open EXPRESSION close'
 between :: Applicative m => m open -> m close -> m a -> m a

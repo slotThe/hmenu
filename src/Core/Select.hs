@@ -11,7 +11,7 @@ module Core.Select
 -- Local imports
 import Core.Parser (getHist)
 import Core.Toml (Config(Config), histFile, open)
-import Core.Util (tryAddPrefix)
+import Core.Util (spawn, tryAddPrefix)
 
 -- ByteString
 import           Data.ByteString       (ByteString)
@@ -22,14 +22,13 @@ import           Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
 -- Other imports
-import Control.Monad (void)
 import Data.Bool (bool)
 import Data.List (sortBy)
 import System.Directory (doesFileExist, doesPathExist)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
 import System.FilePath (getSearchPath)
 import System.Posix.Directory.Traversals (getDirectoryContents)
-import System.Process (proc, spawnCommand)
+import System.Process (proc)
 import System.Process.ByteString (readCreateProcessWithExitCode)
 
 
@@ -119,10 +118,6 @@ listExistentDir fp =
   where
     getDirContents =
         fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
-
--- | Spawn a command and forget about it.
-spawn :: ByteString -> IO ()
-spawn = void . spawnCommand . BS.unpack
 
 -- | Update the value of a particular key by just adding one to it.
 updateValueIn :: ByteString -> Items -> Items
