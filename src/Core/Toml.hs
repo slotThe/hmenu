@@ -22,7 +22,7 @@ import System.Directory (XdgDirectory(XdgConfig), doesFileExist, getXdgDirectory
 import System.FilePath ((</>))
 
 
--- ShowS for ByteString.
+-- | ShowS for ByteString because it is shorter :>.
 type ShowBS = ByteString -> ByteString
 
 -- | Type that the parsed toml gets shoved into
@@ -89,11 +89,11 @@ getUserConfig = do
             -- Read and evaluate file.
             tomlFile <- T.readFile cfgFile
             pure $ case Toml.decode configCodec tomlFile of
-                -- If parsing failed just use default settings.
                 Left  _   -> emptyConfig
-                -- If no config, fill in default values.
                 Right cfg -> makeConfig cfg
 
+-- | Build up a config based on what the parser could find, substitute in
+-- default values for fields that were not able to parse/missing.
 makeConfig :: Config' -> Config
 makeConfig Config'{ cfilePrefix, cfiles, copen, cdmenuExe } =
     Config

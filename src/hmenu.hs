@@ -33,7 +33,10 @@ import System.Directory (createDirectoryIfMissing)
 import System.Environment (getArgs, getEnv)
 
 
--- | Execute dmenu and then do stuff.
+{- | Execute dmenu and then do stuff.
+   NOTE: Intersection and union for maps are both left biased and this fact is
+         used the calculations below.
+-}
 main :: IO ()
 main = do
     -- Command line arguments, these get passed straight to dmenu.
@@ -43,26 +46,26 @@ main = do
     createDirectoryIfMissing True =<< hmenuPath
 
     -- Try to parse the config file (if it exists).
-    cfg@Config{ dmenuExe = dmenu, filePrefix, files } <- getUserConfig
-
+    cfg@Config{ dmenuExe, filePrefix, files } <- getUserConfig
 
     -- See Note [Caching]
     -- Files the user added in the config file.
     home  <- BS.pack <$> getEnv "HOME"
-    let uFiles = formatUserPaths home filePrefix files
+    let userFiles = formatUserPaths home filePrefix files
 
     -- Everything new as a map.
+    -- 'mappend' for maps is the union (as expected).
     execs <- getExecutables
-    let newFiles = makeNewEntries (uFiles <> execs)
+    let pathPlus = makeNewEntries $ userFiles <> execs
 
-    -- New map where everything old (i.e. not in the PATH or the config anymore)
-    -- is thrown out and anything new is added to the map.
-    file <- tryRead =<< histFile
-    let inters = file `Map.intersection` newFiles
-    let newMap = inters <> newFiles
+    -- New map where everything old (i.e. not in the $PATH or the config
+    -- anymore) is thrown out and anything new is added to the map.
+    hist <- tryRead =<< histFile
+    let inters = hist `Map.intersection` pathPlus
+    let newMap = inters <> pathPlus
 
     -- Let the user select something from the list.
-    selection <- selectWith opts (sortByValues newMap) dmenu
+    selection <- selectWith opts (sortByValues newMap) dmenuExe
 
     -- Process output.
     case selection of

@@ -1,6 +1,8 @@
-* General [5/7]                                                       :hmenu:
+* General [8/9]                                                       :hmenu:
   - [ ] Command line options for deciding when to refresh the cache.
-  - [ ] More comments.
+  - [X] More comments.
+  - [X] Move to ByteString
+  - [X] Write parser instead of using Read instance
   - [X] Display commands in order of usage
   - [X] Upload this somewhere
   - [X] Write simple readme
