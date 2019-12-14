@@ -5,6 +5,9 @@ module Core.Toml
     , histFile
     ) where
 
+-- Local imports
+import Core.Util (ShowBS)
+
 -- ByteString
 import Data.ByteString (ByteString)
 
@@ -22,38 +25,35 @@ import System.Directory (XdgDirectory(XdgConfig), doesFileExist, getXdgDirectory
 import System.FilePath ((</>))
 
 
--- | ShowS for ByteString because it is shorter :>.
-type ShowBS = ByteString -> ByteString
-
--- | Type that the parsed toml gets shoved into
-data Config' = Config'
-    { cfiles      :: !(Maybe [ByteString])
-    , copen       :: !(Maybe ByteString)
-    , cdmenuExe   :: !(Maybe String)
-    }
-
 -- | Type we create from the parsed toml with certain default values in place on
 -- 'Nothing'.
 data Config = Config
-    { files      :: ![ByteString]
-    , open       :: !ShowBS
-    , dmenuExe   :: !String
+    { files    :: ![ByteString]
+    , open     :: !ShowBS
+    , dmenuExe :: !String
     }
 
 -- | Empty config type with all the default values.
-emptyConfig :: Config
-emptyConfig = Config
+defaultCfg :: Config
+defaultCfg = Config
     { files    = []
     , open     = ("xdg-open" <>)
     , dmenuExe = "dmenu"
     }
 
--- | XDG_CONFIG
+-- | Type that the parsed toml gets shoved into
+data Config' = Config'
+    { cfiles    :: !(Maybe [ByteString])
+    , copen     :: !(Maybe ByteString)
+    , cdmenuExe :: !(Maybe String)
+    }
+
+-- | XDG_CONFIG_HOME
 xdgConfig :: IO FilePath
 xdgConfig = getXdgDirectory XdgConfig ""
 
 -- | Path to the hmenu directory.
--- '~/.config/hmenu'
+-- 'XDG_CONFIG_HOME\/hmenu', so probably '~\/.config\/hmenu'.
 hmenuPath :: IO FilePath
 hmenuPath = xdgConfig <&> (</> "hmenu")
 
@@ -62,7 +62,7 @@ hmenuPath = xdgConfig <&> (</> "hmenu")
 histFile :: IO FilePath
 histFile = hmenuPath <&> (</> "histFile")
 
--- | Parse the toml.
+-- | Parse the config file.
 configCodec :: TomlCodec Config'
 configCodec = Config'
     <$> Toml.dioptional (Toml.arrayOf Toml._ByteString "files") .= cfiles
@@ -80,12 +80,12 @@ getUserConfig = do
     -- try to parse the config and see what's there.
     isFile <- doesFileExist cfgFile
     if not isFile
-        then pure emptyConfig
+        then pure defaultCfg
         else do
             -- Read and evaluate file.
             tomlFile <- T.readFile cfgFile
             pure $ case Toml.decode configCodec tomlFile of
-                Left  _   -> emptyConfig
+                Left  _   -> defaultCfg
                 Right cfg -> makeConfig cfg
 
 -- | Build up a config based on what the parser could find, substitute in
@@ -98,6 +98,6 @@ makeConfig Config'{ cfiles, copen, cdmenuExe } =
         , open     = maybe defOpen mappend copen
         }
   where
-    defOpen  = open     emptyConfig
-    defFiles = files    emptyConfig
-    defDmenu = dmenuExe emptyConfig
+    defOpen  = open     defaultCfg
+    defFiles = files    defaultCfg
+    defDmenu = dmenuExe defaultCfg

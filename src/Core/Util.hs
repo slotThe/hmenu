@@ -1,5 +1,6 @@
 module Core.Util
-    ( tryAddPrefix
+    ( ShowBS
+    , tryAddPrefix
     , spawn
     ) where
 
@@ -12,18 +13,22 @@ import Control.Monad (void)
 import System.Posix.FilePath ((</>))
 import System.Process (spawnCommand)
 
+
+-- | ShowS for ByteString because it is shorter :>.
+type ShowBS = ByteString -> ByteString
+
 {- | Add a prefix to a string if the string is not starting with "/".
    This will ensure the user can specify absolute paths to files, but also
    conveniently use relative paths (starting from '$HOME') if that is desired.
 -}
 tryAddPrefix :: ByteString -> ByteString -> ByteString
 tryAddPrefix prefix xs
-    | BS.null xs = ""
-    | xIsSpecial = xs
-    | otherwise  = prefix </> xs
+    | BS.null xs  = ""
+    | isSpecial x = xs
+    | otherwise   = prefix </> xs
   where
-    xIsSpecial = x `elem` ['/', '~']
-    x = BS.head xs
+    x         = BS.head xs
+    isSpecial = (`elem` ['/', '~'])
 
 -- | Spawn a command and forget about it.
 spawn :: ByteString -> IO ()

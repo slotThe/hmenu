@@ -14,6 +14,7 @@ import Data.Attoparsec.ByteString.Char8
     , eitherResult
     , parse
     , sepBy
+    , skipSpace
     , string
     , takeTill
     )
@@ -28,7 +29,7 @@ getHist file = eitherResult . parse pMap <$> BS.readFile file
 -- list via 'Map.toList'.
 pMap :: Parser [(ByteString, Int)]
 pMap = do
-    _ <- string "fromList "
+    _ <- string "fromList" *> skipSpace
     between (char8 '[') (char8 ']') $ pKeyValue `sepBy` char8 ','
 
 -- | Parse a single key-value pair of the 'Items' type.

@@ -10,8 +10,8 @@ module Core.Select
 
 -- Local imports
 import Core.Parser (getHist)
-import Core.Toml (Config(Config), histFile, open)
-import Core.Util (spawn, tryAddPrefix)
+import Core.Toml (histFile)
+import Core.Util (ShowBS, spawn, tryAddPrefix)
 
 -- ByteString
 import           Data.ByteString       (ByteString)
@@ -44,10 +44,10 @@ type Items = Map ByteString Int
 -- | Decide what to actually do with the user selection from dmenu.
 decideSelection
     :: ByteString  -- ^ What the user picked.
-    -> Config      -- ^ User defined configuration.
+    -> ShowBS      -- ^ Opening script.
     -> Items       -- ^ Map prior to selection.
     -> IO ()
-decideSelection selection Config{ open } itemMap = do
+decideSelection selection open itemMap = do
     -- Adjust the value based on the users selection.
     let update = selection `updateValueIn` itemMap
 
@@ -58,6 +58,10 @@ decideSelection selection Config{ open } itemMap = do
 
     -- Write the new map to the hist file.
     histFile >>= (`writeFile` show update)
+  where
+    -- | Update the value of a particular key by just adding one to it.
+    updateValueIn :: ByteString -> Items -> Items
+    updateValueIn = Map.adjust succ
 
 {- | Run dmenu with the given command line optinos and a list of entries from
    which the user should choose.
@@ -69,7 +73,7 @@ selectWith
     :: [String]
     -- ^ List of options to give to dmenu.
     -> [ByteString]
-    -- ^ List from which the user should select.
+    -- ^ List of executables from which the user should select.
     -> String
     -- ^ The dmenu executable.
     -> IO (Either ProcessError ByteString)
@@ -81,7 +85,7 @@ selectWith opts entries dmenu = do
         readCreateProcessWithExitCode (proc dmenu opts) (BS.unlines entries)
 
     pure $ case exitCode of
-        -- Take first (selected) word or return the error message.
+        -- Take first (= selected) word or return the error message.
         ExitSuccess   -> Right $ BS.takeWhile (/= '\n') sOut
         ExitFailure i -> Left (i, sErr)
 
@@ -118,10 +122,6 @@ listExistentDir fp =
   where
     getDirContents =
         fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
-
--- | Update the value of a particular key by just adding one to it.
-updateValueIn :: ByteString -> Items -> Items
-updateValueIn = Map.adjust succ
 
 -- | Turn a list into 'Items' and set all starting values to 0.
 makeNewEntries :: [ByteString] -> Items
