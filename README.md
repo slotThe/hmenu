@@ -1,7 +1,8 @@
 # hmenu
 
 hmenu is a small wrapper for dmenu to make certain things easier.  It can't do
-very much right now, though I guess that's the point of it.
+very much, though I guess that's the point of it.  It might be most notable for
+being a discount `yeganesh`.
 
 
 # Features
