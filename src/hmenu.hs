@@ -4,7 +4,7 @@ module Main
 
 -- Local imports
 import Core.Select
-    ( decideSelection
+    ( runUpdate
     , formatUserPaths
     , getExecutables
     , makeNewEntries
@@ -45,6 +45,7 @@ main = do
     -- Files the user added in the config file.
     home  <- BS.pack <$> getEnv "HOME"
     let userFiles = formatUserPaths home files
+        cfg'      = cfg { files = userFiles }  -- gets passed to runUpdate
 
     -- Everything new as a map.
     -- 'mappend' for maps is the union (as expected).
@@ -63,7 +64,7 @@ main = do
     -- Process output.
     case selection of
         Left  _ -> pure ()  -- silently fail
-        Right s -> decideSelection s cfg newMap  -- Process output.
+        Right s -> runUpdate s cfg' newMap
 
 {- Note [Caching]
    ~~~~~~~~~~~~~~~~~~~~~~

@@ -1,5 +1,5 @@
 module Core.Select
-    ( decideSelection
+    ( runUpdate
     , formatUserPaths
     , getExecutables
     , makeNewEntries
@@ -10,7 +10,7 @@ module Core.Select
 
 -- Local imports
 import Core.Parser (getHist)
-import Core.Toml (Config(Config, open, term, tty))
+import Core.Toml (Config(Config, files, open, term, tty))
 import Core.Util (histFile, openIn, spawn, tryAddPrefix)
 
 -- ByteString
@@ -41,22 +41,19 @@ type ProcessError = (Int, ByteString)
 -- | Type for an Map that describes all of the executables with their ratings.
 type Items = Map ByteString Int
 
--- | Decide what to actually do with the user selection from dmenu.
-decideSelection
+-- | Do the appropriate things with the user selection and update the history
+-- file.
+runUpdate
     :: ByteString  -- ^ What the user picked.
     -> Config      -- ^ User config containing things that interest us.
     -> Items       -- ^ Map prior to selection.
     -> IO ()
-decideSelection selection Config{ open, tty, term } itemMap = do
+runUpdate selection cfg itemMap = do
     -- Adjust the value based on the users selection.
     let update = selection `updateValueIn` itemMap
 
-    -- TODO I should probably handle this with dedicated types.
-    if | any (`BS.isPrefixOf` selection) ["/", "~"] ->
-           spawn . open . (" " <>) $ selection
-       | selection `elem` tty ->
-           spawn $ openIn term selection
-       | otherwise -> spawn selection
+    -- Based on what the user selected, execute the appropriate command.
+    spawn $ decideSelection selection cfg
 
     -- Write the new map to the hist file.
     histFile >>= (`writeFile` show update)
@@ -124,6 +121,13 @@ listExistentDir fp =
   where
     getDirContents =
         fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
+
+-- | Decide what to actually do with the user selection from dmenu.
+decideSelection :: ByteString -> Config -> ByteString
+decideSelection sel Config{ files, tty, term, open }
+    | sel `elem` files = open $ " " <> sel
+    | sel `elem` tty   = openIn term sel
+    | otherwise        = sel
 
 -- | Turn a list into 'Items' and set all starting values to 0.
 makeNewEntries :: [ByteString] -> Items

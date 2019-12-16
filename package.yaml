@@ -10,7 +10,6 @@ tested-with:         GHC == 8.6.5
 default-extensions:
   - OverloadedStrings
   - NamedFieldPuns
-  - MultiWayIf
   - FlexibleContexts
 
 ghc-options:
