@@ -10,8 +10,8 @@ module Core.Select
 
 -- Local imports
 import Core.Parser (getHist)
-import Core.Toml (histFile)
-import Core.Util (ShowBS, spawn, tryAddPrefix)
+import Core.Toml (Config(Config, open, term, tty))
+import Core.Util (histFile, openIn, spawn, tryAddPrefix)
 
 -- ByteString
 import           Data.ByteString       (ByteString)
@@ -44,16 +44,18 @@ type Items = Map ByteString Int
 -- | Decide what to actually do with the user selection from dmenu.
 decideSelection
     :: ByteString  -- ^ What the user picked.
-    -> ShowBS      -- ^ Opening script.
+    -> Config      -- ^ User config containing things that interest us.
     -> Items       -- ^ Map prior to selection.
     -> IO ()
-decideSelection selection open itemMap = do
+decideSelection selection Config{ open, tty, term } itemMap = do
     -- Adjust the value based on the users selection.
     let update = selection `updateValueIn` itemMap
 
     -- TODO I should probably handle this with dedicated types.
     if | any (`BS.isPrefixOf` selection) ["/", "~"] ->
            spawn . open . (" " <>) $ selection
+       | selection `elem` tty ->
+           spawn $ openIn term selection
        | otherwise -> spawn selection
 
     -- Write the new map to the hist file.

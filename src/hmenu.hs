@@ -12,12 +12,8 @@ import Core.Select
     , sortByValues
     , tryRead
     )
-import Core.Toml
-    ( Config(Config, dmenuExe, files, open)
-    , getUserConfig
-    , histFile
-    , hmenuPath
-    )
+import Core.Toml (Config(Config, dmenuExe, files), getUserConfig)
+import Core.Util (histFile, hmenuPath)
 
 -- ByteString
 import qualified Data.ByteString.Char8 as BS
@@ -43,7 +39,7 @@ main = do
     createDirectoryIfMissing True =<< hmenuPath
 
     -- Try to parse the config file (if it exists).
-    Config{ dmenuExe, files, open } <- getUserConfig
+    cfg@Config{ dmenuExe, files } <- getUserConfig
 
     -- See Note [Caching]
     -- Files the user added in the config file.
@@ -67,7 +63,7 @@ main = do
     -- Process output.
     case selection of
         Left  _ -> pure ()  -- silently fail
-        Right s -> decideSelection s open newMap  -- Process output.
+        Right s -> decideSelection s cfg newMap  -- Process output.
 
 {- Note [Caching]
    ~~~~~~~~~~~~~~~~~~~~~~
