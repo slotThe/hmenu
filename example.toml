@@ -15,3 +15,12 @@ files =
     , "~.config/hmenu/hmenu.toml"
     , "/home/USER/.config/hmenu/hmenu.toml"
     ]
+
+# Terminal emulator with which to open tty programs.
+# Defaults to "xterm"
+terminal = "st"
+
+# Programs one would like to open in a terminal when calling them from dmenu.
+tty-programs =
+    [ "neomutt"
+    ]
