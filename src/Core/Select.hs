@@ -11,7 +11,7 @@ module Core.Select
 -- Local imports
 import Core.Parser (getHist)
 import Core.Toml (Config(Config, files, open, term, tty))
-import Core.Util (histFile, openIn, spawn, tryAddPrefix)
+import Core.Util (OpenIn(Open, Term), histFile, openWith, spawn, tryAddPrefix)
 
 -- ByteString
 import           Data.ByteString       (ByteString)
@@ -125,8 +125,8 @@ listExistentDir fp =
 -- | Decide what to actually do with the user selection from dmenu.
 decideSelection :: ByteString -> Config -> ByteString
 decideSelection sel Config{ files, tty, term, open }
-    | sel `elem` files = open $ " " <> sel
-    | sel `elem` tty   = openIn term sel
+    | sel `elem` files = openWith Open open sel
+    | sel `elem` tty   = openWith Term term sel
     | otherwise        = sel
 
 -- | Turn a list into 'Items' and set all starting values to 0.

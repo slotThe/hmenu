@@ -1,8 +1,9 @@
 module Core.Util
     ( ShowBS
+    , OpenIn(Term, Open)
     , tryAddPrefix
     , spawn
-    , openIn
+    , openWith
     , hmenuPath
     , histFile
     ) where
@@ -21,6 +22,11 @@ import System.Directory (XdgDirectory(XdgConfig), getXdgDirectory)
 import System.FilePath ((</>))
 import System.Process (spawnCommand)
 
+
+-- | Type for helping to decide how to open something.
+data OpenIn
+    = Term
+    | Open
 
 -- | ShowS for ByteString because it is shorter :>.
 type ShowBS = ByteString -> ByteString
@@ -42,9 +48,14 @@ tryAddPrefix prefix xs
 spawn :: ByteString -> IO ()
 spawn = void . spawnCommand . BS.unpack
 
--- | Open something in a specified terminal.
-openIn :: ShowBS -> ByteString -> ByteString
-openIn term cmd = term $ " -e " <> cmd
+-- | Open something.
+openWith
+    :: OpenIn      -- ^ Decide what to add to the 'ShowBS' function.
+    -> ShowBS      -- ^ How to open something.
+    -> ByteString  -- ^ The Thing to open.
+    -> ByteString
+openWith Term t = t . (" -e " <>)
+openWith Open o = o . (" "    <>)
 
 -- | XDG_CONFIG_HOME
 xdgConfig :: IO FilePath
