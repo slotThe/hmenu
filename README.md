@@ -4,7 +4,6 @@
 very much, though I guess that's the point of it.  It might be most notable for
 being a discount `yeganesh`.
 
-
 # Features
 
 1.  Display commands in order of usage.
@@ -28,7 +27,14 @@ options), so you may specify options in the following way:
 If you want to only use the "display commands in order of usage feature" of
 `hmenu`, check out [hmenu-hist](https://gitlab.com/slotThe/hmenu-hist).
 
-
 # Installation
 
+## Building
+
+### Stack
+
 Build with `stack build`, then copy the executable to a convenient location.
+
+### Cabal
+
+Build with `cabal v2-install hmenu`.
