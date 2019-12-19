@@ -1,2 +1,6 @@
+# stack
 .stack-work
 stack.yaml.lock
+
+# cabal
+dist-newstyle
