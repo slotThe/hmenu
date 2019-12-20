@@ -6,6 +6,7 @@ module Core.Util
     , openWith
     , hmenuPath
     , histFile
+    , getSearchPath
     ) where
 
 -- ByteString
@@ -19,6 +20,7 @@ import qualified System.Posix.FilePath as BS -- used for ByteString version of <
 import Control.Monad (void)
 import Data.Functor ((<&>))
 import System.Directory (XdgDirectory(XdgConfig), getXdgDirectory)
+import System.Environment (getEnv)
 import System.FilePath ((</>))
 import System.Process (spawnCommand)
 
@@ -56,6 +58,10 @@ openWith
     -> ByteString
 openWith Term t = t . (" -e " <>)
 openWith Open o = o . (" "    <>)
+
+-- | Get all directories in '$PATH' as a list.
+getSearchPath :: IO [ByteString]
+getSearchPath = BS.split ':' . BS.pack <$> getEnv "PATH"
 
 -- | XDG_CONFIG_HOME
 xdgConfig :: IO FilePath
