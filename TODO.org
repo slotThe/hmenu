@@ -1,5 +1,4 @@
-* General [9/10]                                                      :hmenu:
-  - [ ] Command line options for deciding when to refresh the cache.
+* General [9/9]                                                       :hmenu:
   - [X] Specify a list of programs to be opened in a (spawned) terminal.
   - [X] More comments.
   - [X] Move to ByteString

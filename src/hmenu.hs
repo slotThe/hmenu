@@ -4,10 +4,10 @@ module Main
 
 -- Local imports
 import Core.Select
-    ( runUpdate
-    , formatUserPaths
+    ( formatUserPaths
     , getExecutables
     , makeNewEntries
+    , runUpdate
     , selectWith
     , sortByValues
     , tryRead
@@ -68,12 +68,9 @@ main = do
 
 {- Note [Caching]
    ~~~~~~~~~~~~~~~~~~~~~~
-   Doing the caching *after* the user has selected something may be
-   better (in terms of perceived speed), though 'hmenu' would "lag
-   behind" for one execution when things are updated.
-
-   NOTE: This might be a non-issue as command line arguments for running
-         with or without a cache update are planned anyways.
-   NOTE: As of version 0.2.0 we're almost as fast as before being able to keep
-         track of often used commands, so neither of this may be necessary.
+   Doing the caching *after* the user has selected something may be better (in
+   terms of perceived speed), though hmenu would "lag behind" for one execution
+   when things are updated.  As of version 0.2.0, we're almost as fast as before
+   being able to keep track of often used commands, so this is almost certainly
+   a non-issue.
 -}
