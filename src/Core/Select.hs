@@ -31,11 +31,13 @@ import qualified Data.Map.Strict as Map
 -- Other imports
 import Data.Bool (bool)
 import Data.List (sortBy)
-import System.Directory (doesFileExist, doesPathExist)
+import System.Directory (doesFileExist)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
 import System.Posix.Directory.Traversals (getDirectoryContents)
+import System.Posix.Files.ByteString (fileExist)
 import System.Process (proc)
 import System.Process.ByteString (readCreateProcessWithExitCode)
+
 
 {- | When a spawned process fails, this type is used to represent the exit code
    and @stderr@ output.
@@ -120,7 +122,7 @@ listExistentDir :: ByteString -> IO [ByteString]
 listExistentDir fp =
     bool (pure [])
          (getDirContents fp)
-          =<< doesPathExist (BS.unpack fp)
+          =<< fileExist fp
   where
     getDirContents =
         fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
@@ -141,7 +143,7 @@ makeNewEntries xs = Map.fromList [(x, 0) | x <- xs]
 sortByValues :: Items -> [ByteString]
 sortByValues it =
     map fst
-        . sortBy (\(_,a) (_,b) -> compare b a)
+        . sortBy (\(_, a) (_, b) -> compare b a)
         $ Map.toList it
 
 -- | Process user defined files, add the appropriate prefixes if needed.

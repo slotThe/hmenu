@@ -15,15 +15,13 @@ import Core.Select
 import Core.Toml (Config(Config, dmenuExe, files), getUserConfig)
 import Core.Util (histFile, hmenuPath)
 
--- ByteString
-import qualified Data.ByteString.Char8 as BS
-
 -- Map
 import qualified Data.Map.Strict as Map
 
 -- Other imports
 import System.Directory (createDirectoryIfMissing)
-import System.Environment (getArgs, getEnv)
+import System.Environment (getArgs)
+import System.Posix.Env.ByteString (getEnvDefault)
 
 
 {- | Execute dmenu and then do stuff.
@@ -43,12 +41,11 @@ main = do
 
     -- See Note [Caching]
     -- Files the user added in the config file.
-    home  <- BS.pack <$> getEnv "HOME"
+    home  <- getEnvDefault "HOME" ""
     let userFiles = formatUserPaths home files
         cfg'      = cfg { files = userFiles }  -- gets passed to runUpdate
 
     -- Everything new as a map.
-    -- 'mappend' for maps is the union (as expected).
     execs <- getExecutables
     let pathPlus = makeNewEntries $ userFiles <> execs
 
@@ -57,6 +54,7 @@ main = do
     hist <- tryRead =<< histFile
     let inters = hist `Map.intersection` pathPlus
         newMap = inters <> pathPlus
+        -- 'mappend' for maps is the union (as expected).
 
     -- Let the user select something from the list.
     selection <- selectWith opts (sortByValues newMap) dmenuExe

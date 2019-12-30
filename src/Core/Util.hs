@@ -20,8 +20,8 @@ import qualified System.Posix.FilePath as BS -- used for ByteString version of <
 import Control.Monad (void)
 import Data.Functor ((<&>))
 import System.Directory (XdgDirectory(XdgConfig), getXdgDirectory)
-import System.Environment (getEnv)
 import System.FilePath ((</>))
+import System.Posix.Env.ByteString (getEnvDefault)
 import System.Process (spawnCommand)
 
 
@@ -52,27 +52,27 @@ spawn = void . spawnCommand . BS.unpack
 
 -- | Open something.
 openWith
-    :: OpenIn      -- ^ Decide what to add to the 'ShowBS' function.
+    :: OpenIn      -- ^ Decide what to add to the opening function.
     -> ShowBS      -- ^ How to open something.
-    -> ByteString  -- ^ The Thing to open.
+    -> ByteString  -- ^ The thing to open.
     -> ByteString
 openWith Term t = t . (" -e " <>)
 openWith Open o = o . (" "    <>)
 
--- | Get all directories in '$PATH' as a list.
+-- | Get all directories in @\$PATH@ as a list.
 getSearchPath :: IO [ByteString]
-getSearchPath = BS.split ':' . BS.pack <$> getEnv "PATH"
+getSearchPath = BS.split ':' <$> getEnvDefault "PATH" ""
 
 -- | XDG_CONFIG_HOME
 xdgConfig :: IO FilePath
 xdgConfig = getXdgDirectory XdgConfig ""
 
 -- | Path to the hmenu directory.
--- 'XDG_CONFIG_HOME\/hmenu', so probably '~\/.config\/hmenu'.
+-- @XDG_CONFIG_HOME\/hmenu@, so probably @~\/.config\/hmenu@.
 hmenuPath :: IO FilePath
 hmenuPath = xdgConfig <&> (</> "hmenu")
 
 -- | Path to the history file.
--- '~\/.config\/hmenu\/histFile'
+-- @~\/.config\/hmenu\/histFile@
 histFile :: IO FilePath
 histFile = hmenuPath <&> (</> "histFile")

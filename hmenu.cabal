@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e7f5566d4668f55b8ed8f95fc994ff6943b53a24e7208d1e0af4d8f768f42e4e
+-- hash: 2d5eb1d8e99d4b6edfdec800404bbffe1c9adbc390ff089c62fd74f4945671de
 
 name:                hmenu
 version:             0.2.2
@@ -42,3 +42,4 @@ executable hmenu
     , process-extras
     , text
     , tomland
+    , unix
