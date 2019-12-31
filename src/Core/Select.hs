@@ -12,7 +12,8 @@ module Core.Select
 import Core.Parser (getHist)
 import Core.Toml (Config(Config, files, open, term, tty))
 import Core.Util
-    ( OpenIn(Open, Term)
+    ( Items
+    , OpenIn(Open, Term)
     , getSearchPath
     , histFile
     , openWith
@@ -25,7 +26,6 @@ import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as BS
 
 -- Map
-import           Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
 -- Other imports
@@ -44,9 +44,6 @@ import System.Process.ByteString (readCreateProcessWithExitCode)
    See: https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs
 -}
 type ProcessError = (Int, ByteString)
-
--- | Type for an Map that describes all of the executables with their ratings.
-type Items = Map ByteString Int
 
 -- | Do the appropriate things with the user selection and update the history
 -- file.

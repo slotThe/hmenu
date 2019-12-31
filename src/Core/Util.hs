@@ -1,6 +1,7 @@
 module Core.Util
     ( ShowBS
     , OpenIn(Term, Open)
+    , Items
     , tryAddPrefix
     , spawn
     , openWith
@@ -8,6 +9,10 @@ module Core.Util
     , histFile
     , getSearchPath
     ) where
+
+-- Map
+import           Data.Map.Strict (Map)
+import qualified Data.Map.Strict as Map
 
 -- ByteString
 import           Data.ByteString       (ByteString)
@@ -24,6 +29,9 @@ import System.FilePath ((</>))
 import System.Posix.Env.ByteString (getEnvDefault)
 import System.Process (spawnCommand)
 
+
+-- | Type for an Map that describes all of the executables with their ratings.
+type Items = Map ByteString Int
 
 -- | Type for helping to decide how to open something.
 data OpenIn
