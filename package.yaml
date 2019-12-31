@@ -1,5 +1,5 @@
 name:                hmenu
-version:             0.2.2
+version:             0.2.3
 synopsis:            A small wrapper around dmenu
 license:             GPL-3
 author:              Slot

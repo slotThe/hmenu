@@ -1,3 +1,7 @@
+# 0.2.3
+## Changed
+-   The history file got a new layout.
+
 # 0.2.2
 ## Added
 -   Users may now specify a list of applications to be opened in a terminal.

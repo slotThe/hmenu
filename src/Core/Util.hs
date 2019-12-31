@@ -11,8 +11,7 @@ module Core.Util
     ) where
 
 -- Map
-import           Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
+import Data.Map.Strict (Map)
 
 -- ByteString
 import           Data.ByteString       (ByteString)
