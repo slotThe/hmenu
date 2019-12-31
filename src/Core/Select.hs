@@ -60,11 +60,19 @@ runUpdate selection cfg itemMap = do
     spawn $ decideSelection selection cfg
 
     -- Write the new map to the hist file.
-    histFile >>= (`writeFile` show update)
+    histFile >>= (`BS.writeFile` showItems update)
   where
     -- | Update the value of a particular key by just adding one to it.
     updateValueIn :: ByteString -> Items -> Items
     updateValueIn = Map.adjust succ
+
+    -- | Pretty print our items.
+    showItems :: Items -> ByteString
+    showItems = BS.unlines . map showItem . Map.toList
+
+    -- | Pretty print a single (application, score) tuple.
+    showItem :: (ByteString, Int) -> ByteString
+    showItem (k, v) = k <> " " <> BS.pack (show v)
 
 {- | Run dmenu with the given command line optinos and a list of entries from
    which the user should choose.
