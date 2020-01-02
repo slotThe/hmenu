@@ -113,7 +113,7 @@ tryRead file =
         hist <- getHist f
         pure $ case hist of
             Left  _   -> Map.empty
-            Right kvl -> Map.fromList kvl  -- key-value-list
+            Right its -> its
 
 -- | Get all executables from all dirs in $PATH.
 getExecutables :: IO [ByteString]
