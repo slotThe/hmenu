@@ -1,5 +1,5 @@
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeApplications  #-}
+
 module Main
     ( main
     ) where
@@ -35,11 +35,11 @@ main :: IO ()
 main = hspec $ do
 
     describe "pMap" $
-        it " should succeed on ascii strings and positive integers" $
+        it "should succeed on ascii strings and positive integers" $
             forAll itemsGen $ \x -> pMap `shouldSucceedOn` showItems x
 
     describe "pMap" $
-        it " should satisfy x == (parse . pretty) x" $
+        it "should satisfy x == (parse . pretty) x" $
             forAll itemsGen $ \x ->
                 (fromRight Map.empty . parseOnly pMap . showItems) x == x
 
