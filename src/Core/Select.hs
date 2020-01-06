@@ -6,6 +6,7 @@ module Core.Select
     , selectWith
     , sortByValues
     , tryRead
+    , showItems
     ) where
 
 -- Local imports
@@ -66,14 +67,6 @@ runUpdate selection cfg itemMap = do
     updateValueIn :: ByteString -> Items -> Items
     updateValueIn = Map.adjust succ
 
-    -- | Pretty print our items.
-    showItems :: Items -> ByteString
-    showItems = BS.unlines . map showItem . Map.toList
-
-    -- | Pretty print a single (application, score) tuple.
-    showItem :: (ByteString, Int) -> ByteString
-    showItem (k, v) = k <> " " <> BS.pack (show v)
-
 {- | Run dmenu with the given command line optinos and a list of entries from
    which the user should choose.
 
@@ -131,6 +124,14 @@ listExistentDir fp =
   where
     getDirContents =
         fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
+
+-- | Pretty print our items.
+showItems :: Items -> ByteString
+showItems = BS.unlines . map showItem . Map.toList
+  where
+    -- | Pretty print a single (application, score) tuple.
+    showItem :: (ByteString, Int) -> ByteString
+    showItem (k, v) = k <> " " <> BS.pack (show v)
 
 -- | Decide what to actually do with the user selection from dmenu.
 decideSelection :: ByteString -> Config -> ByteString

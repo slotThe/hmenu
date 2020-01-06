@@ -38,3 +38,14 @@ executables:
   hmenu:
     source-dirs: src
     main: hmenu.hs
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs:
+      - test
+      - src
+    dependencies:
+      - hspec
+      - hspec-attoparsec
+      - QuickCheck

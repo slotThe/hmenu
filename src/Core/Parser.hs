@@ -1,5 +1,6 @@
 module Core.Parser
     ( getHist
+    , pMap
     ) where
 
 -- Local imports

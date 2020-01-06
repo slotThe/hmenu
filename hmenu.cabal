@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: dea2cface05b8d73577e9fab91abc0936633b34ffb613dc038174da1b2abbb9b
+-- hash: 7a2177fc6e6aa3359fd844c01e0db1ff536505fc5cd2a842940c73cc3d022145
 
 name:                hmenu
 version:             0.2.3
@@ -43,3 +43,35 @@ executable hmenu
     , text
     , tomland
     , unix
+
+test-suite spec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Core.Parser
+      Core.Select
+      Core.Toml
+      Core.Util
+      Paths_hmenu
+  hs-source-dirs:
+      test
+      src
+  default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts
+  ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
+  build-depends:
+      QuickCheck
+    , attoparsec
+    , base
+    , bytestring
+    , containers
+    , directory
+    , filepath
+    , hspec
+    , hspec-attoparsec
+    , posix-paths
+    , process
+    , process-extras
+    , text
+    , tomland
+    , unix
+  default-language: Haskell2010
