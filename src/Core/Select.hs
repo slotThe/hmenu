@@ -29,6 +29,9 @@ import qualified Data.ByteString.Char8 as BS
 -- Map
 import qualified Data.Map.Strict as Map
 
+-- Set
+import qualified Data.Set as Set
+
 -- Other imports
 import Data.Bool (bool)
 import Data.List (sortBy)
@@ -140,9 +143,12 @@ decideSelection sel Config{ files, tty, term, open }
     | sel `elem` tty   = openWith Term term sel
     | otherwise        = sel
 
--- | Turn a list into 'Items' and set all starting values to 0.
+{- | Turn a list into 'Items' and set all starting values to 0.
+   NOTE: The implementation using sets seems to perform slightly better memory
+         wise than the naive implementation @ Map.fromList [(x, 0) | x <- xs] @.
+-}
 makeNewEntries :: [ByteString] -> Items
-makeNewEntries xs = Map.fromList [(x, 0) | x <- xs]
+makeNewEntries xs = Map.fromSet (const 0) $ Set.fromList xs
 
 -- | Sort 'Items' by its values and return the list of keys.
 -- This will make often used commands bubble up to the top.
