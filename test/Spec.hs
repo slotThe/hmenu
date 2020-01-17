@@ -4,6 +4,11 @@ module Main
     ( main
     ) where
 
+-- Local imports
+import Core.Parser (pMap)
+import Core.Select (showItems)
+import Core.Util (Items, (</>))
+
 -- ByteString
 import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as BS
@@ -20,13 +25,11 @@ import Test.QuickCheck
     , forAll
     , getASCIIString
     , listOf
+    , property
     , suchThat
     )
 
 -- Other imports
-import Core.Parser (pMap)
-import Core.Select (showItems)
-import Core.Util (Items)
 import Data.Attoparsec.ByteString.Char8 (parseOnly)
 import Data.Either (fromRight)
 
@@ -42,6 +45,26 @@ main = hspec $ do
         it "should satisfy x == (parse . pretty) x" $
             forAll itemsGen $ \x ->
                 (fromRight Map.empty . parseOnly pMap . showItems) x == x
+
+    -- Source: https://hackage.haskell.org/package/filepath
+    describe "</>" $
+        it "\"/directory\" </> \"file.ext\" == \"/directory/file.ext\"" $ property $
+            "/directory" </> "file.ext" == "/directory/file.ext"
+    describe "</>" $
+        it "\"directory\" </> \"/file.ext\" == \"/file.ext\"" $ property $
+            "directory" </> "/file.ext" == "/file.ext"
+    describe "</>" $
+        it "\"/\" </> \"test\" == \"/test\"" $ property $
+            "/" </> "test" == "/test"
+    describe "</>" $
+        it "\"home\" </> \"bob\" == \"home/bob\"" $ property $
+            "home" </> "bob" == "home/bob"
+    describe "</>" $
+        it "\"x:\" </> \"foo\" == \"x:/foo\"" $ property $
+            "x:" </> "foo" == "x:/foo"
+    describe "</>" $
+        it "\"home\" </> \"/bob\" == \"/bob\"" $ property $
+            "home" </> "/bob" == "/bob"
 
 itemsGen :: Gen Items
 itemsGen = Map.fromList <$> listOf itemGen

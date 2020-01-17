@@ -85,12 +85,12 @@ histFile :: IO FilePath
 histFile = hmenuPath <&> (</> "histFile")
 
 -- | Combine two paths into a new path.
--- Source: https:\/\/hackage.haskell.org\/package\/filepath
+-- Adapted from: https:\/\/hackage.haskell.org\/package\/filepath
 infixr 5 </>
 (</>) :: FilePath -> FilePath -> FilePath
 (</>) a b
     | hasLeadingPathSeparator b = b
-    | otherwise = combineAlways a b
+    | otherwise                 = combineAlways a b
   where
     hasLeadingPathSeparator :: FilePath -> Bool
     hasLeadingPathSeparator "" = False
