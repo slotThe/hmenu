@@ -8,6 +8,7 @@ module Core.Util
     , hmenuPath
     , histFile
     , getSearchPath
+    , (</>)
     ) where
 
 -- Map
@@ -24,7 +25,6 @@ import qualified System.Posix.FilePath as BS -- used for ByteString version of <
 import Control.Monad (void)
 import Data.Functor ((<&>))
 import System.Directory (XdgDirectory(XdgConfig), getXdgDirectory)
-import System.FilePath ((</>))
 import System.Posix.Env.ByteString (getEnvDefault)
 import System.Process (spawnCommand)
 
@@ -83,3 +83,23 @@ hmenuPath = xdgConfig <&> (</> "hmenu")
 -- @~\/.config\/hmenu\/histFile@
 histFile :: IO FilePath
 histFile = hmenuPath <&> (</> "histFile")
+
+-- | Combine two paths into a new path.
+-- Source: https:\/\/hackage.haskell.org\/package\/filepath
+infixr 5 </>
+(</>) :: FilePath -> FilePath -> FilePath
+(</>) a b
+    | hasLeadingPathSeparator b = b
+    | otherwise = combineAlways a b
+  where
+    hasLeadingPathSeparator :: FilePath -> Bool
+    hasLeadingPathSeparator "" = False
+    hasLeadingPathSeparator x  = head x == '/'
+
+    -- | Combine two paths, assuming rhs is NOT absolute.
+    combineAlways :: FilePath -> FilePath -> FilePath
+    combineAlways z w
+        | null z        = w
+        | null w        = z
+        | last z == '/' = z ++ w
+        | otherwise     = z ++ "/" ++ w

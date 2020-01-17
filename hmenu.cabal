@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7a2177fc6e6aa3359fd844c01e0db1ff536505fc5cd2a842940c73cc3d022145
+-- hash: 833284e83a1be671f84a96de1d6bb51f973cebb38f64bfac7fdcaa0a40336cf1
 
 name:                hmenu
 version:             0.2.3
@@ -36,7 +36,6 @@ executable hmenu
     , bytestring
     , containers
     , directory
-    , filepath
     , posix-paths
     , process
     , process-extras
@@ -65,7 +64,6 @@ test-suite spec
     , bytestring
     , containers
     , directory
-    , filepath
     , hspec
     , hspec-attoparsec
     , posix-paths

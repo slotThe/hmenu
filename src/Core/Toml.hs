@@ -4,7 +4,7 @@ module Core.Toml
     ) where
 
 -- Local imports
-import Core.Util (ShowBS, hmenuPath)
+import Core.Util (ShowBS, (</>), hmenuPath)
 
 -- ByteString
 import Data.ByteString (ByteString)
@@ -20,7 +20,6 @@ import qualified Toml
 import Data.Functor ((<&>))
 import Data.Maybe (fromMaybe)
 import System.Directory (doesFileExist)
-import System.FilePath ((</>))
 
 
 -- | Type we create from the parsed toml with certain default values in place on
