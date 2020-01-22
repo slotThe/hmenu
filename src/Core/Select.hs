@@ -96,8 +96,8 @@ selectWith opts entries dmenu = do
 
     pure $ case exitCode of
         -- Take first (= selected) word or return the error message.
-        ExitSuccess   -> Right $ BS.takeWhile (/= '\n') sOut
         ExitFailure i -> Left (i, sErr)
+        ExitSuccess   -> Right $ BS.takeWhile (/= '\n') sOut
 
 -- | Try to read a file that contains a map.  Return an empty map if the file
 -- doesn't exist.
@@ -128,6 +128,7 @@ listExistentDir fp =
          (getDirContents fp)
           =<< fileExist fp
   where
+    getDirContents :: ByteString -> IO [ByteString]
     getDirContents =
         fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
 

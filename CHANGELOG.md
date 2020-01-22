@@ -1,3 +1,8 @@
+# 0.2.4
+## Added
+-   Users may now specify directories in the files list.  This lists all their
+    contents and puts those files in the list.
+
 # 0.2.3
 ## Changed
 -   The history file got a new layout.
