@@ -4,7 +4,8 @@ module Main
 
 -- Local imports
 import Core.Select
-    ( formatUserPaths
+    ( evalDirs
+    , formatUserPaths
     , getExecutables
     , makeNewEntries
     , runUpdate
@@ -42,8 +43,8 @@ main = do
     -- See Note [Caching]
     -- Files the user added in the config file.
     home  <- getEnvDefault "HOME" ""
-    let userFiles = formatUserPaths home files
-        cfg'      = cfg { files = userFiles }  -- gets passed to runUpdate
+    userFiles <- evalDirs $ formatUserPaths home files
+    let cfg' = cfg { files = userFiles }  -- gets passed to runUpdate
 
     -- Everything new as a map.
     execs <- getExecutables

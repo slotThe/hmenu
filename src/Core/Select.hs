@@ -7,6 +7,7 @@ module Core.Select
     , sortByValues
     , tryRead
     , showItems
+    , evalDirs
     ) where
 
 -- Local imports
@@ -38,6 +39,8 @@ import Data.List (sortBy)
 import System.Directory (doesFileExist)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
 import System.Posix.Directory.Traversals (getDirectoryContents)
+import System.Posix.Env.ByteString (getEnvDefault)
+import System.Posix.FilePath ((</>))
 import System.Posix.Files.ByteString (fileExist)
 import System.Process (proc)
 import System.Process.ByteString (readCreateProcessWithExitCode)
@@ -127,6 +130,30 @@ listExistentDir fp =
   where
     getDirContents =
         fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
+
+-- | Apply 'evalDir' to some list of file paths.
+evalDirs :: [ByteString] -> IO [ByteString]
+evalDirs dirs = concat <$> traverse evalDir dirs
+
+-- | If the given file path is a directory, try to list all of its contents.
+-- Otherwise just return the file path as is.
+evalDir :: ByteString -> IO [ByteString]
+evalDir dir = case BS.unsnoc dir of
+    Nothing     -> pure []
+    Just (_, l) -> case l of
+        '/' -> do
+            home <- getEnvDefault "HOME" ""
+
+            -- As 'listExistentDir' can only handle absolute paths, make it so
+            -- if necessary and then try to list the contents of the directory.
+            map (dir </>) <$> listExistentDir (tryAdd home dir)
+
+        _ -> pure [dir]
+  where
+    tryAdd :: ByteString -> ByteString -> ByteString
+    tryAdd prefix s
+        | "~/" `BS.isPrefixOf` s = prefix </> BS.drop 2 s
+        | otherwise              = s
 
 -- | Pretty print our items.
 showItems :: Items -> ByteString
