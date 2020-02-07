@@ -32,11 +32,14 @@ dependencies:
   - bytestring
   - attoparsec
   - unix
+library:
+  source-dirs: src/
 
 executables:
   hmenu:
-    source-dirs: src
+    source-dirs: app
     main: hmenu.hs
+    dependencies: hmenu
 
 tests:
   spec:
