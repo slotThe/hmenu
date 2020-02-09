@@ -3,6 +3,7 @@ module Main
     ) where
 
 -- Local imports
+import CLI.Parser (Options(Options, historyPath), options, parseArgs)
 import Core.Select
     ( evalDirs
     , formatUserPaths
@@ -13,13 +14,14 @@ import Core.Select
     , sortByValues
     , tryRead
     )
-import Core.Toml (Config(Config, dmenuExe, files), getUserConfig)
+import Core.Toml (Config(Config, dmenuExe, files, histPath), getUserConfig)
 import Core.Util (histFile, hmenuPath)
 
 -- Map
 import qualified Data.Map.Strict as Map
 
 -- Other imports
+import Options.Applicative (defaultPrefs, execParserPure, handleParseResult)
 import System.Directory (createDirectoryIfMissing)
 import System.Environment (getArgs)
 import System.Posix.Env.ByteString (getEnvDefault)
@@ -31,8 +33,12 @@ import System.Posix.Env.ByteString (getEnvDefault)
 -}
 main :: IO ()
 main = do
-    -- Command line arguments, these get passed straight to dmenu.
-    opts <- getArgs
+    -- Divide command line arguments.
+    (hArgs, dArgs) <- parseArgs <$> getArgs
+
+    -- Parse all hmnenu specific options.
+    Options{ historyPath } <- handleParseResult $
+        execParserPure defaultPrefs options hArgs
 
     -- Create the 'hmenu' directory (and all parents) if necessary.
     createDirectoryIfMissing True =<< hmenuPath
@@ -44,7 +50,10 @@ main = do
     -- Files the user added in the config file.
     home  <- getEnvDefault "HOME" ""
     userFiles <- evalDirs $ formatUserPaths home files
-    let cfg' = cfg { files = userFiles }  -- gets passed to runUpdate
+    -- The path to the history file.
+    hp <- if null historyPath then histFile else pure historyPath
+    -- New config, this gets passed to runUpdate.
+    let cfg' = cfg { files = userFiles, histPath = hp }
 
     -- Everything new as a map.
     execs <- getExecutables
@@ -52,13 +61,13 @@ main = do
 
     -- New map where everything old (i.e. not in the $PATH or the config
     -- anymore) is thrown out and anything new is added to the map.
-    hist <- tryRead =<< histFile
+    hist <- tryRead hp
     let inters = hist `Map.intersection` pathPlus
         newMap = inters <> pathPlus
         -- 'mappend' for maps is the union (as expected).
 
     -- Let the user select something from the list.
-    selection <- selectWith opts (sortByValues newMap) dmenuExe
+    selection <- selectWith dArgs (sortByValues newMap) dmenuExe
 
     -- Process output.
     case selection of

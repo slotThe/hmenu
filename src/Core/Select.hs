@@ -12,12 +12,11 @@ module Core.Select
 
 -- Local imports
 import Core.Parser (getHist)
-import Core.Toml (Config(Config, files, open, term, tty))
+import Core.Toml (Config(Config, files, histPath, open, term, tty))
 import Core.Util
     ( Items
     , OpenIn(Open, Term)
     , getSearchPath
-    , histFile
     , openWith
     , spawn
     , tryAddPrefix
@@ -67,7 +66,7 @@ runUpdate selection cfg itemMap = do
     spawn $ decideSelection selection cfg
 
     -- Write the new map to the hist file.
-    histFile >>= (`BS.writeFile` showItems update)
+    histPath cfg `BS.writeFile` showItems update
   where
     -- | Update the value of a particular key by just adding one to it.
     updateValueIn :: ByteString -> Items -> Items
@@ -138,6 +137,7 @@ evalDirs dirs = concat <$> traverse evalDir dirs
 
 -- | If the given file path is a directory, try to list all of its contents.
 -- Otherwise just return the file path as is.
+-- TODO: Possibly make this recursive for things like ".scripts\/more-scripts\/"
 evalDir :: ByteString -> IO [ByteString]
 evalDir dir = case BS.unsnoc dir of
     Nothing     -> pure []

@@ -27,9 +27,11 @@ import System.Directory (doesFileExist)
 data Config = Config
     { files    :: ![ByteString]
     , open     :: !ShowBS
-    , dmenuExe :: !String
+    , dmenuExe :: !FilePath
     , term     :: !ShowBS
     , tty      :: ![ByteString]
+    , histPath :: !FilePath      -- ^ Command line option, NOT specifiable in the
+                                 -- config file.
     }
 
 -- | Empty config type with all the default values.
@@ -40,6 +42,7 @@ defaultCfg = Config
     , open     = ("xdg-open" <>)
     , term     = ("xterm"    <>)
     , tty      = []
+    , histPath = ""
     }
 
 -- | Type that the parsed toml gets shoved into
@@ -89,6 +92,7 @@ makeConfig Config'{ cfiles, copen, cdmenuExe, ctty, cterm } =
         , tty      = fromMaybe defTty   ctty
         , open     = maybe defOpen mappend copen
         , term     = maybe defEmu  mappend cterm
+        , histPath = ""
         }
   where
     defOpen  = open     defaultCfg

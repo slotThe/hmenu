@@ -2,6 +2,8 @@
 ## Added
 -   Users may now specify directories in the files list.  This lists all their
     contents and puts those files in the list.
+-   New command line option `--histFile` (short: `f`) to specify a history file
+    to use.
 
 # 0.2.3
 ## Changed

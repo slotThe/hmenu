@@ -18,11 +18,15 @@ being a discount `yeganesh`.
 `XDG_CONFIG_HOME` directory (probably `~/.config/hmenu`).  See the
 `example.toml` for an example configuration.
 
-At the moment, all arguments that passed to `hmenu` will be directly forwarded
-to `dmenu` (this may change in the future when we get our own command line
-options), so you may specify options in the following way:
+`hmenu` has the following command line options:
+    -   `--histFile`
+        - Short: `-f`
+        - Description: Path to the history file to use.
 
-    hmenu -i -f -nb '#282A36' -nf '#BBBBBB' -sb '#8BE9FD' -sf '#000000' -fn 'Inconsolata Regular-10'
+All options after "--" will be directly forwarded to `dmenu`, so you may specify
+options in the following way:
+
+    hmenu -f /path/to/file -- -i -f -nb '#282A36' -nf '#BBBBBB' -sb '#8BE9FD' -sf '#000000' -fn 'Inconsolata Regular-10'
 
 If you want to only use the "display commands in order of usage feature" of
 `hmenu`, check out [hmenu-hist](https://gitlab.com/slotThe/hmenu-hist).

@@ -32,6 +32,8 @@ dependencies:
   - bytestring
   - attoparsec
   - unix
+  - optparse-applicative
+
 library:
   source-dirs: src/
 
