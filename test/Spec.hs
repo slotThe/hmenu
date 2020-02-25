@@ -20,14 +20,7 @@ import qualified Data.Map as Map
 import Test.Hspec (describe, hspec, it)
 import Test.Hspec.Attoparsec (shouldSucceedOn)
 import Test.QuickCheck
-    ( Gen
-    , arbitrary
-    , forAll
-    , getASCIIString
-    , listOf
-    , property
-    , suchThat
-    )
+    ( Gen, arbitrary, forAll, getASCIIString, listOf, property, suchThat )
 
 -- Other imports
 import Data.Attoparsec.ByteString.Char8 (parseOnly)

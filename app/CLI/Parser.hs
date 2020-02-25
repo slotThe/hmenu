@@ -7,19 +7,8 @@ module CLI.Parser
 
 -- Other imports
 import Options.Applicative
-    ( Parser
-    , ParserInfo
-    , (<**>)
-    , fullDesc
-    , header
-    , help
-    , helper
-    , info
-    , long
-    , metavar
-    , short
-    , strOption
-    , value
+    ( Parser, ParserInfo, fullDesc, header, help, helper, info, long, metavar
+    , short, strOption, value
     )
 
 
@@ -49,7 +38,7 @@ pHistoryPath = strOption
 -- features.
 options :: ParserInfo Options
 options = info
-    (pOptions <**> helper)  -- create "--help"
+    (helper <*> pOptions)  -- create "--help"
     (  header "hmenu - a small wrapper around dmenu"
     <> fullDesc
     )

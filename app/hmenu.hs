@@ -5,14 +5,8 @@ module Main
 -- Local imports
 import CLI.Parser (Options(Options, historyPath), options, parseArgs)
 import Core.Select
-    ( evalDirs
-    , formatUserPaths
-    , getExecutables
-    , makeNewEntries
-    , runUpdate
-    , selectWith
-    , sortByValues
-    , tryRead
+    ( evalDirs, formatUserPaths, getExecutables, makeNewEntries, runUpdate
+    , selectWith, sortByValues, tryRead
     )
 import Core.Toml (Config(Config, dmenuExe, files, histPath), getUserConfig)
 import Core.Util (histFile, hmenuPath)

@@ -16,13 +16,7 @@ import qualified Data.Map.Strict as Map
 -- Other imports
 import Control.Applicative (many)
 import Data.Attoparsec.ByteString.Char8
-    ( Parser
-    , char8
-    , decimal
-    , endOfLine
-    , parseOnly
-    , takeTill
-    )
+    ( Parser, char8, decimal, endOfLine, parseOnly, takeTill )
 
 
 -- | Parse a given file.

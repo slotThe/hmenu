@@ -1,3 +1,5 @@
+{-# LANGUAGE StrictData #-}
+
 module Core.Toml
     ( Config(..)
     , getUserConfig
@@ -25,12 +27,12 @@ import System.Directory (doesFileExist)
 -- | Type we create from the parsed toml with certain default values in place on
 -- 'Nothing'.
 data Config = Config
-    { files    :: ![ByteString]
-    , open     :: !ShowBS
-    , dmenuExe :: !FilePath
-    , term     :: !ShowBS
-    , tty      :: ![ByteString]
-    , histPath :: !FilePath      -- ^ Command line option, NOT specifiable in the
+    { files    :: [ByteString]
+    , open     :: ShowBS
+    , dmenuExe :: FilePath
+    , term     :: ShowBS
+    , tty      :: [ByteString]
+    , histPath :: FilePath      -- ^ Command line option, NOT specifiable in the
                                  -- config file.
     }
 
@@ -47,11 +49,11 @@ defaultCfg = Config
 
 -- | Type that the parsed toml gets shoved into
 data Config' = Config'
-    { cfiles    :: !(Maybe [ByteString])
-    , copen     :: !(Maybe ByteString)
-    , cdmenuExe :: !(Maybe String)
-    , cterm     :: !(Maybe ByteString)
-    , ctty      :: !(Maybe [ByteString])
+    { cfiles    :: Maybe [ByteString]
+    , copen     :: Maybe ByteString
+    , cdmenuExe :: Maybe String
+    , cterm     :: Maybe ByteString
+    , ctty      :: Maybe [ByteString]
     }
 
 -- | Parse the config file.
