@@ -93,10 +93,10 @@ selectWith opts entries dmenu = do
     (exitCode, sOut, sErr) <-
         readCreateProcessWithExitCode (proc dmenu opts) (BS.unlines entries)
 
-    pure $ case exitCode of
+    pure $! case exitCode of
         -- Take first (= selected) word or return the error message.
         ExitFailure i -> Left (i, sErr)
-        ExitSuccess   -> Right $ BS.takeWhile (/= '\n') sOut
+        ExitSuccess   -> Right $! BS.takeWhile (/= '\n') sOut
 
 -- | Try to read a file that contains a map.  Return an empty map if the file
 -- doesn't exist.
@@ -109,7 +109,7 @@ tryRead file =
     tryParseFile :: FilePath -> IO Items
     tryParseFile f = do
         hist <- getHist f
-        pure $ case hist of
+        pure $! case hist of
             Left  _   -> Map.empty
             Right its -> its
 

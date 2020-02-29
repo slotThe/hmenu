@@ -1,4 +1,5 @@
-{-# LANGUAGE StrictData #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE StrictData   #-}
 
 module Core.Toml
     ( Config(..)
@@ -80,9 +81,9 @@ getUserConfig = do
         else do
             -- Read and evaluate file.
             tomlFile <- T.readFile cfgFile
-            pure $ case Toml.decode configCodec tomlFile of
-                Left  _   -> defaultCfg
-                Right cfg -> makeConfig cfg
+            pure $! case Toml.decode configCodec tomlFile of
+                Left  _    -> defaultCfg
+                Right !cfg -> makeConfig cfg
 
 -- | Build up a config based on what the parser could find, substitute in
 -- default values for fields that were not able to parse/missing.
