@@ -1,26 +1,27 @@
 module CLI.Parser
     ( Options(..)
     , pOptions
-    , parseArgs
     , options
     ) where
 
 -- Other imports
 import Options.Applicative
-    ( Parser, ParserInfo, fullDesc, header, help, helper, info, long, metavar
-    , short, strOption, value
+    ( Parser, ParserInfo, argument, fullDesc, header, help, helper, info, long
+    , many, metavar, short, str, strOption, value
     )
 
 
 -- | Options the user may specify on the command line.
-newtype Options = Options
+data Options = Options
     { historyPath :: FilePath
+    , dmenuOpts   :: [String]
     }
 
 -- | Parse all command line options.
 pOptions :: Parser Options
 pOptions = Options
     <$> pHistoryPath
+    <*> pDmenuOpts
 
 -- | Parse the 'historyPath' option.  Basically the user may specify an
 -- alternative history file to use.
@@ -34,6 +35,10 @@ pHistoryPath = strOption
                  -- "$XDG_CONFIG_HOME/hmenu/histFile" or an equivalent.
      )
 
+-- | Options to get passed straight to dmenu.
+pDmenuOpts :: Parser [String]
+pDmenuOpts = many $ argument str (metavar "-- DMENU_OPTS")
+
 -- | Create an info type from our options, adding help text and other nice
 -- features.
 options :: ParserInfo Options
@@ -42,11 +47,3 @@ options = info
     (  header "hmenu - a small wrapper around dmenu"
     <> fullDesc
     )
-
--- | Separate dmenu's arguments from hmenu's arguments.
-parseArgs
-    :: [String]
-    -> ([String], [String])  -- ^ (hmenu args, dmenu args)
-parseArgs args =
-    let (h, d) = span (/= "--") args
-     in (h, drop 1 d)

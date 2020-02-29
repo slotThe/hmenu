@@ -3,7 +3,7 @@ module Main
     ) where
 
 -- Local imports
-import CLI.Parser (Options(Options, historyPath), options, parseArgs)
+import CLI.Parser (Options(Options, dmenuOpts, historyPath), options)
 import Core.Select
     ( evalDirs, formatUserPaths, getExecutables, makeNewEntries, runUpdate
     , selectWith, sortByValues, tryRead
@@ -15,9 +15,8 @@ import Core.Util (histFile, hmenuPath)
 import qualified Data.Map.Strict as Map
 
 -- Other imports
-import Options.Applicative (defaultPrefs, execParserPure, handleParseResult)
+import Options.Applicative (execParser)
 import System.Directory (createDirectoryIfMissing)
-import System.Environment (getArgs)
 import System.Posix.Env.ByteString (getEnvDefault)
 
 
@@ -27,12 +26,8 @@ import System.Posix.Env.ByteString (getEnvDefault)
 -}
 main :: IO ()
 main = do
-    -- Divide command line arguments.
-    (hArgs, dArgs) <- parseArgs <$> getArgs
-
-    -- Parse all hmnenu specific options.
-    Options{ historyPath } <- handleParseResult $
-        execParserPure defaultPrefs options hArgs
+    -- Get command line options and parse them.
+    Options{ historyPath, dmenuOpts } <- execParser options
 
     -- Create the 'hmenu' directory (and all parents) if necessary.
     createDirectoryIfMissing True =<< hmenuPath
@@ -61,7 +56,7 @@ main = do
         -- 'mappend' for maps is the union (as expected).
 
     -- Let the user select something from the list.
-    selection <- selectWith dArgs (sortByValues newMap) dmenuExe
+    selection <- selectWith dmenuOpts (sortByValues newMap) dmenuExe
 
     -- Process output.
     case selection of
