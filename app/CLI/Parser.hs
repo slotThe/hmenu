@@ -4,7 +4,6 @@ module CLI.Parser
     , options
     ) where
 
--- Other imports
 import Options.Applicative
     ( Parser, ParserInfo, argument, fullDesc, header, help, helper, info, long
     , many, metavar, short, str, strOption, value

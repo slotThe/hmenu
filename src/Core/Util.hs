@@ -8,22 +8,16 @@ module Core.Util
     , hmenuPath
     , histFile
     , getSearchPath
-    , (</>)
+    , fappend
     ) where
 
--- Map
-import Data.Map.Strict (Map)
-
--- ByteString
-import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as BS
-
--- Qualified other imports
 import qualified System.Posix.FilePath as BS -- used for ByteString version of </>
 
--- Other imports
 import Control.Monad (void)
+import Data.ByteString (ByteString)
 import Data.Functor ((<&>))
+import Data.Map.Strict (Map)
 import System.Directory (XdgDirectory(XdgConfig), getXdgDirectory)
 import System.Posix.Env.ByteString (getEnvDefault)
 import System.Process (spawnCommand)
@@ -77,12 +71,16 @@ xdgConfig = getXdgDirectory XdgConfig ""
 -- | Path to the hmenu directory.
 -- @XDG_CONFIG_HOME\/hmenu@, so probably @~\/.config\/hmenu@.
 hmenuPath :: IO FilePath
-hmenuPath = xdgConfig <&> (</> "hmenu")
+hmenuPath = xdgConfig `fappend` "hmenu"
 
 -- | Path to the history file.
 -- @~\/.config\/hmenu\/histFile@
 histFile :: IO FilePath
-histFile = hmenuPath <&> (</> "histFile")
+histFile = hmenuPath `fappend` "histFile"
+
+-- | Functorial append operation.
+fappend :: IO FilePath -> FilePath -> IO FilePath
+fappend ioFp fp = ioFp <&> (</> fp)
 
 -- | Combine two paths into a new path.
 -- Adapted from: https:\/\/hackage.haskell.org\/package\/filepath

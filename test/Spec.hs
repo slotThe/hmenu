@@ -4,27 +4,20 @@ module Main
     ( main
     ) where
 
--- Local imports
 import Core.Parser (pMap)
 import Core.Select (showItems)
 import Core.Util (Items, (</>))
 
--- ByteString
-import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as BS
+import qualified Data.Map              as Map
 
--- Map
-import qualified Data.Map as Map
-
--- Testing
+import Data.Attoparsec.ByteString.Char8 (parseOnly)
+import Data.ByteString (ByteString)
+import Data.Either (fromRight)
 import Test.Hspec (describe, hspec, it)
 import Test.Hspec.Attoparsec (shouldSucceedOn)
 import Test.QuickCheck
     ( Gen, arbitrary, forAll, getASCIIString, listOf, property, suchThat )
-
--- Other imports
-import Data.Attoparsec.ByteString.Char8 (parseOnly)
-import Data.Either (fromRight)
 
 
 main :: IO ()

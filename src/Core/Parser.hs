@@ -3,20 +3,15 @@ module Core.Parser
     , pMap
     ) where
 
--- Local imports
 import Core.Util (Items)
 
--- ByteString
-import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as BS
+import qualified Data.Map.Strict       as Map
 
--- Map
-import qualified Data.Map.Strict as Map
-
--- Other imports
 import Control.Applicative (many)
 import Data.Attoparsec.ByteString.Char8
     ( Parser, char8, decimal, endOfLine, parseOnly, takeTill )
+import Data.ByteString (ByteString)
 
 
 -- | Parse a given file.

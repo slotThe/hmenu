@@ -6,23 +6,15 @@ module Core.Toml
     , getUserConfig
     ) where
 
--- Local imports
-import Core.Util (ShowBS, (</>), hmenuPath)
+import Core.Util (ShowBS, fappend, hmenuPath)
 
--- ByteString
-import Data.ByteString (ByteString)
-
--- Text
 import qualified Data.Text.IO as T
-
--- Tomland
-import           Toml (TomlCodec, (.=))
 import qualified Toml
 
--- Other imports
-import Data.Functor ((<&>))
+import Data.ByteString (ByteString)
 import Data.Maybe (fromMaybe)
 import System.Directory (doesFileExist)
+import Toml (TomlCodec, (.=))
 
 
 -- | Type we create from the parsed toml with certain default values in place on
@@ -34,7 +26,7 @@ data Config = Config
     , term     :: ShowBS
     , tty      :: [ByteString]
     , histPath :: FilePath      -- ^ Command line option, NOT specifiable in the
-                                 -- config file.
+                                -- config file.
     }
 
 -- | Empty config type with all the default values.
@@ -71,19 +63,16 @@ getUserConfig :: IO Config
 getUserConfig = do
     -- Default path where to look for the config file.
     -- '~/.config/hmenu/hmenu.toml'
-    cfgFile <- hmenuPath <&> (</> "hmenu.toml")
+    cfgFile <- hmenuPath `fappend` "hmenu.toml"
 
     -- If file doesn't exist we return a type with default values, otherwise we
     -- try to parse the config and see what's there.
     isFile <- doesFileExist cfgFile
     if not isFile
         then pure defaultCfg
-        else do
-            -- Read and evaluate file.
-            tomlFile <- T.readFile cfgFile
-            pure $! case Toml.decode configCodec tomlFile of
-                Left  _    -> defaultCfg
-                Right !cfg -> makeConfig cfg
+        else either (const defaultCfg)
+                    makeConfig
+                    . Toml.decode configCodec <$> T.readFile cfgFile
 
 -- | Build up a config based on what the parser could find, substitute in
 -- default values for fields that were not able to parse/missing.

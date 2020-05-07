@@ -2,7 +2,6 @@ module Main
     ( main
     ) where
 
--- Local imports
 import CLI.Parser (Options(Options, dmenuOpts, historyPath), options)
 import Core.Select
     ( evalDirs, formatUserPaths, getExecutables, makeNewEntries, runUpdate
@@ -11,10 +10,8 @@ import Core.Select
 import Core.Toml (Config(Config, dmenuExe, files, histPath), getUserConfig)
 import Core.Util (histFile, hmenuPath)
 
--- Map
 import qualified Data.Map.Strict as Map
 
--- Other imports
 import Options.Applicative (execParser)
 import System.Directory (createDirectoryIfMissing)
 import System.Posix.Env.ByteString (getEnvDefault)

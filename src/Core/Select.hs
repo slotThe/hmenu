@@ -10,7 +10,6 @@ module Core.Select
     , evalDirs
     ) where
 
--- Local imports
 import Core.Parser (getHist)
 import Core.Toml (Config(Config, files, histPath, open, term, tty))
 import Core.Util
@@ -22,18 +21,13 @@ import Core.Util
     , tryAddPrefix
     )
 
--- ByteString
-import           Data.ByteString       (ByteString)
 import qualified Data.ByteString.Char8 as BS
+import qualified Data.Map.Strict       as Map
+import qualified Data.Set              as Set
 
--- Map
-import qualified Data.Map.Strict as Map
-
--- Set
-import qualified Data.Set as Set
-
--- Other imports
 import Data.Bool (bool)
+import Data.ByteString (ByteString)
+import Data.Either (fromRight)
 import Data.List (sortBy)
 import System.Directory (doesFileExist)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
@@ -107,11 +101,7 @@ tryRead file =
          =<< doesFileExist file
   where
     tryParseFile :: FilePath -> IO Items
-    tryParseFile f = do
-        hist <- getHist f
-        pure $! case hist of
-            Left  _   -> Map.empty
-            Right its -> its
+    tryParseFile = (fromRight mempty <$>) . getHist
 
 -- | Get all executables from all dirs in $PATH.
 getExecutables :: IO [ByteString]
@@ -181,10 +171,9 @@ makeNewEntries xs = Map.fromSet (const 0) $ Set.fromList xs
 -- | Sort 'Items' by its values and return the list of keys.
 -- This will make often used commands bubble up to the top.
 sortByValues :: Items -> [ByteString]
-sortByValues it =
-    map fst
-        . sortBy (\(_, a) (_, b) -> compare b a)
-        $ Map.toList it
+sortByValues it = map fst
+                . sortBy (\(_, a) (_, b) -> compare b a)
+                $ Map.toList it
 
 -- | Process user defined files, add the appropriate prefixes if needed.
 formatUserPaths
