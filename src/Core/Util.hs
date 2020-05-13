@@ -1,15 +1,21 @@
 module Core.Util
-    ( ShowBS
+    ( -- * Types
+      ShowBS              -- type alias: ByteString -> ByteString
     , OpenIn(Term, Open)
-    , Items
-    , tryAddPrefix
-    , spawn
-    , openWith
-    , hmenuPath
-    , histFile
-    , getSearchPath
-    , fappend
-    , (</>)
+    , Items               -- type alias: Map ByteString Int
+
+      -- * Combining file paths
+    , tryAddPrefix        -- :: ByteString -> ByteString -> ByteString
+    , fappend             -- :: Functor f => f FilePath -> FilePath -> f FilePath
+    , (</>)               -- :: FilePath -> FilePath -> FilePath
+
+      -- * System file paths
+    , hmenuPath           -- :: IO FilePath
+    , histFile            -- :: IO FilePath
+
+      -- * Running commands
+    , spawn               -- :: ByteString -> IO ()
+    , openWith            -- :: OpenIn -> ShowBS -> ByteString -> ByteString
     ) where
 
 import qualified Data.ByteString.Char8 as BS
@@ -20,7 +26,6 @@ import Data.ByteString (ByteString)
 import Data.Functor ((<&>))
 import Data.Map.Strict (Map)
 import System.Directory (XdgDirectory(XdgConfig), getXdgDirectory)
-import System.Posix.Env.ByteString (getEnvDefault)
 import System.Process (spawnCommand)
 
 
@@ -61,10 +66,6 @@ openWith
 openWith Term t = t . (" -e " <>)
 openWith Open o = o . (" "    <>)
 
--- | Get all directories in @\$PATH@ as a list.
-getSearchPath :: IO [ByteString]
-getSearchPath = BS.split ':' <$> getEnvDefault "PATH" ""
-
 -- | XDG_CONFIG_HOME
 xdgConfig :: IO FilePath
 xdgConfig = getXdgDirectory XdgConfig ""
@@ -80,7 +81,7 @@ histFile :: IO FilePath
 histFile = hmenuPath `fappend` "histFile"
 
 -- | Functorial append operation.
-fappend :: IO FilePath -> FilePath -> IO FilePath
+fappend :: Functor f => f FilePath -> FilePath -> f FilePath
 fappend ioFp fp = ioFp <&> (</> fp)
 
 -- | Combine two paths into a new path.

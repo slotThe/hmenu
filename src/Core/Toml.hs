@@ -1,9 +1,8 @@
-{-# LANGUAGE BangPatterns #-}
-{-# LANGUAGE StrictData   #-}
+{-# LANGUAGE StrictData #-}
 
 module Core.Toml
     ( Config(..)
-    , getUserConfig
+    , getUserConfig  -- :: IO Config
     ) where
 
 import Core.Util (ShowBS, fappend, hmenuPath)
@@ -68,11 +67,11 @@ getUserConfig = do
     -- If file doesn't exist we return a type with default values, otherwise we
     -- try to parse the config and see what's there.
     isFile <- doesFileExist cfgFile
-    if not isFile
-        then pure defaultCfg
-        else either (const defaultCfg)
+    if isFile
+        then either (const defaultCfg)
                     makeConfig
                     . Toml.decode configCodec <$> T.readFile cfgFile
+        else pure defaultCfg
 
 -- | Build up a config based on what the parser could find, substitute in
 -- default values for fields that were not able to parse/missing.

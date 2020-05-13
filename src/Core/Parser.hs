@@ -1,6 +1,9 @@
 module Core.Parser
-    ( getHist
-    , pFile
+    ( -- * Parse the given file
+      getHist  -- :: FilePath -> IO Items
+
+      -- * The actual parser
+    , pFile    -- :: ByteString -> [(ByteString, Int)]
     ) where
 
 import Core.Util (Items)

@@ -1,25 +1,27 @@
 module Core.Select
-    ( runUpdate
-    , formatUserPaths
-    , getExecutables
-    , makeNewEntries
-    , selectWith
-    , sortByValues
-    , tryRead
-    , showItems
-    , evalDirs
+    ( -- * Interacting with dmenu
+      selectWith       -- :: [String] -> [ByteString] -> String -> IO (Either ProcessError ByteString)
+
+      -- * Interacting with the history file
+    , tryRead          -- :: FilePath -> IO Items
+    , runUpdate        -- :: ByteString -> Config -> Items -> IO ()
+
+      -- * Interacting with the system
+    , getExecutables   -- :: IO [ByteString]
+    , evalDirs         -- :: [ByteString] -> IO [ByteString]
+
+      -- * Pretty printing
+    , showItems        -- :: Items -> ByteString
+    , formatUserPaths  -- :: ByteString -> [ByteString] -> [ByteString]
+
+      -- * Utility
+    , makeNewEntries   -- :: [ByteString] -> Items
+    , sortByValues     -- :: Items -> [ByteString]
     ) where
 
 import Core.Parser (getHist)
 import Core.Toml (Config(Config, files, histPath, open, term, tty))
-import Core.Util
-    ( Items
-    , OpenIn(Open, Term)
-    , getSearchPath
-    , openWith
-    , spawn
-    , tryAddPrefix
-    )
+import Core.Util (Items, OpenIn(Open, Term), openWith, spawn, tryAddPrefix)
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map
@@ -98,7 +100,10 @@ tryRead file = bool (pure Map.empty) (getHist file) =<< doesFileExist file
 
 -- | Get all executables from all dirs in $PATH.
 getExecutables :: IO [ByteString]
-getExecutables = fmap concat . traverse listExistentDir =<< getSearchPath
+getExecutables = fmap concat
+               . traverse listExistentDir
+               . BS.split ':'
+             =<< getEnvDefault "PATH" ""
 
 {- | Only try listing the directory if it actually exists.
    This is for all the people who have non-existent dirs in their path for some
