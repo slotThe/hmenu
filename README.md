@@ -37,8 +37,9 @@ If you want to only use the "display commands in order of usage feature" of
 
 ### Stack
 
-Build with `stack build`, then copy the executable to a convenient location.
+Build with `stack build`, then copy the executable to a convenient location (or
+just use `stack install`, to copy the executable to the local-bin-path).
 
 ### Cabal
 
-Build with `cabal v2-install hmenu`.
+Build with `cabal install`.
