@@ -27,7 +27,6 @@ import qualified Data.Set              as Set
 
 import Data.Bool (bool)
 import Data.ByteString (ByteString)
-import Data.Either (fromRight)
 import Data.List (sortBy)
 import System.Directory (doesFileExist)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess))
@@ -95,13 +94,7 @@ selectWith opts entries dmenu = do
 -- | Try to read a file that contains a map.  Return an empty map if the file
 -- doesn't exist.
 tryRead :: FilePath -> IO Items
-tryRead file =
-    bool (pure Map.empty)
-         (tryParseFile file)
-         =<< doesFileExist file
-  where
-    tryParseFile :: FilePath -> IO Items
-    tryParseFile = (fromRight mempty <$>) . getHist
+tryRead file = bool (pure Map.empty) (getHist file) =<< doesFileExist file
 
 -- | Get all executables from all dirs in $PATH.
 getExecutables :: IO [ByteString]
@@ -112,10 +105,7 @@ getExecutables = fmap concat . traverse listExistentDir =<< getSearchPath
    reason.
 -}
 listExistentDir :: ByteString -> IO [ByteString]
-listExistentDir fp =
-    bool (pure [])
-         (getDirContents fp)
-          =<< fileExist fp
+listExistentDir fp = bool (pure []) (getDirContents fp) =<< fileExist fp
   where
     getDirContents :: ByteString -> IO [ByteString]
     getDirContents =
@@ -139,7 +129,7 @@ evalDir dir = case BS.unsnoc dir of
             -- if necessary and then try to list the contents of the directory.
             map (dir </>) <$> listExistentDir (tryAdd home dir)
 
-        _ -> pure [dir]
+        _   -> pure [dir]
   where
     tryAdd :: ByteString -> ByteString -> ByteString
     tryAdd prefix s

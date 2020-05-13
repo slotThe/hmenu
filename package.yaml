@@ -30,7 +30,6 @@ dependencies:
   - tomland
   - posix-paths
   - bytestring
-  - attoparsec
   - unix
   - optparse-applicative
 
@@ -46,10 +45,8 @@ executables:
 tests:
   spec:
     main: Spec.hs
-    source-dirs:
-      - test
-      - src
+    source-dirs: test
     dependencies:
+      - hmenu
       - hspec
-      - hspec-attoparsec
       - QuickCheck

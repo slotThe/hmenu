@@ -9,6 +9,7 @@ module Core.Util
     , histFile
     , getSearchPath
     , fappend
+    , (</>)
     ) where
 
 import qualified Data.ByteString.Char8 as BS
