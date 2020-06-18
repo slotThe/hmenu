@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6607d78ac8827541523ec0454162cd1b630de53d15329e10ba11884577825e25
+-- hash: d70c5965c6ec034d45cb7ae1d234be7cecd9561a6e975fc3133ebc5bdccd3bb5
 
 name:                hmenu
 version:             0.2.3
@@ -29,7 +29,7 @@ library
   hs-source-dirs:
       src/
   default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts
-  ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
+  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   build-depends:
       base-noprelude
     , base-prelude
@@ -49,7 +49,7 @@ executable hmenu
   hs-source-dirs:
       app
   default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts
-  ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
+  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   main-is: hmenu.hs
   other-modules:
       CLI.Parser
@@ -78,7 +78,7 @@ test-suite spec
   hs-source-dirs:
       test
   default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts
-  ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
+  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   build-depends:
       QuickCheck
     , base-noprelude

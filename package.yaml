@@ -16,9 +16,14 @@ ghc-options:
   -O2
   -Wall
   -Wcompat
-  -Wincomplete-record-updates
-  -Wincomplete-uni-patterns
+  -Widentities
+  -Wmissing-import-lists
+  -Wmissing-export-lists
   -Wredundant-constraints
+  -Wmissed-specialisations
+  -Wincomplete-uni-patterns
+  -Wmissing-local-signatures
+  -Wincomplete-record-updates
 
 dependencies:
   - base-noprelude

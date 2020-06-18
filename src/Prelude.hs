@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-missing-import-lists #-}
+
 module Prelude
     ( module BasePrelude
     , ByteString
