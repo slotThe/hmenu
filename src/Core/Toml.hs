@@ -10,8 +10,6 @@ import Core.Util (ShowBS, fappend, hmenuPath)
 import qualified Data.Text.IO as T
 import qualified Toml
 
-import Data.ByteString (ByteString)
-import Data.Maybe (fromMaybe)
 import System.Directory (doesFileExist)
 import Toml (TomlCodec, (.=))
 

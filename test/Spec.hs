@@ -9,7 +9,7 @@ import Core.Select (showItems)
 import Core.Util (Items, (</>))
 
 import qualified Data.ByteString.Char8 as BS
-import qualified Data.Map              as Map
+import qualified Data.Map.Strict       as Map
 
 import Data.ByteString (ByteString)
 import Test.Hspec (describe, hspec, it)

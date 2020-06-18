@@ -27,11 +27,7 @@ import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map
 import qualified Data.Set              as Set
 
-import Data.Bool (bool)
-import Data.ByteString (ByteString)
-import Data.List (sortBy)
 import System.Directory (doesFileExist)
-import System.Exit (ExitCode(ExitFailure, ExitSuccess))
 import System.Posix.Directory.Traversals (getDirectoryContents)
 import System.Posix.Env.ByteString (getEnvDefault)
 import System.Posix.FilePath ((</>))

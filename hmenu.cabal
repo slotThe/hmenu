@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: fba0c669589e620d163257f6244e78f79a839bfeec541d55d5f213e047e225ee
+-- hash: 6607d78ac8827541523ec0454162cd1b630de53d15329e10ba11884577825e25
 
 name:                hmenu
 version:             0.2.3
@@ -23,6 +23,7 @@ library
       Core.Select
       Core.Toml
       Core.Util
+      Prelude
   other-modules:
       Paths_hmenu
   hs-source-dirs:
@@ -30,7 +31,8 @@ library
   default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts
   ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
   build-depends:
-      base
+      base-noprelude
+    , base-prelude
     , bytestring
     , containers
     , directory
@@ -54,7 +56,8 @@ executable hmenu
       Paths_hmenu
   default-language: Haskell2010
   build-depends:
-      base
+      base-noprelude
+    , base-prelude
     , bytestring
     , containers
     , directory
@@ -78,7 +81,8 @@ test-suite spec
   ghc-options: -O2 -Wall -Wcompat -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints
   build-depends:
       QuickCheck
-    , base
+    , base-noprelude
+    , base-prelude
     , bytestring
     , containers
     , directory

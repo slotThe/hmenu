@@ -11,8 +11,6 @@ import Core.Util (Items)
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map
 
-import Data.ByteString (ByteString)
-
 
 -- | Read a history file (the file must exist) and parse it into an item map.
 getHist :: FilePath -> IO Items
@@ -22,6 +20,7 @@ getHist file = Map.fromList . pFile <$> BS.readFile file
 pFile :: ByteString -> [(ByteString, Int)]
 pFile h = go [] h
   where
+    go :: [(ByteString, Int)] -> ByteString -> [(ByteString, Int)]
     go its ""    = its
     go its input = go ((name, number) : its) rest'
       where

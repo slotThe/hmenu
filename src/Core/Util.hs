@@ -21,10 +21,6 @@ module Core.Util
 import qualified Data.ByteString.Char8 as BS
 import qualified System.Posix.FilePath as BS -- used for ByteString version of </>
 
-import Control.Monad (void)
-import Data.ByteString (ByteString)
-import Data.Functor ((<&>))
-import Data.Map.Strict (Map)
 import System.Directory (XdgDirectory(XdgConfig), getXdgDirectory)
 import System.Process (spawnCommand)
 

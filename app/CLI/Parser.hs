@@ -1,12 +1,12 @@
 module CLI.Parser
     ( Options(..)
-    , pOptions
-    , options
+    , pOptions     -- :: Parser Options
+    , options      -- :: ParserInfo Options
     ) where
 
 import Options.Applicative
     ( Parser, ParserInfo, argument, fullDesc, header, help, helper, info, long
-    , many, metavar, short, str, strOption, value
+    , metavar, short, str, strOption, value
     )
 
 

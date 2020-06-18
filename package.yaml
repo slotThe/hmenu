@@ -21,7 +21,8 @@ ghc-options:
   -Wredundant-constraints
 
 dependencies:
-  - base
+  - base-noprelude
+  - base-prelude
   - directory
   - text
   - process
