@@ -89,8 +89,8 @@ infixr 5 </>
     | otherwise                 = combineAlways a b
   where
     hasLeadingPathSeparator :: FilePath -> Bool
-    hasLeadingPathSeparator "" = False
-    hasLeadingPathSeparator x  = head x == '/'
+    hasLeadingPathSeparator []    = False
+    hasLeadingPathSeparator (x:_) = x == '/'
 
     -- | Combine two paths, assuming rhs is NOT absolute.
     combineAlways :: FilePath -> FilePath -> FilePath

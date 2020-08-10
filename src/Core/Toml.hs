@@ -1,5 +1,3 @@
-{-# LANGUAGE StrictData #-}
-
 module Core.Toml
     ( Config(..)
     , getUserConfig  -- :: IO Config
@@ -16,13 +14,13 @@ import Toml (Codec(Codec, codecRead), TomlCodec, (.=), (<!>))
 
 -- | The tools config file.
 data Config = Config
-    { files    :: [ByteString]
-    , open     :: ShowBS
-    , dmenuExe :: FilePath
-    , term     :: ShowBS
-    , tty      :: [ByteString]
-    , histPath :: FilePath      -- ^ Command line option, NOT specifiable in the
-                                -- config file.
+    { files    :: ![ByteString]
+    , open     :: !ShowBS
+    , dmenuExe :: !FilePath
+    , term     :: !ShowBS
+    , tty      :: ![ByteString]
+    , histPath :: !FilePath      -- ^ Command line option, NOT specifiable in
+                                 -- the config file.
     }
 
 -- | Empty config type with all the default values.

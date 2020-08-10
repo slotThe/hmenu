@@ -12,8 +12,8 @@ import Options.Applicative
 
 -- | Options the user may specify on the command line.
 data Options = Options
-    { historyPath :: FilePath
-    , dmenuOpts   :: [String]
+    { historyPath :: !FilePath
+    , dmenuOpts   :: ![String]
     }
 
 -- | Parse all command line options.
