@@ -3,22 +3,21 @@ module Core.Parser
       getHist  -- :: FilePath -> IO Items
 
       -- * The actual parser
-    , pFile    -- :: ByteString -> [(ByteString, Int)]
+    , pFile    -- :: ByteString -> Items
     ) where
 
 import Core.Util (Items)
 
 import qualified Data.ByteString.Char8 as BS
-import qualified Data.Map.Strict       as Map
 
 
 -- | Read a history file (the file must exist) and parse it into an item map.
 getHist :: FilePath -> IO Items
-getHist file = Map.fromList . pFile <$> BS.readFile file
+getHist = fmap pFile . BS.readFile
 
 -- | Parse a history file of name-number pairs.
-pFile :: ByteString -> [(ByteString, Int)]
-pFile h = go [] h
+pFile :: ByteString -> Items
+pFile = fromList . go []
   where
     go :: [(ByteString, Int)] -> ByteString -> [(ByteString, Int)]
     go its ""    = its

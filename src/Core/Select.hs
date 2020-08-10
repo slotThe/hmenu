@@ -12,7 +12,6 @@ module Core.Select
 
       -- * Pretty printing
     , showItems        -- :: Items -> ByteString
-    , formatUserPaths  -- :: ByteString -> [ByteString] -> [ByteString]
 
       -- * Utility
     , makeNewEntries   -- :: [ByteString] -> Items
@@ -21,7 +20,7 @@ module Core.Select
 
 import Core.Parser (getHist)
 import Core.Toml (Config(Config, files, histPath, open, term, tty))
-import Core.Util (Items, OpenIn(Open, Term), openWith, spawn, tryAddPrefix)
+import Core.Util (Items, OpenIn(Open, Term), openWith, spawn)
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map
@@ -92,7 +91,7 @@ selectWith opts entries dmenu = do
 -- | Try to read a file that contains a map.  Return an empty map if the file
 -- doesn't exist.
 tryRead :: FilePath -> IO Items
-tryRead file = bool (pure Map.empty) (getHist file) =<< doesFileExist file
+tryRead file = bool (pure mempty) (getHist file) =<< doesFileExist file
 
 -- | Get all executables from all dirs in $PATH.
 getExecutables :: IO [ByteString]
@@ -154,7 +153,7 @@ decideSelection sel Config{ files, tty, term, open }
 
 {- | Turn a list into 'Items' and set all starting values to 0.
    NOTE: The implementation using sets seems to perform slightly better memory
-         wise than the naive implementation @ Map.fromList [(x, 0) | x <- xs] @.
+         wise than the naive implementation @ fromList [(x, 0) | x <- xs] @.
 -}
 makeNewEntries :: [ByteString] -> Items
 makeNewEntries xs = Map.fromSet (const 0) $ Set.fromList xs
@@ -165,10 +164,3 @@ sortByValues :: Items -> [ByteString]
 sortByValues it = map fst
                 . sortBy (\(_, a) (_, b) -> compare b a)
                 $ Map.toList it
-
--- | Process user defined files, add the appropriate prefixes if needed.
-formatUserPaths
-    :: ByteString    -- ^ Prefix for '$HOME'.
-    -> [ByteString]  -- ^ User defined strings for option.
-    -> [ByteString]  -- ^ Properly formatted paths.
-formatUserPaths home = map (tryAddPrefix home)

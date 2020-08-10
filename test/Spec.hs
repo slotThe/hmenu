@@ -1,3 +1,4 @@
+{-# LANGUAGE BlockArguments    #-}
 {-# LANGUAGE TypeApplications  #-}
 
 module Main
@@ -21,8 +22,7 @@ main :: IO ()
 main = hspec $ do
   describe "pFile" $
     it "should satisfy x == (parse . pretty) x" $
-      forAll itemsGen $ \x ->
-        (Map.fromList . pFile . showItems) x == x
+      forAll itemsGen \x -> (pFile . showItems) x == x
 
   -- Source: https://hackage.haskell.org/package/filepath
   describe "</>" $
@@ -45,7 +45,7 @@ main = hspec $ do
           "home" </> "/bob" == "/bob"
 
 itemsGen :: Gen Items
-itemsGen = Map.fromList <$> listOf itemGen
+itemsGen = fromList <$> listOf itemGen
 
 itemGen :: Gen (ByteString, Int)
 itemGen = (,) <$> bytestringGen <*> arbitrary @Int `suchThat` (>= 0)

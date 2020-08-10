@@ -4,11 +4,11 @@ module Main
 
 import CLI.Parser (Options(Options, dmenuOpts, historyPath), options)
 import Core.Select
-    ( evalDirs, formatUserPaths, getExecutables, makeNewEntries, runUpdate
+    ( evalDirs, getExecutables, makeNewEntries, runUpdate
     , selectWith, sortByValues, tryRead
     )
 import Core.Toml (Config(Config, dmenuExe, files, histPath), getUserConfig)
-import Core.Util (histFile, hmenuPath)
+import Core.Util (histFile, hmenuPath, tryAddPrefix)
 
 import qualified Data.Map.Strict as Map
 
@@ -17,10 +17,7 @@ import System.Directory (createDirectoryIfMissing)
 import System.Posix.Env.ByteString (getEnvDefault)
 
 
-{- | Execute dmenu and then do stuff.
-   NOTE: Intersection and union for maps are both left biased and this fact is
-         used the calculations below.
--}
+-- | Execute dmenu and then do stuff.
 main :: IO ()
 main = do
     -- Get command line options and parse them.
@@ -35,7 +32,7 @@ main = do
     -- See Note [Caching]
     -- Files the user added in the config file.
     home  <- getEnvDefault "HOME" ""
-    userFiles <- evalDirs $ formatUserPaths home files
+    userFiles <- evalDirs $ map (tryAddPrefix home) files
     -- The path to the history file.
     hp <- if null historyPath then histFile else pure historyPath
     -- New config, this gets passed to runUpdate.
@@ -51,6 +48,7 @@ main = do
     let inters = hist `Map.intersection` pathPlus
         newMap = inters <> pathPlus
         -- 'mappend' for maps is the union (as expected).
+        -- Note that intersection and union for maps is left-biased.
 
     -- Let the user select something from the list.
     selection <- selectWith dmenuOpts (sortByValues newMap) dmenuExe

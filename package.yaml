@@ -28,15 +28,15 @@ ghc-options:
 dependencies:
   - base-noprelude
   - base-prelude
-  - directory
+  - containers
   - text
+  - bytestring
+  - posix-paths
+  - directory
+  - unix
   - process
   - process-extras
-  - containers
   - tomland
-  - posix-paths
-  - bytestring
-  - unix
   - optparse-applicative
 
 library:

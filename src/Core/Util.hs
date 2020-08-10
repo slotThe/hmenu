@@ -29,9 +29,7 @@ import System.Process (spawnCommand)
 type Items = Map ByteString Int
 
 -- | Type for helping to decide how to open something.
-data OpenIn
-    = Term
-    | Open
+data OpenIn = Term | Open
 
 -- | ShowS for ByteString because it is shorter :>.
 type ShowBS = ByteString -> ByteString
@@ -78,7 +76,7 @@ histFile = hmenuPath `fappend` "histFile"
 
 -- | Functorial append operation.
 fappend :: Functor f => f FilePath -> FilePath -> f FilePath
-fappend ioFp fp = ioFp <&> (</> fp)
+fappend liftedFp fp = liftedFp <&> (</> fp)
 
 -- | Combine two paths into a new path.
 -- Adapted from: https:\/\/hackage.haskell.org\/package\/filepath
