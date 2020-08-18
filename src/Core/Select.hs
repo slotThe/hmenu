@@ -26,12 +26,12 @@ import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map
 import qualified Data.Set              as Set
 
-import System.Directory (doesFileExist)
-import System.Posix.Directory.Traversals (getDirectoryContents)
+import System.Posix.Directory.ByteString (openDirStream)
+import System.Posix.Directory.Foreign (DirType, dtDir, dtUnknown)
+import System.Posix.Directory.Traversals (getDirectoryContents, readDirEnt)
 import System.Posix.Env.ByteString (getEnvDefault)
 import System.Posix.FilePath ((</>))
-import System.Posix.Files.ByteString (fileExist)
-import System.Process (proc)
+import System.Posix.Files.ByteString (fileExist, getFileStatus, isDirectory)
 import System.Process.ByteString (readCreateProcessWithExitCode)
 
 
@@ -96,7 +96,7 @@ tryRead file = bool (pure mempty) (getHist file) =<< doesFileExist file
 -- | Get all executables from all dirs in $PATH.
 getExecutables :: IO [ByteString]
 getExecutables = fmap concat
-               . traverse listExistentDir
+               . traverse listDir
                . BS.split ':'
              =<< getEnvDefault "PATH" ""
 
@@ -104,12 +104,14 @@ getExecutables = fmap concat
    This is for all the people who have non-existent dirs in their path for some
    reason.
 -}
-listExistentDir :: ByteString -> IO [ByteString]
-listExistentDir fp = bool (pure []) (getDirContents fp) =<< fileExist fp
+listDir :: ByteString -> IO [ByteString]
+listDir dir = ifM (fileExist dir) (getDirContents dir) (pure [])
   where
     getDirContents :: ByteString -> IO [ByteString]
-    getDirContents =
-        fmap (filter (`notElem` [".", ".."]) . map snd) . getDirectoryContents
+    getDirContents = fmap (map snd . removeDirs) . getDirectoryContents
+
+    removeDirs :: [(DirType, ByteString)] -> [(DirType, ByteString)]
+    removeDirs = filter \(dt, name) -> dt /= dtDir && name `notElem` [".", ".."]
 
 -- | Apply 'evalDir' to some list of file paths.
 evalDirs :: [ByteString] -> IO [ByteString]
@@ -118,22 +120,27 @@ evalDirs dirs = concat <$> traverse evalDir dirs
 -- | If the given file path is a directory, try to list all of its contents.
 -- Otherwise just return the file path as is.
 evalDir :: ByteString -> IO [ByteString]
-evalDir dir = case BS.unsnoc dir of
-    Nothing     -> pure []
-    Just (_, l) -> case l of
-        '/' -> do
-            home <- getEnvDefault "HOME" ""
+evalDir dir = do
+    -- Try to make the path absolute, as 'getDirectoryContents' can only
+    -- handle absolute paths.
+    home <- getEnvDefault "HOME" ""
+    let absPath = if   "~/" `BS.isPrefixOf` dir
+                  then home </> BS.drop 2 dir
+                  else dir
+    ifM (isDir absPath)
+        -- List all things inside the directory and restore the original naming scheme.
+        (map (dir </>) <$> listDir absPath)
+        (pure [dir])
 
-            -- As 'listExistentDir' can only handle absolute paths, make it so
-            -- if necessary and then try to list the contents of the directory.
-            map (dir </>) <$> listExistentDir (tryAdd home dir)
-
-        _   -> pure [dir]
-  where
-    tryAdd :: ByteString -> ByteString -> ByteString
-    tryAdd prefix s
-        | "~/" `BS.isPrefixOf` s = prefix </> BS.drop 2 s
-        | otherwise              = s
+-- | Check if something is a directory.
+isDir :: ByteString -> IO Bool
+isDir fp = catch
+    do dirStream  <- openDirStream fp
+       (dt, name) <- readDirEnt dirStream
+       if | dt == dtDir     -> pure True
+          | dt == dtUnknown -> isDirectory <$> getFileStatus (fp </> name)
+          | otherwise       -> pure False
+    \(_ :: SomeException) -> pure False
 
 -- | Pretty print our items.
 showItems :: Items -> ByteString
