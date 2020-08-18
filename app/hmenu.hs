@@ -13,7 +13,6 @@ import Core.Util (histFile, hmenuPath, tryAddPrefix)
 import qualified Data.Map.Strict as Map
 
 import Options.Applicative (execParser)
-import System.Directory (createDirectoryIfMissing)
 import System.Posix.Env.ByteString (getEnvDefault)
 
 

@@ -91,7 +91,7 @@ selectWith opts entries dmenu = do
 -- | Try to read a file that contains a map.  Return an empty map if the file
 -- doesn't exist.
 tryRead :: FilePath -> IO Items
-tryRead file = bool (pure mempty) (getHist file) =<< doesFileExist file
+tryRead file = ifM (doesFileExist file) (getHist file) (pure mempty)
 
 -- | Get all executables from all dirs in $PATH.
 getExecutables :: IO [ByteString]

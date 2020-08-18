@@ -21,9 +21,6 @@ module Core.Util
 import qualified Data.ByteString.Char8 as BS
 import qualified System.Posix.FilePath as BS -- used for ByteString version of </>
 
-import System.Directory (XdgDirectory(XdgConfig), getXdgDirectory)
-import System.Process (spawnCommand)
-
 
 -- | Type for an Map that describes all of the executables with their ratings.
 type Items = Map ByteString Int

@@ -8,7 +8,6 @@ import Core.Util (ShowBS, fappend, hmenuPath)
 import qualified Data.Text.IO as T
 import qualified Toml
 
-import System.Directory (doesFileExist)
 import Toml (Codec(Codec, codecRead), TomlCodec, (.=), (<!>))
 
 

@@ -11,6 +11,9 @@ default-extensions:
   - OverloadedStrings
   - NamedFieldPuns
   - FlexibleContexts
+  - MultiWayIf
+  - BlockArguments
+  - ScopedTypeVariables
 
 ghc-options:
   -O2
