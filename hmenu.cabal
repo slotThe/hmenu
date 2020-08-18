@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a0200fbe91787d6e3d4d2a5e228f9a97f3d3cc58b9454fb4a7a692fb1cdef662
+-- hash: f4fca95501c0b7b03b8cb61111056492d7581d23b8117a41ea0a2bfdc378555e
 
 name:                hmenu
 version:             0.2.3
@@ -41,7 +41,7 @@ library
     , process
     , process-extras
     , text
-    , tomland
+    , tomland >=1.3.0.0
     , unix
   default-language: Haskell2010
 
@@ -67,7 +67,7 @@ executable hmenu
     , process
     , process-extras
     , text
-    , tomland
+    , tomland >=1.3.0.0
     , unix
 
 test-suite spec
@@ -93,6 +93,6 @@ test-suite spec
     , process
     , process-extras
     , text
-    , tomland
+    , tomland >=1.3.0.0
     , unix
   default-language: Haskell2010

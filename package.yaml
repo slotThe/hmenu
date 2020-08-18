@@ -39,7 +39,7 @@ dependencies:
   - unix
   - process
   - process-extras
-  - tomland
+  - tomland              >= 1.3.0.0
   - optparse-applicative
 
 library:

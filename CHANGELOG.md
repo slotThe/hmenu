@@ -5,6 +5,10 @@
 -   New command line option `--histFile` (short: `f`) to specify a history file
     to use.
 
+## Changed
+-   We now explicitly ignore directories in when they occur as sub directories
+    of specified paths.
+
 # 0.2.3
 ## Changed
 -   The history file got a new layout.
