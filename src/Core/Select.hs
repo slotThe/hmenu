@@ -117,7 +117,6 @@ evalDirs dirs = concat <$> traverse evalDir dirs
 
 -- | If the given file path is a directory, try to list all of its contents.
 -- Otherwise just return the file path as is.
--- TODO: Possibly make this recursive for things like ".scripts\/more-scripts\/"
 evalDir :: ByteString -> IO [ByteString]
 evalDir dir = case BS.unsnoc dir of
     Nothing     -> pure []
