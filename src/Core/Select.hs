@@ -26,7 +26,7 @@ import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map
 import qualified Data.Set              as Set
 
-import System.Posix.Directory.ByteString (openDirStream)
+import System.Posix.Directory.ByteString (closeDirStream, openDirStream)
 import System.Posix.Directory.Foreign (DirType, dtDir, dtUnknown)
 import System.Posix.Directory.Traversals (getDirectoryContents, readDirEnt)
 import System.Posix.Env.ByteString (getEnvDefault)
@@ -135,8 +135,7 @@ evalDir dir = do
 -- | Check if something is a directory.
 isDir :: ByteString -> IO Bool
 isDir fp = catch
-    do dirStream  <- openDirStream fp
-       (dt, name) <- readDirEnt dirStream
+    do (dt, name) <- bracket (openDirStream fp) closeDirStream readDirEnt
        if | dt == dtDir     -> pure True
           | dt == dtUnknown -> isDirectory <$> getFileStatus (fp </> name)
           | otherwise       -> pure False
@@ -167,6 +166,4 @@ makeNewEntries xs = Map.fromSet (const 0) $ Set.fromList xs
 -- | Sort 'Items' by its values and return the list of keys.
 -- This will make often used commands bubble up to the top.
 sortByValues :: Items -> [ByteString]
-sortByValues it = map fst
-                . sortBy (\(_, a) (_, b) -> compare b a)
-                $ Map.toList it
+sortByValues = map fst . sortBy (\(_, a) (_, b) -> compare b a) . Map.toList
