@@ -3,7 +3,7 @@ module Core.Toml
     , getUserConfig  -- :: IO Config
     ) where
 
-import Core.Util (ShowBS, fappend, hmenuPath)
+import Core.Util (ShowBS, (<<>>), hmenuPath)
 
 import qualified Data.Text.IO as T
 import qualified Toml
@@ -62,7 +62,7 @@ getUserConfig :: IO Config
 getUserConfig = do
     -- Default path where to look for the config file.
     -- '~/.config/hmenu/hmenu.toml'
-    cfgFile <- hmenuPath `fappend` "hmenu.toml"
+    cfgFile <- hmenuPath <<>> "hmenu.toml"
 
     -- If file doesn't exist we return a type with default values, otherwise we
     -- try to parse the config and see what's there.
