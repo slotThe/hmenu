@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f4fca95501c0b7b03b8cb61111056492d7581d23b8117a41ea0a2bfdc378555e
+-- hash: a42871d0bf0258a3f320893e50c1b13f19b8c0078e943394f7a4cd89c4f6ffce
 
 name:                hmenu
 version:             0.2.3
@@ -15,7 +15,7 @@ license-file:        LICENSE
 author:              Slot
 maintainer:          soliditsallgood@tuta.io
 build-type:          Simple
-tested-with:         GHC == 8.8.3
+tested-with:         GHC == 8.8.4
 
 library
   exposed-modules:
