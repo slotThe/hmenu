@@ -14,6 +14,7 @@ default-extensions:
   - MultiWayIf
   - BlockArguments
   - ScopedTypeVariables
+  - LambdaCase
 
 ghc-options:
   -O2

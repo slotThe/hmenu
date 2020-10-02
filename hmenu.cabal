@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a42871d0bf0258a3f320893e50c1b13f19b8c0078e943394f7a4cd89c4f6ffce
+-- hash: 4f4bb90044d037c3dc0cccf897f575b48ba4aff710545ffc03244279bd1cf29b
 
 name:                hmenu
 version:             0.2.3
@@ -28,7 +28,7 @@ library
       Paths_hmenu
   hs-source-dirs:
       src/
-  default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts MultiWayIf BlockArguments ScopedTypeVariables
+  default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts MultiWayIf BlockArguments ScopedTypeVariables LambdaCase
   ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   build-depends:
       base-noprelude
@@ -48,7 +48,7 @@ library
 executable hmenu
   hs-source-dirs:
       app
-  default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts MultiWayIf BlockArguments ScopedTypeVariables
+  default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts MultiWayIf BlockArguments ScopedTypeVariables LambdaCase
   ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   main-is: Main.hs
   other-modules:
@@ -77,7 +77,7 @@ test-suite spec
       Paths_hmenu
   hs-source-dirs:
       test
-  default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts MultiWayIf BlockArguments ScopedTypeVariables
+  default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts MultiWayIf BlockArguments ScopedTypeVariables LambdaCase
   ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   build-depends:
       QuickCheck

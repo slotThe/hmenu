@@ -26,7 +26,7 @@ import qualified System.Posix.FilePath as BS -- used for ByteString version of <
 type Items = Map ByteString Int
 
 -- | Type for helping to decide how to open something.
-data OpenIn = Term | Open
+data OpenIn = Term ShowBS | Open ShowBS
 
 -- | ShowS for ByteString because it is shorter :>.
 type ShowBS = ByteString -> ByteString
@@ -50,12 +50,12 @@ spawn = void . spawnCommand . BS.unpack
 
 -- | Open something.
 openWith
-    :: OpenIn      -- ^ Decide what to add to the opening function.
-    -> ShowBS      -- ^ How to open something.
+    :: OpenIn      -- ^ How (and with what) to open something.
     -> ByteString  -- ^ The thing to open.
     -> ByteString
-openWith Term t = t . (" -e " <>)
-openWith Open o = o . (" "    <>)
+openWith = \case
+    Term t -> t . (" -e " <>)
+    Open o -> o . (" "    <>)
 
 -- | XDG_CONFIG_HOME
 xdgConfig :: IO FilePath

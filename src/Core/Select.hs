@@ -152,8 +152,8 @@ showItems = BS.unlines . map showItem . Map.toList
 -- | Decide what to actually do with the user selection from dmenu.
 decideSelection :: ByteString -> Config -> ByteString
 decideSelection sel Config{ files, tty, term, open }
-    | sel `elem` files = openWith Open open sel
-    | sel `elem` tty   = openWith Term term sel
+    | sel `elem` files = openWith (Open open) sel
+    | sel `elem` tty   = openWith (Term term) sel
     | otherwise        = sel
 
 {- | Turn a list into 'Items' and set all starting values to 0.
