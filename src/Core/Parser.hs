@@ -23,5 +23,7 @@ pFile = fromList . go []
     go its ""    = its
     go its input = go ((name, number) : its) rest'
       where
-        (name  , rest ) = BS.drop 1 <$> BS.span (/= ' ') input
-        (number, rest') = maybe (0, "") (BS.drop 1 <$>) $ BS.readInt rest
+        (name  , rest ) :: (ByteString, ByteString)
+            = BS.drop 1 <$> BS.span (/= ' ') input
+        (number, rest') :: (Int, ByteString)
+            = maybe (0, "") (BS.drop 1 <$>) $ BS.readInt rest

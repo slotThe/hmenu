@@ -41,8 +41,8 @@ tryAddPrefix prefix xs
     | isSpecial x = xs
     | otherwise   = prefix BS.</> xs
   where
-    x         = BS.head xs
-    isSpecial = (`elem` ['/', '~'])
+    x         :: Char         = BS.head xs
+    isSpecial :: Char -> Bool = (`elem` ['/', '~'])
 
 -- | Spawn a command and forget about it.
 spawn :: ByteString -> IO ()

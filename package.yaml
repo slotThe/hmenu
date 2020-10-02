@@ -48,7 +48,7 @@ library:
 executables:
   hmenu:
     source-dirs: app
-    main: hmenu.hs
+    main: Main.hs
     dependencies: hmenu
 
 tests:

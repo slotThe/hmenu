@@ -1,5 +1,5 @@
 module Main
-    ( main
+    ( main  -- :: IO ()
     ) where
 
 import CLI.Parser (Options(Options, dmenuOpts, historyPath), options)
@@ -30,7 +30,7 @@ main = do
 
     -- See Note [Caching]
     -- Files the user added in the config file.
-    home  <- getEnvDefault "HOME" ""
+    home      <- getEnvDefault "HOME" ""
     userFiles <- evalDirs $ map (tryAddPrefix home) files
     -- The path to the history file.
     hp <- if null historyPath then histFile else pure historyPath

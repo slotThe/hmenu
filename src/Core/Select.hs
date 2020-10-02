@@ -83,7 +83,7 @@ selectWith opts entries dmenu = do
     (exitCode, sOut, sErr) <-
         readCreateProcessWithExitCode (proc dmenu opts) (BS.unlines entries)
 
-    pure $! case exitCode of
+    pure case exitCode of
         -- Take first (= selected) word or return the error message.
         ExitFailure i -> Left (i, sErr)
         ExitSuccess   -> Right $! BS.takeWhile (/= '\n') sOut

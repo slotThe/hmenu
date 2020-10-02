@@ -46,7 +46,7 @@ configCodec = Config
     -- | Parse an option or, in case it is missing, return a default value.
     tomlWithDefault :: a -> TomlCodec a -> TomlCodec a
     tomlWithDefault def codec@Codec{ codecRead } =
-        codec { codecRead  = codecRead <!> const (pure def) }
+        codec { codecRead = codecRead <!> const (pure def) }
 
     toDL :: TomlCodec ByteString -> TomlCodec ShowBS
     toDL = Toml.dimap ($ "") (<>)
@@ -66,7 +66,6 @@ getUserConfig = do
 
     -- If file doesn't exist we return a type with default values, otherwise we
     -- try to parse the config and see what's there.
-    isFile <- doesFileExist cfgFile
-    if isFile
-        then fromRight defaultCfg . Toml.decode configCodec <$> T.readFile cfgFile
-        else pure defaultCfg
+    ifM (doesFileExist cfgFile)
+        (fromRight defaultCfg . Toml.decode configCodec <$> T.readFile cfgFile)
+        (pure defaultCfg)

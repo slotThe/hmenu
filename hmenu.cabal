@@ -50,7 +50,7 @@ executable hmenu
       app
   default-extensions: OverloadedStrings NamedFieldPuns FlexibleContexts MultiWayIf BlockArguments ScopedTypeVariables
   ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
-  main-is: hmenu.hs
+  main-is: Main.hs
   other-modules:
       CLI.Parser
       Paths_hmenu
