@@ -2,10 +2,10 @@ module Main
     ( main  -- :: IO ()
     ) where
 
-import CLI.Parser (Options(Options, dmenuOpts, historyPath), options)
+import CLI.Parser (Options(Options, dmenuOpts, historyPath, onlyFiles), options)
 import Core.Select
-    ( evalDirs, getExecutables, makeNewEntries, runUpdate
-    , selectWith, sortByValues, tryRead
+    ( evalDirs, getExecutables, makeNewEntries, runUpdate, selectWith
+    , sortByValues, tryRead
     )
 import Core.Toml (Config(Config, dmenuExe, files, histPath), getUserConfig)
 import Core.Util (histFile, hmenuPath, tryAddPrefix)
@@ -20,7 +20,7 @@ import System.Posix.Env.ByteString (getEnvDefault)
 main :: IO ()
 main = do
     -- Get command line options and parse them.
-    Options{ historyPath, dmenuOpts } <- execParser options
+    Options{ historyPath, dmenuOpts, onlyFiles } <- execParser options
 
     -- Create the @hmenu@ directory (and all parents) if necessary.
     createDirectoryIfMissing True =<< hmenuPath
@@ -34,8 +34,7 @@ main = do
     userFiles <- evalDirs $ map (tryAddPrefix home) files
 
     -- Everything new as a map.
-    execs <- getExecutables
-    let execsAndFiles = makeNewEntries $ userFiles <> execs
+    execsAndFiles <- makeNewEntries . (userFiles <>) <$> getExecutables
 
     -- Create a new map where everything old (i.e. not in the @$PATH@ or the
     -- config anymore) is thrown out and anything new is added to the map.
@@ -46,7 +45,12 @@ main = do
         -- Note that intersection and union for maps is left-biased.
 
     -- Let the user select something from the list.
-    selection <- selectWith dmenuOpts (sortByValues newMap) dmenuExe
+    let selectFrom | onlyFiles = filter (`elem` userFiles)
+                   | otherwise = id
+    selection <-
+        selectWith dmenuOpts
+                   (selectFrom $! sortByValues newMap)
+                   dmenuExe
 
     -- Process output.
     case selection of

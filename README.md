@@ -22,6 +22,9 @@ being a discount `yeganesh`.
     -   `--histFile`
         - Short: `-f`
         - Description: Path to the history file to use.
+    -   `--files-only`
+        - Short: `-o`
+        - Description: Whether to only show the user-specified files.
 
 All options after "--" will be directly forwarded to `dmenu`, so you may specify
 options in the following way:

@@ -4,6 +4,8 @@
     contents and puts those files in the list.
 -   New command line option `--histFile` (short: `f`) to specify a history file
     to use.
+-   New command line option `--files-only` (short: `o`) to *only* show the
+    user-defined files.
 
 ## Changed
 -   We now explicitly ignore directories in when they occur as sub directories

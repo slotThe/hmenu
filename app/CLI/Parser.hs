@@ -14,13 +14,12 @@ import Options.Applicative
 data Options = Options
     { historyPath :: !(Maybe FilePath)
     , dmenuOpts   :: ![String]
+    , onlyFiles   :: Bool       -- ^ __Only__ show files
     }
 
 -- | Parse all command line options.
 pOptions :: Parser Options
-pOptions = Options
-    <$> pHistoryPath
-    <*> pDmenuOpts
+pOptions = Options <$> pHistoryPath <*> pDmenuOpts <*> pOnlyFiles
 
 {- | Parse the 'historyPath' option; basically the user may specify an
    alternative history file to use.  If this is @Nothing@, the path will default
@@ -37,6 +36,13 @@ pHistoryPath = optional $ strOption
 -- | Options to get passed straight to dmenu.
 pDmenuOpts :: Parser [String]
 pDmenuOpts = many $ argument str (metavar "-- DMENU_OPTS")
+
+pOnlyFiles :: Parser Bool
+pOnlyFiles = switch
+     ( long "files-only"
+    <> short 'o'
+    <> help "Whether to only show the user-specified files."
+     )
 
 -- | Create an info type from our options, adding help text and other nice
 -- features.
