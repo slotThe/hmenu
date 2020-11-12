@@ -22,7 +22,7 @@ main = do
     -- Get command line options and parse them.
     Options{ historyPath, dmenuOpts } <- execParser options
 
-    -- Create the 'hmenu' directory (and all parents) if necessary.
+    -- Create the @hmenu@ directory (and all parents) if necessary.
     createDirectoryIfMissing True =<< hmenuPath
 
     -- Try to parse the config file (if it exists).
@@ -32,20 +32,16 @@ main = do
     -- Files the user added in the config file.
     home      <- getEnvDefault "HOME" ""
     userFiles <- evalDirs $ map (tryAddPrefix home) files
-    -- The path to the history file.
-    hp <- if null historyPath then histFile else pure historyPath
-    -- New config, this gets passed to runUpdate.
-    let cfg' = cfg { files = userFiles, histPath = hp }
 
     -- Everything new as a map.
     execs <- getExecutables
-    let pathPlus = makeNewEntries $ userFiles <> execs
+    let execsAndFiles = makeNewEntries $ userFiles <> execs
 
-    -- New map where everything old (i.e. not in the $PATH or the config
-    -- anymore) is thrown out and anything new is added to the map.
+    -- Create a new map where everything old (i.e. not in the @$PATH@ or the
+    -- config anymore) is thrown out and anything new is added to the map.
+    hp   <- maybe histFile pure historyPath  -- Path to the history file.
     hist <- tryRead hp
-    let inters = hist `Map.intersection` pathPlus
-        newMap = inters <> pathPlus
+    let newMap = (hist `Map.intersection` execsAndFiles) <> execsAndFiles
         -- 'mappend' for maps is the union (as expected).
         -- Note that intersection and union for maps is left-biased.
 
@@ -55,7 +51,7 @@ main = do
     -- Process output.
     case selection of
         Left  _ -> pure ()  -- silently fail
-        Right s -> runUpdate s cfg' newMap
+        Right s -> runUpdate s cfg{ files = userFiles, histPath = hp } newMap
 
 {- Note [Caching]
    ~~~~~~~~~~~~~~~~~~~~~~

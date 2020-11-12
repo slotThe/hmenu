@@ -6,13 +6,13 @@ module CLI.Parser
 
 import Options.Applicative
     ( Parser, ParserInfo, argument, fullDesc, header, help, helper, info, long
-    , metavar, short, str, strOption, value
+    , metavar, short, str, strOption, switch
     )
 
 
 -- | Options the user may specify on the command line.
 data Options = Options
-    { historyPath :: !FilePath
+    { historyPath :: !(Maybe FilePath)
     , dmenuOpts   :: ![String]
     }
 
@@ -22,16 +22,16 @@ pOptions = Options
     <$> pHistoryPath
     <*> pDmenuOpts
 
--- | Parse the 'historyPath' option.  Basically the user may specify an
--- alternative history file to use.
-pHistoryPath :: Parser FilePath
-pHistoryPath = strOption
+{- | Parse the 'historyPath' option; basically the user may specify an
+   alternative history file to use.  If this is @Nothing@, the path will default
+   to something like "$XDG_CONFIG_HOME\/hmenu\/histFile".
+-}
+pHistoryPath :: Parser (Maybe FilePath)
+pHistoryPath = optional $ strOption
      ( long "histfile"
     <> short 'f'
     <> metavar "FILE"
     <> help "Manually set path to history file."
-    <> value ""  -- This will actually default to
-                 -- "$XDG_CONFIG_HOME/hmenu/histFile" or an equivalent.
      )
 
 -- | Options to get passed straight to dmenu.
