@@ -36,13 +36,12 @@ main = do
     -- Everything new as a map.
     execsAndFiles <- makeNewEntries . (userFiles <>) <$> getExecutables
 
-    -- Create a new map where everything old (i.e. not in the @$PATH@ or the
-    -- config anymore) is thrown out and anything new is added to the map.
+    -- Create a new map where everything old (i.e. not in the @$PATH@ or
+    -- the config anymore) is thrown out and anything new is added to
+    -- the map.  See Note [Updating].
     hp   <- maybe histFile pure historyPath  -- Path to the history file.
     hist <- tryRead hp
     let newMap = (hist `Map.intersection` execsAndFiles) <> execsAndFiles
-        -- 'mappend' for maps is the union (as expected).
-        -- Note that intersection and union for maps is left-biased.
 
     -- Let the user select something from the list.
     let selectFrom | onlyFiles = filter (`elem` userFiles)
@@ -57,11 +56,28 @@ main = do
         Left  _ -> pure ()  -- silently fail
         Right s -> runUpdate s cfg{ files = userFiles, histPath = hp } newMap
 
+{- Note [Updating]
+   ~~~~~~~~~~~~~~~~~~~~~~
+
+What we are doing here (with A = 'hist' and B = 'execsAndFiles') is
+this:
+
+    (A ∩ B) ∪ B,
+
+where the union and intersection for "Data.Map" maps is left-biased.
+Note that, while in a set-theoretic context this would obviously equal
+B, this is not the case here; the elements of A and B are tuples, but
+the first component alone determines uniqueness!  We also explicitly
+exploit the left-biasedness (I'm claiming that word) of the operations.
+-}
+
 {- Note [Caching]
    ~~~~~~~~~~~~~~~~~~~~~~
-   Doing the caching *after* the user has selected something may be better (in
-   terms of perceived speed), though hmenu would "lag behind" for one execution
-   when things are updated.  As of version 0.2.0, we're almost as fast as before
-   being able to keep track of often used commands, so this is almost certainly
-   a non-issue.
+
+Doing the caching *after* the user has selected something may be better
+(in terms of perceived speed), though hmenu would "lag behind" for one
+execution when things are updated.
+
+As of version 0.2.0, we're almost as fast as before being able to keep
+track of often used commands, so this is almost certainly a non-issue.
 -}

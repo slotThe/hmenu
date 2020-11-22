@@ -19,12 +19,14 @@ being a discount `yeganesh`.
 `example.toml` for an example configuration.
 
 `hmenu` has the following command line options:
-    -   `--histFile`
-        - Short: `-f`
-        - Description: Path to the history file to use.
-    -   `--files-only`
-        - Short: `-o`
-        - Description: Whether to only show the user-specified files.
+
+- `--histFile`
+    - Short: `-f`
+    - Description: Path to the history file to use.
+
+- `--files-only`
+    - Short: `-o`
+    - Description: Whether to only show the user-specified files.
 
 All options after "--" will be directly forwarded to `dmenu`, so you may specify
 options in the following way:
