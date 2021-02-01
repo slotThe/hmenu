@@ -24,7 +24,6 @@ import Core.Util (Items, OpenIn(Open, Term), openWith, spawn)
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map
-import qualified Data.Set              as Set
 
 import System.Posix.Directory.ByteString (closeDirStream, openDirStream)
 import System.Posix.Directory.Foreign (DirType, dtDir, dtUnknown)
@@ -143,7 +142,7 @@ isDir fp = catch
 
 -- | Pretty print our items.
 showItems :: Items -> ByteString
-showItems = BS.unlines . map showItem . Map.toList
+showItems = BS.unlines . map showItem . toList
   where
     -- | Pretty print a single (application, score) tuple.
     showItem :: (ByteString, Int) -> ByteString
@@ -161,9 +160,9 @@ decideSelection sel Config{ files, tty, term, open }
          wise than the naive implementation @ fromList [(x, 0) | x <- xs] @.
 -}
 makeNewEntries :: [ByteString] -> Items
-makeNewEntries xs = Map.fromSet (const 0) $ Set.fromList xs
+makeNewEntries = Map.fromSet (const 0) . fromList
 
 -- | Sort 'Items' by its values and return the list of keys.
 -- This will make often used commands bubble up to the top.
 sortByValues :: Items -> [ByteString]
-sortByValues = map fst . sortBy (\(_, a) (_, b) -> compare b a) . Map.toList
+sortByValues = map fst . sortBy (\(_, a) (_, b) -> compare b a) . toList

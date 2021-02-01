@@ -4,8 +4,6 @@ module Prelude
     , ByteString
     , Map
     , XdgDirectory(XdgConfig)
-    , fromList
-    , toList
     , ifM
     , doesFileExist
     , proc
@@ -14,10 +12,9 @@ module Prelude
     , createDirectoryIfMissing
     ) where
 
-import BasePrelude hiding (toList)
+import BasePrelude
 import Data.ByteString (ByteString)
 import Data.Map.Strict (Map)
-import GHC.Exts (fromList, toList)
 import System.Directory (XdgDirectory(XdgConfig), createDirectoryIfMissing, doesFileExist, getXdgDirectory)
 import System.Process (proc, spawnCommand)
 
