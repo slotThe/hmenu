@@ -4,7 +4,7 @@ cabal-version: 2.0
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 24885a7615273dd6e1f7febf416a98073a5d677c462bc3d70a9ef091d2796bec
+-- hash: 2deb3260f2e786d7e0223f936f00f5600d146c701afb8cacd09c90ff83edd081
 
 name:                hmenu
 version:             0.2.3
@@ -30,6 +30,7 @@ library
   hs-source-dirs:
       src/
   default-extensions:
+      StrictData
       OverloadedStrings
       NamedFieldPuns
       FlexibleContexts
@@ -59,6 +60,7 @@ executable hmenu
   hs-source-dirs:
       app
   default-extensions:
+      StrictData
       OverloadedStrings
       NamedFieldPuns
       FlexibleContexts
@@ -97,6 +99,7 @@ test-suite spec
   hs-source-dirs:
       test
   default-extensions:
+      StrictData
       OverloadedStrings
       NamedFieldPuns
       FlexibleContexts

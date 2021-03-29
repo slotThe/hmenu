@@ -8,6 +8,7 @@ homepage:            https://gitlab.com/slotThe/hmenu
 tested-with:         GHC == 8.10.4
 
 default-extensions:
+  - StrictData
   - OverloadedStrings
   - NamedFieldPuns
   - FlexibleContexts

@@ -9,9 +9,9 @@ import Options.Applicative (Parser, ParserInfo, argument, fullDesc, header, help
 
 -- | Options the user may specify on the command line.
 data Options = Options
-    { historyPath :: !(Maybe FilePath)
-    , onlyFiles   :: !Bool      -- ^ __Only__ show files
-    , dmenuOpts   :: ![String]  -- ^ Positional arguments
+    { historyPath :: (Maybe FilePath)
+    , onlyFiles   :: Bool      -- ^ __Only__ show files
+    , dmenuOpts   :: [String]  -- ^ Positional arguments
     }
 
 -- | Parse all command line options.

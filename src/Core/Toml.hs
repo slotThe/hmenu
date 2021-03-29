@@ -13,12 +13,12 @@ import Toml (Codec (Codec, codecRead), TomlCodec, (.=), (<!>))
 
 -- | The tools config file.
 data Config = Config
-    { files    :: ![ByteString]
-    , open     :: !ShowBS
-    , dmenuExe :: !FilePath
-    , term     :: !ShowBS
-    , tty      :: ![ByteString]
-    , histPath :: !FilePath
+    { files    :: [ByteString]
+    , open     :: ShowBS
+    , dmenuExe :: FilePath
+    , term     :: ShowBS
+    , tty      :: [ByteString]
+    , histPath :: FilePath
       -- ^ Command line option, NOT specifiable in the config file.
     }
 
