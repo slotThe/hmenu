@@ -6,7 +6,7 @@ module Core.Util
 
       -- * Combining file paths
     , tryAddPrefix        -- :: ByteString -> ByteString -> ByteString
-    , (<<>>)              -- :: Functor f => f FilePath -> FilePath -> f FilePath
+    , (<</>>)             -- :: Functor f => f FilePath -> FilePath -> f FilePath
     , (</>)               -- :: FilePath -> FilePath -> FilePath
 
       -- * System file paths
@@ -67,17 +67,17 @@ xdgConfig = getXdgDirectory XdgConfig ""
 -- | Path to the hmenu directory.
 -- @XDG_CONFIG_HOME\/hmenu@, so probably @~\/.config\/hmenu@.
 hmenuPath :: IO FilePath
-hmenuPath = xdgConfig <<>> "hmenu"
+hmenuPath = xdgConfig <</>> "hmenu"
 
 -- | Path to the history file.
 -- @~\/.config\/hmenu\/histFile@
 histFile :: IO FilePath
-histFile = hmenuPath <<>> "histFile"
+histFile = hmenuPath <</>> "histFile"
 
--- | Functorial append operation.
-infixr 6 <<>>  -- same as <>
-(<<>>) :: Functor f => f FilePath -> FilePath -> f FilePath
-liftedFp <<>> fp = liftedFp <&> (</> fp)
+-- | Functorial path-append operation.
+infixr 5 <</>>  -- same as </>
+(<</>>) :: Functor f => f FilePath -> FilePath -> f FilePath
+liftedFp <</>> fp = liftedFp <&> (</> fp)
 
 -- | Combine two paths into a new path.
 -- Adapted from: <https://hackage.haskell.org/package/filepath>
