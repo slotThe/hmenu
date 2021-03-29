@@ -36,7 +36,7 @@ main = do
     -- Create a new map where everything old (i.e. not in the @$PATH@ or
     -- the config anymore) is thrown out and anything new is added to
     -- the map.  See Note [Updating].
-    hp   <- maybe histFile pure historyPath  -- Path to the history file.
+    hp   <- maybe histFile pure historyPath  -- path to history file
     hist <- tryRead hp
     let newMap = (hist `Map.intersection` execsAndFiles) <> execsAndFiles
 

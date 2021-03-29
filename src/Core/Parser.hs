@@ -11,7 +11,7 @@ import Core.Util (Items)
 import qualified Data.ByteString.Char8 as BS
 
 
--- | Read a history file (the file must exist) and parse it into an item map.
+-- | Read a history file (the file must exist) and parse it into a map.
 getHist :: FilePath -> IO Items
 getHist = fmap pFile . BS.readFile
 

@@ -22,7 +22,8 @@ import qualified Data.ByteString.Char8 as BS
 import qualified System.Posix.FilePath as BS -- used for ByteString version of </>
 
 
--- | Type for an Map that describes all of the executables with their ratings.
+-- | Type for an Map that describes all of the executables with their
+-- ratings.
 type Items = Map ByteString Int
 
 -- | Type for helping to decide how to open something.
@@ -32,8 +33,10 @@ data OpenIn = Term ShowBS | Open ShowBS
 type ShowBS = ByteString -> ByteString
 
 {- | Add a prefix to a string if the string is not starting with "/".
-   This will ensure the user can specify absolute paths to files, but also
-   conveniently use relative paths (starting from '$HOME') if that is desired.
+
+This will ensure the user can specify absolute paths to files, but also
+conveniently use relative paths (starting from '$HOME') if that is
+desired.
 -}
 tryAddPrefix :: ByteString -> ByteString -> ByteString
 tryAddPrefix prefix xs
@@ -77,7 +80,7 @@ infixr 6 <<>>  -- same as <>
 liftedFp <<>> fp = liftedFp <&> (</> fp)
 
 -- | Combine two paths into a new path.
--- Adapted from: https:\/\/hackage.haskell.org\/package\/filepath
+-- Adapted from: <https://hackage.haskell.org/package/filepath>
 infixr 5 </>
 (</>) :: FilePath -> FilePath -> FilePath
 (</>) a b

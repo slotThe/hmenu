@@ -34,14 +34,15 @@ import System.Posix.Files.ByteString (fileExist, getFileStatus, isDirectory)
 import System.Process.ByteString (readCreateProcessWithExitCode)
 
 
-{- | When a spawned process fails, this type is used to represent the exit code
-   and @stderr@ output.
-   See: https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs
+{- | When a spawned process fails, this type is used to represent the
+exit code and @stderr@ output.
+
+See <https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs>.
 -}
 type ProcessError = (Int, ByteString)
 
--- | Do the appropriate things with the user selection and update the history
--- file.
+-- | Do the appropriate things with the user selection and update the
+-- history file.
 runUpdate
     :: ByteString  -- ^ What the user picked.
     -> Config      -- ^ User config containing things that interest us.
@@ -61,11 +62,10 @@ runUpdate selection cfg itemMap = do
     updateValueIn :: ByteString -> Items -> Items
     updateValueIn = Map.adjust succ
 
-{- | Run dmenu with the given command line optinos and a list of entries from
-   which the user should choose.
+{- | Run dmenu with the given command line optinos and a list of entries
+from which the user should choose.
 
-   Originally 'select' in here:
-       https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs
+   Originally <https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs select>.
 -}
 selectWith
     :: [String]
@@ -87,8 +87,8 @@ selectWith opts entries dmenu = do
         ExitFailure i -> Left (i, sErr)
         ExitSuccess   -> Right $! BS.takeWhile (/= '\n') sOut
 
--- | Try to read a file that contains a map.  Return an empty map if the file
--- doesn't exist.
+-- | Try to read a file that contains a map.  Return an empty map if the
+-- file doesn't exist.
 tryRead :: FilePath -> IO Items
 tryRead file = ifM (doesFileExist file) (getHist file) (pure mempty)
 
@@ -99,10 +99,9 @@ getExecutables = fmap concat
                . BS.split ':'
              =<< getEnvDefault "PATH" ""
 
-{- | Only try listing the directory if it actually exists.
-   This is for all the people who have non-existent dirs in their path for some
-   reason.
--}
+-- | Only try listing the directory if it actually exists.  This is for
+-- all the people who have non-existent dirs in their path for some
+-- reason.
 listDir :: ByteString -> IO [ByteString]
 listDir dir = ifM (fileExist dir) (getDirContents dir) (pure [])
   where
@@ -116,8 +115,8 @@ listDir dir = ifM (fileExist dir) (getDirContents dir) (pure [])
 evalDirs :: [ByteString] -> IO [ByteString]
 evalDirs dirs = concat <$> traverse evalDir dirs
 
--- | If the given file path is a directory, try to list all of its contents.
--- Otherwise just return the file path as is.
+-- | If the given file path is a directory, try to list all of its
+-- contents.  Otherwise just return the file path as is.
 evalDir :: ByteString -> IO [ByteString]
 evalDir dir = do
     -- Try to make the path absolute, as 'getDirectoryContents' can only
@@ -127,7 +126,8 @@ evalDir dir = do
                   then home </> BS.drop 2 dir
                   else dir
     ifM (isDir absPath)
-        -- List all things inside the directory and restore the original naming scheme.
+        -- List all things inside the directory and restore the original
+        -- naming scheme.
         (map (dir </>) <$> listDir absPath)
         (pure [dir])
 
@@ -155,10 +155,7 @@ decideSelection sel Config{ files, tty, term, open }
     | sel `elem` tty   = openWith (Term term) sel
     | otherwise        = sel
 
-{- | Turn a list into 'Items' and set all starting values to 0.
-   NOTE: The implementation using sets seems to perform slightly better memory
-         wise than the naive implementation @ fromList [(x, 0) | x <- xs] @.
--}
+-- | Turn a list into 'Items' and set all starting values to 0.
 makeNewEntries :: [ByteString] -> Items
 makeNewEntries = Map.fromSet (const 0) . fromList
 

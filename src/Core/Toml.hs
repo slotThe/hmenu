@@ -18,8 +18,8 @@ data Config = Config
     , dmenuExe :: !FilePath
     , term     :: !ShowBS
     , tty      :: ![ByteString]
-    , histPath :: !FilePath      -- ^ Command line option, NOT specifiable in
-                                 -- the config file.
+    , histPath :: !FilePath
+      -- ^ Command line option, NOT specifiable in the config file.
     }
 
 -- | Empty config type with all the default values.
@@ -43,7 +43,7 @@ configCodec = Config
     <*> defTtyProgs (Toml.arrayOf Toml._ByteString "tty-programs") .= tty
     <*> pure ""
   where
-    -- | Parse an option or, in case it is missing, return a default value.
+    -- | Parse an option or—in case it's missing—return a default value.
     tomlWithDefault :: a -> TomlCodec a -> TomlCodec a
     tomlWithDefault def codec@Codec{ codecRead } =
         codec { codecRead = codecRead <!> const (pure def) }
@@ -63,9 +63,6 @@ getUserConfig = do
     -- Default path where to look for the config file.
     -- '~/.config/hmenu/hmenu.toml'
     cfgFile <- hmenuPath <<>> "hmenu.toml"
-
-    -- If file doesn't exist we return a type with default values, otherwise we
-    -- try to parse the config and see what's there.
     ifM (doesFileExist cfgFile)
         (fromRight defaultCfg . Toml.decode configCodec <$> T.readFile cfgFile)
         (pure defaultCfg)
