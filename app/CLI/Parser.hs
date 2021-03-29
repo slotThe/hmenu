@@ -14,7 +14,7 @@ import Options.Applicative
 data Options = Options
     { historyPath :: !(Maybe FilePath)
     , dmenuOpts   :: ![String]
-    , onlyFiles   :: Bool       -- ^ __Only__ show files
+    , onlyFiles   :: !Bool      -- ^ __Only__ show files
     }
 
 -- | Parse all command line options.
