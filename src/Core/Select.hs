@@ -19,8 +19,8 @@ module Core.Select
     ) where
 
 import Core.Parser (getHist)
-import Core.Toml (Config(Config, files, histPath, open, term, tty))
-import Core.Util (Items, OpenIn(Open, Term), openWith, spawn)
+import Core.Toml (Config (Config, files, histPath, open, term, tty))
+import Core.Util (Items, OpenIn (Open, Term), openWith, spawn)
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map

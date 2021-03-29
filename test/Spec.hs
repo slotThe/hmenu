@@ -1,8 +1,7 @@
-{-# LANGUAGE BlockArguments    #-}
-{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Main
-    ( main
+    ( main  -- :: IO ()
     ) where
 
 import Core.Parser (pFile)
@@ -10,12 +9,9 @@ import Core.Select (showItems)
 import Core.Util (Items, (</>))
 
 import qualified Data.ByteString.Char8 as BS
-import qualified Data.Map.Strict       as Map
 
-import Data.ByteString (ByteString)
 import Test.Hspec (describe, hspec, it)
-import Test.QuickCheck
-    ( Gen, arbitrary, forAll, getASCIIString, listOf, property, suchThat )
+import Test.QuickCheck (Gen, arbitrary, forAll, getASCIIString, listOf, property, suchThat)
 
 
 main :: IO ()

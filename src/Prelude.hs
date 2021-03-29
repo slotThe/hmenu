@@ -15,7 +15,7 @@ module Prelude
 import BasePrelude
 import Data.ByteString (ByteString)
 import Data.Map.Strict (Map)
-import System.Directory (XdgDirectory(XdgConfig), createDirectoryIfMissing, doesFileExist, getXdgDirectory)
+import System.Directory (XdgDirectory (XdgConfig), createDirectoryIfMissing, doesFileExist, getXdgDirectory)
 import System.Process (proc, spawnCommand)
 
 ifM :: Monad m => m Bool -> m a -> m a -> m a

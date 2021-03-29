@@ -4,10 +4,7 @@ module CLI.Parser
     , options      -- :: ParserInfo Options
     ) where
 
-import Options.Applicative
-    ( Parser, ParserInfo, argument, fullDesc, header, help, helper, info, long
-    , metavar, short, str, strOption, switch
-    )
+import Options.Applicative (Parser, ParserInfo, argument, fullDesc, header, help, helper, info, long, metavar, short, str, strOption, switch)
 
 
 -- | Options the user may specify on the command line.

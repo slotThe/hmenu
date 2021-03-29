@@ -3,12 +3,12 @@ module Core.Toml
     , getUserConfig  -- :: IO Config
     ) where
 
-import Core.Util (ShowBS, (<<>>), hmenuPath)
+import Core.Util (ShowBS, hmenuPath, (<<>>))
 
 import qualified Data.Text.IO as T
 import qualified Toml
 
-import Toml (Codec(Codec, codecRead), TomlCodec, (.=), (<!>))
+import Toml (Codec (Codec, codecRead), TomlCodec, (.=), (<!>))
 
 
 -- | The tools config file.
