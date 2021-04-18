@@ -4,7 +4,7 @@ cabal-version: 2.0
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2deb3260f2e786d7e0223f936f00f5600d146c701afb8cacd09c90ff83edd081
+-- hash: f2167b0695a2db84e35b9b099ae15914f69c649b1552df376d635b3823a4c575
 
 name:                hmenu
 version:             0.2.3
@@ -43,8 +43,10 @@ library
       base
     , base-prelude
     , bytestring
+    , bytestring-lexing
     , containers
     , directory
+    , double-conversion
     , optparse-applicative
     , posix-paths
     , process
@@ -78,8 +80,10 @@ executable hmenu
       base
     , base-prelude
     , bytestring
+    , bytestring-lexing
     , containers
     , directory
+    , double-conversion
     , hmenu
     , optparse-applicative
     , posix-paths
@@ -113,8 +117,10 @@ test-suite spec
     , base
     , base-prelude
     , bytestring
+    , bytestring-lexing
     , containers
     , directory
+    , double-conversion
     , hmenu
     , hspec
     , optparse-applicative

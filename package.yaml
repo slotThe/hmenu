@@ -37,6 +37,8 @@ dependencies:
   - containers
   - text
   - bytestring
+  - bytestring-lexing
+  - double-conversion
   - posix-paths
   - directory
   - unix

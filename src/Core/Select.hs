@@ -19,12 +19,13 @@ module Core.Select
     ) where
 
 import Core.Parser (getHist)
-import Core.Toml (Config (Config, files, histPath, open, term, tty))
+import Core.Toml (Config (Config, decay, files, histPath, open, term, tty))
 import Core.Util (Items, OpenIn (Open, Term), openWith, spawn)
 
 import qualified Data.ByteString.Char8 as BS
 import qualified Data.Map.Strict       as Map
 
+import Data.Double.Conversion.ByteString (toShortest)
 import System.Posix.Directory.ByteString (closeDirStream, openDirStream)
 import System.Posix.Directory.Foreign (DirType, dtDir, dtUnknown)
 import System.Posix.Directory.Traversals (getDirectoryContents, readDirEnt)
@@ -48,19 +49,15 @@ runUpdate
     -> Config      -- ^ User config containing things that interest us.
     -> Items       -- ^ Map prior to selection.
     -> IO ()
-runUpdate selection cfg itemMap = do
-    -- Adjust the value based on the users selection.
-    let update = selection `updateValueIn` itemMap
+runUpdate selection cfg@Config{ histPath, decay } itemMap = do
+    -- Update the items based on the users selection.
+    let update = Map.adjust (+ 1) selection (Map.map (* decay) itemMap)
 
     -- Based on what the user selected, execute the appropriate command.
     spawn $ decideSelection selection cfg
 
     -- Write the new map to the hist file.
-    histPath cfg `BS.writeFile` showItems update
-  where
-    -- | Update the value of a particular key by just adding one to it.
-    updateValueIn :: ByteString -> Items -> Items
-    updateValueIn = Map.adjust (+ 1)
+    histPath `BS.writeFile` showItems update
 
 {- | Run dmenu with the given command line optinos and a list of entries
 from which the user should choose.
@@ -145,8 +142,8 @@ showItems :: Items -> ByteString
 showItems = BS.unlines . map showItem . toList
   where
     -- | Pretty print a single (application, score) tuple.
-    showItem :: (ByteString, Int) -> ByteString
-    showItem (k, v) = k <> " " <> BS.pack (show v)
+    showItem :: (ByteString, Double) -> ByteString
+    showItem (k, v) = k <> " " <> toShortest v
 
 -- | Decide what to actually do with the user selection from dmenu.
 decideSelection :: ByteString -> Config -> ByteString

@@ -18,6 +18,7 @@ data Config = Config
     , dmenuExe :: FilePath
     , term     :: ShowBS
     , tty      :: [ByteString]
+    , decay    :: Double
     , histPath :: FilePath
       -- ^ Command line option, NOT specifiable in the config file.
     }
@@ -30,6 +31,7 @@ defaultCfg = Config
     , open     = ("xdg-open" <>)
     , term     = ("xterm"    <>)
     , tty      = []
+    , decay    = 1
     , histPath = ""
     }
 
@@ -41,6 +43,7 @@ configCodec = Config
     <*> defDmenu (Toml.string "executable")                        .= dmenuExe
     <*> toDL (defTerm (Toml.byteString "terminal"))                .= term
     <*> defTtyProgs (Toml.arrayOf Toml._ByteString "tty-programs") .= tty
+    <*> defDecay (Toml.double "decay")                             .= decay
     <*> pure ""
   where
     -- | Parse an option or—in case it's missing—return a default value.
@@ -49,13 +52,14 @@ configCodec = Config
         codec { codecRead = codecRead <!> const (pure def) }
 
     toDL :: TomlCodec ByteString -> TomlCodec ShowBS
-    toDL = Toml.dimap ($ "") (<>)
+        = Toml.dimap ($ "") (<>)
 
     defFiles    = tomlWithDefault (files    defaultCfg)
     defOpen     = tomlWithDefault (open     defaultCfg "")
     defDmenu    = tomlWithDefault (dmenuExe defaultCfg)
     defTerm     = tomlWithDefault (term     defaultCfg "")
     defTtyProgs = tomlWithDefault (tty      defaultCfg)
+    defDecay    = tomlWithDefault (decay    defaultCfg)
 
 -- | Try to find a user config and, if it exists, parse it.
 getUserConfig :: IO Config

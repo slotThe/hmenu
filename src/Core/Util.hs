@@ -24,7 +24,7 @@ import qualified System.Posix.FilePath as BS -- used for ByteString version of <
 
 -- | Type for an Map that describes all of the executables with their
 -- ratings.
-type Items = Map ByteString Int
+type Items = Map ByteString Double
 
 -- | Type for helping to decide how to open something.
 data OpenIn = Term ShowBS | Open ShowBS

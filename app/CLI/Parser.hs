@@ -4,19 +4,23 @@ module CLI.Parser
     , options      -- :: ParserInfo Options
     ) where
 
-import Options.Applicative (Parser, ParserInfo, argument, fullDesc, header, help, helper, info, long, metavar, short, str, strOption, switch)
+import Prelude hiding (option)
+
+import Options.Applicative (Parser, ParserInfo, argument, auto, fullDesc, header, help, helper, info, long, metavar, option, short, str, strOption, switch, value)
 
 
 -- | Options the user may specify on the command line.
 data Options = Options
     { historyPath :: (Maybe FilePath)
     , onlyFiles   :: Bool      -- ^ __Only__ show files
+    , decay       :: Double
+      -- ^ Decay to multiple not-selected items with
     , dmenuOpts   :: [String]  -- ^ Positional arguments
     }
 
 -- | Parse all command line options.
 pOptions :: Parser Options
-pOptions = Options <$> pHistoryPath <*> pOnlyFiles <*> pDmenuOpts
+pOptions = Options <$> pHistoryPath <*> pOnlyFiles <*> pDecay <*> pDmenuOpts
 
 {- | Parse the 'historyPath' option, allowing the user to specify an
 alternative history file to use.
@@ -32,16 +36,25 @@ pHistoryPath = optional $ strOption
     <> help "Manually set path to history file."
      )
 
--- | Options to get passed straight to dmenu.
-pDmenuOpts :: Parser [String]
-pDmenuOpts = many $ argument str (metavar "-- DMENU_OPTS")
-
 pOnlyFiles :: Parser Bool
 pOnlyFiles = switch
      ( long "files-only"
     <> short 'o'
     <> help "Whether to only show the user-specified files."
      )
+
+pDecay :: Parser Double
+pDecay = option auto
+     ( long "decay"
+    <> short 'd'
+    <> help "Decay to multiply not-selected items with."
+    <> metavar "D"
+    <> value 1
+     )
+
+-- | Options to get passed straight to dmenu.
+pDmenuOpts :: Parser [String]
+pDmenuOpts = many $ argument str (metavar "-- DMENU_OPTS")
 
 -- | Create an info type from our options, adding help text and other
 -- nice features.
