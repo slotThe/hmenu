@@ -60,7 +60,7 @@ runUpdate selection cfg itemMap = do
   where
     -- | Update the value of a particular key by just adding one to it.
     updateValueIn :: ByteString -> Items -> Items
-    updateValueIn = Map.adjust succ
+    updateValueIn = Map.adjust (+ 1)
 
 {- | Run dmenu with the given command line optinos and a list of entries
 from which the user should choose.
