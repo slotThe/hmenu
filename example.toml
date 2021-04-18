@@ -9,8 +9,8 @@ open = "my-open-script"
 
 # Actual files to open.
 files =
-    # All of these work, any path not starting with '/' or '~' will get $HOME
-    # slapped in front of it.
+    # All of these work, any path not starting with '/' or '~' will get
+    # $HOME slapped in front of it.
     [ ".config/hmenu/hmenu.toml"
     , "~.config/hmenu/hmenu.toml"
     , "/home/USER/.config/hmenu/hmenu.toml"
@@ -22,7 +22,11 @@ files =
 # Defaults to "xterm"
 terminal = "st"
 
-# Programs one would like to open in a terminal when calling them from dmenu.
+# Programs one would like to open in a terminal when calling them from
+# dmenu.
 tty-programs =
     [ "neomutt"
     ]
+
+# A frequency decay; all non-selected items will be multiplied by this
+number.  decay = 0.997
