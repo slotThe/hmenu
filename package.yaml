@@ -22,7 +22,6 @@ ghc-options:
   -Wall
   -Wcompat
   -Widentities
-  -Wmissing-import-lists
   -Wmissing-export-lists
   -Wredundant-constraints
   -Wmissed-specialisations

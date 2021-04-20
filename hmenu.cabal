@@ -4,7 +4,7 @@ cabal-version: 2.0
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: f2167b0695a2db84e35b9b099ae15914f69c649b1552df376d635b3823a4c575
+-- hash: 2c6f2215b058d63521b3b91dbe9f67808266431d6a0cc83e59cfbc285393e7be
 
 name:                hmenu
 version:             0.2.3
@@ -38,7 +38,7 @@ library
       BlockArguments
       ScopedTypeVariables
       LambdaCase
-  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
+  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   build-depends:
       base
     , base-prelude
@@ -70,7 +70,7 @@ executable hmenu
       BlockArguments
       ScopedTypeVariables
       LambdaCase
-  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
+  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   main-is: Main.hs
   other-modules:
       CLI.Parser
@@ -111,7 +111,7 @@ test-suite spec
       BlockArguments
       ScopedTypeVariables
       LambdaCase
-  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-import-lists -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
+  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
   build-depends:
       QuickCheck
     , base
