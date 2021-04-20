@@ -50,14 +50,13 @@ runUpdate
     -> Items       -- ^ Map prior to selection.
     -> IO ()
 runUpdate selection cfg@Config{ histPath, decay } itemMap = do
-    -- Update the items based on the users selection.
-    let update = Map.adjust (+ 1) selection (Map.map (* decay) itemMap)
-
     -- Based on what the user selected, execute the appropriate command.
     spawn $ decideSelection selection cfg
-
-    -- Write the new map to the hist file.
+    -- Write the updated map to the history file.
     histPath `BS.writeFile` showItems update
+  where
+    -- Update the items based on the users selection.
+    update :: Items = Map.adjust (+ 1) selection (Map.map (* decay) itemMap)
 
 {- | Run dmenu with the given command line optinos and a list of entries
 from which the user should choose.
