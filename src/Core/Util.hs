@@ -57,8 +57,16 @@ openWith
     -> ByteString  -- ^ The thing to open.
     -> ByteString
 openWith = \case
-    Term t -> t . (" -e " <>)
-    Open o -> o . (" "    <>)
+    Term t -> t . (" -e " <>) . escape
+    Open o -> o . (" "    <>) . escape
+  where
+    escape :: ByteString -> ByteString
+    escape = ("\"" <>) . (<> "\"") . BS.concatMap \case
+        '('  -> "\\("
+        ')'  -> "\\)"
+        '\'' -> "'\"'\"'"
+        '\"' -> "\\\""
+        x    -> BS.singleton x
 
 -- | XDG_CONFIG_HOME
 xdgConfig :: IO FilePath
