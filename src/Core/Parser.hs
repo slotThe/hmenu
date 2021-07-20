@@ -22,9 +22,17 @@ pFile = fromList . go []
   where
     go :: [(ByteString, Double)] -> ByteString -> [(ByteString, Double)]
     go its ""    = its
-    go its input = go ((name, number) : its) rest'
+    go its input = go (it : its) rest
       where
-        (name  , rest ) :: (ByteString, ByteString)
-            = BS.drop 1 <$> BS.span (/= ' ') input
-        (number, rest') :: (Double, ByteString)
-            = maybe (0, "") (BS.drop 1 <$>) $ readDecimal rest
+        (it, rest) :: ((ByteString, Double), ByteString)
+            = bimap (second (maybe 0 fst . readDecimal) . spanEnd (/= ' '))
+                    (BS.drop 1)
+            . BS.span (/= '\n')
+            $ input
+
+    spanEnd :: (Char -> Bool) -> ByteString -> (ByteString, ByteString)
+    spanEnd p bs = (init' $ BS.dropWhileEnd p bs, BS.takeWhileEnd p bs)
+
+    init' :: ByteString -> ByteString
+    init' = maybe "" fst . BS.unsnoc
+{-# INLINE pFile #-}

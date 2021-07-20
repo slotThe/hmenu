@@ -10,6 +10,7 @@
 ## Changed
 -   We now explicitly ignore directories in when they occur as sub directories
     of specified paths.
+-   Fixed a bug related to parsing filenames with spaces.
 
 # 0.2.3
 ## Changed

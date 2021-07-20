@@ -4,7 +4,7 @@ cabal-version: 2.0
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 2c6f2215b058d63521b3b91dbe9f67808266431d6a0cc83e59cfbc285393e7be
+-- hash: ff8cb187ed39967df5612e4d0081bfbf660d725f03524deef5df3153088528bf
 
 name:                hmenu
 version:             0.2.3
@@ -42,7 +42,7 @@ library
   build-depends:
       base
     , base-prelude
-    , bytestring
+    , bytestring <0.11
     , bytestring-lexing
     , containers
     , directory
@@ -79,7 +79,7 @@ executable hmenu
   build-depends:
       base
     , base-prelude
-    , bytestring
+    , bytestring <0.11
     , bytestring-lexing
     , containers
     , directory
@@ -116,7 +116,7 @@ test-suite spec
       QuickCheck
     , base
     , base-prelude
-    , bytestring
+    , bytestring <0.11
     , bytestring-lexing
     , containers
     , directory
