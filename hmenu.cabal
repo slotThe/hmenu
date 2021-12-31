@@ -1,10 +1,10 @@
 cabal-version: 2.0
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.34.5.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ff8cb187ed39967df5612e4d0081bfbf660d725f03524deef5df3153088528bf
+-- hash: 7b9aa92a99ab50b7bb79dbab5032268ea7fe952ab38a82a3a8d472f309260b14
 
 name:                hmenu
 version:             0.2.3
@@ -16,7 +16,7 @@ author:              Slot
 maintainer:          soliditsallgood@tuta.io
 build-type:          Simple
 tested-with:
-    GHC == 8.10.4
+    GHC == 8.10.7
 
 library
   exposed-modules:
