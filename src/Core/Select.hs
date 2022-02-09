@@ -50,10 +50,8 @@ runUpdate
     -> Items       -- ^ Map prior to selection.
     -> IO ()
 runUpdate selection cfg@Config{ histPath, decay } itemMap = do
-    -- Based on what the user selected, execute the appropriate command.
-    spawn $ decideSelection selection cfg
-    -- Write the updated map to the history file.
-    histPath `BS.writeFile` showItems update
+    spawn $ decideSelection selection cfg     -- execute selected command
+    histPath `BS.writeFile` showItems update  -- update map and write to file
   where
     -- Update the items based on the users selection.
     update :: Items = Map.adjust (+ 1) selection (Map.map (* decay) itemMap)
@@ -64,12 +62,9 @@ from which the user should choose.
    Originally <https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs select>.
 -}
 selectWith
-    :: [String]
-    -- ^ List of options to give to dmenu.
-    -> [ByteString]
-    -- ^ List of executables from which the user should select.
-    -> String
-    -- ^ The dmenu executable.
+    :: [String]     -- ^ List of options to give to dmenu.
+    -> [ByteString] -- ^ List of executables from which the user should select.
+    -> String       -- ^ The dmenu executable.
     -> IO (Either ProcessError ByteString)
     -- ^ The selection made by the user, or a 'ProcessError', if the user
     -- canceled.
@@ -95,9 +90,8 @@ getExecutables = fmap concat
                . BS.split ':'
              =<< getEnvDefault "PATH" ""
 
--- | Only try listing the directory if it actually exists.  This is for
--- all the people who have non-existent dirs in their path for some
--- reason.
+-- | Only try listing the directory if it actually exists.  This is
+-- necessary, since people may have non-existent things in their path.
 listDir :: ByteString -> IO [ByteString]
 listDir dir = ifM (fileExist dir) (getDirContents dir) (pure [])
   where
@@ -112,7 +106,8 @@ evalDirs :: [ByteString] -> IO [ByteString]
 evalDirs dirs = concat <$> traverse evalDir dirs
 
 -- | If the given file path is a directory, try to list all of its
--- contents.  Otherwise just return the file path as is.
+-- contents, but *don't* do so recursively.  Otherwise just return the
+-- file path as is.
 evalDir :: ByteString -> IO [ByteString]
 evalDir dir = do
     -- Try to make the path absolute, as 'getDirectoryContents' can only

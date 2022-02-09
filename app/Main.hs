@@ -19,34 +19,27 @@ main = do
     -- Get command line options and parse them.
     Options{ historyPath, dmenuOpts, onlyFiles } <- execParser options
 
-    -- Create the @hmenu@ directory (and all parents) if necessary.
+    -- Create the `hmenu' directory (and all parents) if necessary and
+    -- parse user config.
     createDirectoryIfMissing True =<< hmenuPath
-
-    -- Try to parse the config file (if it exists).
     cfg@Config{ dmenuExe, files } <- getUserConfig
 
-    -- See Note [Caching]
-    -- Files the user added in the config file.
+    -- Files the user added in the config file; see Note [Caching].
     home      <- getEnvDefault "HOME" ""
     userFiles <- evalDirs $ map (tryAddPrefix home) files
 
-    -- Everything new as a map.
-    execsAndFiles <- makeNewEntries . (userFiles <>) <$> getExecutables
-
-    -- Create a new map where everything old (i.e. not in the @$PATH@ or
-    -- the config anymore) is thrown out and anything new is added to
-    -- the map.  See Note [Updating].
-    hp   <- maybe histFile pure historyPath  -- path to history file
-    hist <- tryRead hp
-    let newMap = (hist `Map.intersection` execsAndFiles) <> execsAndFiles
+    -- See Note [Updating].
+    newEntries <- makeNewEntries . (userFiles <>) <$> getExecutables
+    hp         <- maybe histFile pure historyPath  -- path to history file
+    hist       <- tryRead hp
+    let newMap = (hist `Map.intersection` newEntries) <> newEntries
 
     -- Let the user select something from the list.
     let selectFrom | onlyFiles = filter (`elem` userFiles)
                    | otherwise = id
-    selection <-
-        selectWith dmenuOpts
-                   (selectFrom $! sortByValues newMap)
-                   dmenuExe
+    selection <- selectWith dmenuOpts
+                            (selectFrom $! sortByValues newMap)
+                            dmenuExe
 
     -- Process output.
     case selection of
@@ -55,9 +48,9 @@ main = do
 
 {- Note [Updating]
    ~~~~~~~~~~~~~~~~~~~~~~
-
-What we are doing here (with A = 'hist' and B = 'execsAndFiles') is
-this:
+We create two new maps; one for all the "new things" (newEntries) and
+one for everything "old" (i.e., known to us).  Then, what we are doing
+(with A = 'hist' and B = 'newEntries') is this:
 
     (A ∩ B) ∪ B,
 
@@ -66,11 +59,13 @@ Note that, while in a set-theoretic context this would obviously equal
 B, this is not the case here; the elements of A and B are tuples, but
 the first component alone determines uniqueness!  We also explicitly
 exploit the left-biasedness (I'm claiming that word) of the operations.
+
+All in all, we add initialise everything new, throw everything out
+that's not in the $PATH or in the config anymore, and update the rest.
 -}
 
 {- Note [Caching]
    ~~~~~~~~~~~~~~~~~~~~~~
-
 Doing the caching *after* the user has selected something may be better
 (in terms of perceived speed), though hmenu would "lag behind" for one
 execution when things are updated.

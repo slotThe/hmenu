@@ -13,8 +13,7 @@ import Options.Applicative (Parser, ParserInfo, argument, auto, fullDesc, header
 data Options = Options
     { historyPath :: (Maybe FilePath)
     , onlyFiles   :: Bool      -- ^ __Only__ show files
-    , decay       :: Double
-      -- ^ Decay to multiple not-selected items with
+    , decay       :: Double    -- ^ Decay to multiple not-selected-items with
     , dmenuOpts   :: [String]  -- ^ Positional arguments
     }
 

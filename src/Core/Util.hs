@@ -29,13 +29,13 @@ type Items = Map ByteString Double
 -- | Type for helping to decide how to open something.
 data OpenIn = Term ShowBS | Open ShowBS
 
--- | ShowS for ByteString because it is shorter :>.
+-- | 'ShowS' for 'ByteString' because it is shorter :>.
 type ShowBS = ByteString -> ByteString
 
 {- | Add a prefix to a string if the string is not starting with "/".
 
 This will ensure the user can specify absolute paths to files, but also
-conveniently use relative paths (starting from '$HOME') if that is
+conveniently use relative paths (starting from @$HOME@) if that is
 desired.
 -}
 tryAddPrefix :: ByteString -> ByteString -> ByteString
@@ -92,13 +92,9 @@ liftedFp <</>> fp = liftedFp <&> (</> fp)
 infixr 5 </>
 (</>) :: FilePath -> FilePath -> FilePath
 (</>) a b
-    | hasLeadingPathSeparator b = b
-    | otherwise                 = combineAlways a b
+    | Just '/' == listToMaybe b = b  -- leading path separator
+    | otherwise = combineAlways a b
   where
-    hasLeadingPathSeparator :: FilePath -> Bool
-    hasLeadingPathSeparator []    = False
-    hasLeadingPathSeparator (x:_) = x == '/'
-
     -- | Combine two paths, assuming rhs is NOT absolute.
     combineAlways :: FilePath -> FilePath -> FilePath
     combineAlways z w

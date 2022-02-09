@@ -64,8 +64,8 @@ configCodec = Config
 -- | Try to find a user config and, if it exists, parse it.
 getUserConfig :: IO Config
 getUserConfig = do
-    -- Default path where to look for the config file.
-    -- '~/.config/hmenu/hmenu.toml'
+    -- Default path where to look for the config file:
+    --          ~/.config/hmenu/hmenu.toml
     cfgFile <- hmenuPath <</>> "hmenu.toml"
     ifM (doesFileExist cfgFile)
         (fromRight defaultCfg . Toml.decode configCodec <$> T.readFile cfgFile)
