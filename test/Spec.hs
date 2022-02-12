@@ -13,12 +13,11 @@ import qualified Data.ByteString.Char8 as BS
 import Test.Hspec (describe, hspec, it)
 import Test.QuickCheck (Gen, arbitrary, forAll, getASCIIString, listOf, property, suchThat)
 
-
 main :: IO ()
 main = hspec $ do
   describe "pFile" $
-    it "should satisfy x == (parse . pretty) x" $
-      forAll itemsGen \x -> (pFile . showItems) x == x
+    it "should satisfy id ≈ parse ∘ pretty (up to rounding sadness)" $
+      forAll itemsGen \x -> toList x =~ toList (pFile (showItems x))
 
   -- Source: https://hackage.haskell.org/package/filepath
   describe "</>" $
@@ -43,9 +42,19 @@ main = hspec $ do
 itemsGen :: Gen Items
 itemsGen = fromList <$> listOf itemGen
 
-itemGen :: Gen (ByteString, Int)
-itemGen = (,) <$> bytestringGen <*> arbitrary @Int `suchThat` (>= 0)
+itemGen :: Gen (ByteString, Double)
+itemGen = (,) <$> bytestringGen <*> arbitrary @Double `suchThat` (>= 0)
 
 bytestringGen :: Gen ByteString
-bytestringGen =
-    BS.pack <$> (getASCIIString <$> arbitrary) `suchThat` notElem ' '
+bytestringGen = BS.pack <$> (getASCIIString <$> arbitrary)
+                              `suchThat` ((&&) <$> notElem ' ' <*> notElem '\n')
+
+(=~) :: [(ByteString, Double)] -> [(ByteString, Double)] -> Bool
+((n, x) : xs) =~ ((m, y) : ys)
+  | n == m && x `approx` y = xs =~ ys
+  | otherwise              = False
+ where
+  approx :: Double -> Double -> Bool
+  approx a b = abs (a - b) < 1e-14
+[] =~ [] = True
+_  =~ _  = False
