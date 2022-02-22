@@ -18,8 +18,8 @@ module Core.Util
     , openWith            -- :: OpenIn -> ShowBS -> ByteString -> ByteString
     ) where
 
-import qualified Data.ByteString.Char8 as BS
-import qualified System.Posix.FilePath as BS -- used for ByteString version of </>
+import Data.ByteString.Char8 qualified as BS
+import System.Posix.FilePath qualified as BS -- used for ByteString version of </>
 
 
 -- | Type for an Map that describes all of the executables with their

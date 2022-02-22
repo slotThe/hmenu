@@ -5,8 +5,8 @@ module Core.Toml
 
 import Core.Util (ShowBS, hmenuPath, (<</>>))
 
-import qualified Data.Text.IO as T
-import qualified Toml
+import Data.Text.IO qualified as T
+import Toml         qualified
 
 import Toml (Codec (Codec, codecRead), TomlCodec, (.=), (<!>))
 

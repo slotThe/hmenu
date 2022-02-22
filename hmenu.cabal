@@ -4,7 +4,7 @@ cabal-version: 2.0
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7b9aa92a99ab50b7bb79dbab5032268ea7fe952ab38a82a3a8d472f309260b14
+-- hash: b2850f299e2021c59db32b9227424e66a33f73b47a610814633d49bcb9c4639c
 
 name:                hmenu
 version:             0.2.3
@@ -30,6 +30,7 @@ library
   hs-source-dirs:
       src/
   default-extensions:
+      ImportQualifiedPost
       StrictData
       OverloadedStrings
       NamedFieldPuns
@@ -38,7 +39,7 @@ library
       BlockArguments
       ScopedTypeVariables
       LambdaCase
-  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
+  ghc-options: -Weverything -Wno-implicit-prelude -Wno-missing-import-lists -Wno-unused-packages -Wno-missing-safe-haskell-mode -Wno-unsafe -O2
   build-depends:
       base
     , base-prelude
@@ -62,6 +63,7 @@ executable hmenu
   hs-source-dirs:
       app
   default-extensions:
+      ImportQualifiedPost
       StrictData
       OverloadedStrings
       NamedFieldPuns
@@ -70,7 +72,7 @@ executable hmenu
       BlockArguments
       ScopedTypeVariables
       LambdaCase
-  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
+  ghc-options: -Weverything -Wno-implicit-prelude -Wno-missing-import-lists -Wno-unused-packages -Wno-missing-safe-haskell-mode -Wno-unsafe -O2
   main-is: Main.hs
   other-modules:
       CLI.Parser
@@ -103,6 +105,7 @@ test-suite spec
   hs-source-dirs:
       test
   default-extensions:
+      ImportQualifiedPost
       StrictData
       OverloadedStrings
       NamedFieldPuns
@@ -111,7 +114,7 @@ test-suite spec
       BlockArguments
       ScopedTypeVariables
       LambdaCase
-  ghc-options: -O2 -Wall -Wcompat -Widentities -Wmissing-export-lists -Wredundant-constraints -Wmissed-specialisations -Wincomplete-uni-patterns -Wmissing-local-signatures -Wincomplete-record-updates
+  ghc-options: -Weverything -Wno-implicit-prelude -Wno-missing-import-lists -Wno-unused-packages -Wno-missing-safe-haskell-mode -Wno-unsafe -O2
   build-depends:
       QuickCheck
     , base

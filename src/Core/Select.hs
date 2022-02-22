@@ -22,8 +22,8 @@ import Core.Parser (getHist)
 import Core.Toml (Config (Config, decay, files, histPath, open, term, tty))
 import Core.Util (Items, OpenIn (Open, Term), openWith, spawn)
 
-import qualified Data.ByteString.Char8 as BS
-import qualified Data.Map.Strict       as Map
+import Data.ByteString.Char8 qualified as BS
+import Data.Map.Strict       qualified as Map
 
 import Data.Double.Conversion.ByteString (toShortest)
 import System.Posix.Directory.ByteString (closeDirStream, openDirStream)

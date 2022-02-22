@@ -7,7 +7,18 @@ maintainer:          soliditsallgood@tuta.io
 homepage:            https://gitlab.com/slotThe/hmenu
 tested-with:         GHC == 8.10.7
 
+ghc-options:
+  -Weverything
+  -Wno-implicit-prelude
+  -Wno-missing-import-lists
+  -Wno-unused-packages
+  -Wno-missing-safe-haskell-mode
+  -Wno-unsafe
+  -Wno-all-missed-specialisations
+  -O2
+
 default-extensions:
+  - ImportQualifiedPost
   - StrictData
   - OverloadedStrings
   - NamedFieldPuns
@@ -16,18 +27,6 @@ default-extensions:
   - BlockArguments
   - ScopedTypeVariables
   - LambdaCase
-
-ghc-options:
-  -O2
-  -Wall
-  -Wcompat
-  -Widentities
-  -Wmissing-export-lists
-  -Wredundant-constraints
-  -Wmissed-specialisations
-  -Wincomplete-uni-patterns
-  -Wmissing-local-signatures
-  -Wincomplete-record-updates
 
 dependencies:
   - name: base

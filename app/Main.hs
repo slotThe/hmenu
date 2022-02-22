@@ -7,7 +7,7 @@ import Core.Select (evalDirs, getExecutables, makeNewEntries, runUpdate, selectW
 import Core.Toml (Config (Config, dmenuExe, files, histPath), getUserConfig)
 import Core.Util (histFile, hmenuPath, tryAddPrefix)
 
-import qualified Data.Map.Strict as Map
+import Data.Map.Strict qualified as Map
 
 import Options.Applicative (execParser)
 import System.Posix.Env.ByteString (getEnvDefault)
