@@ -5,7 +5,7 @@ license:             GPL-3
 author:              Slot
 maintainer:          soliditsallgood@tuta.io
 homepage:            https://gitlab.com/slotThe/hmenu
-tested-with:         GHC == 8.10.7
+tested-with:         GHC == 9.0.2
 
 ghc-options:
   -Weverything
