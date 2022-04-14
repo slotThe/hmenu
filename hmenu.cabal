@@ -4,7 +4,7 @@ cabal-version: 2.0
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 029dba8e24a3412c107068d80cb0f919abb31d2deb52dd1a132f319a476593b8
+-- hash: 8929499b9b168b25811ba69f798e20e741c35fbd1da0df918cf2c1704dfca652
 
 name:                hmenu
 version:             0.2.3
@@ -57,6 +57,7 @@ library
     , text
     , tomland >=1.3.0.0
     , unix
+    , utf8-string
   mixins:
       base hiding (Prelude)
   default-language: Haskell2010
@@ -98,6 +99,7 @@ executable hmenu
     , text
     , tomland >=1.3.0.0
     , unix
+    , utf8-string
   mixins:
       base hiding (Prelude)
 
@@ -139,6 +141,7 @@ test-suite spec
     , text
     , tomland >=1.3.0.0
     , unix
+    , utf8-string
   mixins:
       base hiding (Prelude)
   default-language: Haskell2010

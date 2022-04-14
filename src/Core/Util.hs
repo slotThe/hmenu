@@ -19,6 +19,7 @@ module Core.Util
     ) where
 
 import Data.ByteString.Char8 qualified as BS
+import Data.ByteString.UTF8  (toString)
 import System.Posix.FilePath qualified as BS -- used for ByteString version of </>
 
 
@@ -49,7 +50,7 @@ tryAddPrefix prefix xs
 
 -- | Spawn a command and forget about it.
 spawn :: ByteString -> IO ()
-spawn = void . spawnCommand . BS.unpack
+spawn = void . spawnCommand . toString
 
 -- | Open something.
 openWith

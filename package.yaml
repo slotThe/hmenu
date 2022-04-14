@@ -36,6 +36,7 @@ dependencies:
   - text
   - bytestring           <  0.11
   - bytestring-lexing
+  - utf8-string
   - double-conversion
   - posix-paths
   - directory
