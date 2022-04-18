@@ -4,7 +4,7 @@ cabal-version: 2.0
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8929499b9b168b25811ba69f798e20e741c35fbd1da0df918cf2c1704dfca652
+-- hash: 7957b4eb82757bd26cb9c799e065d9056f95feabceccb635c4beacf83dbad3c4
 
 name:                hmenu
 version:             0.2.3
@@ -13,7 +13,7 @@ homepage:            https://gitlab.com/slotThe/hmenu
 license:             GPL-3
 license-file:        LICENSE
 author:              Slot
-maintainer:          soliditsallgood@tuta.io
+maintainer:          soliditsallgood@mailbox.org
 build-type:          Simple
 tested-with:
     GHC == 9.0.2

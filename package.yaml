@@ -3,7 +3,7 @@ version:             0.2.3
 synopsis:            A small wrapper around dmenu
 license:             GPL-3
 author:              Slot
-maintainer:          soliditsallgood@tuta.io
+maintainer:          soliditsallgood@mailbox.org
 homepage:            https://gitlab.com/slotThe/hmenu
 tested-with:         GHC == 9.0.2
 
