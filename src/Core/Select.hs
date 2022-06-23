@@ -56,7 +56,7 @@ runUpdate selection cfg@Config{ histPath, decay } itemMap = do
     -- Update the items based on the users selection.
     update :: Items = Map.adjust (+ 1) selection (Map.map (* decay) itemMap)
 
-{- | Run dmenu with the given command line optinos and a list of entries
+{- | Run dmenu with the given command line options and a list of entries
 from which the user should choose.
 
    Originally <https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs select>.
@@ -135,7 +135,7 @@ isDir fp = catch
 showItems :: Items -> ByteString
 showItems = BS.unlines . map showItem . toList
   where
-    -- | Pretty print a single (application, score) tuple.
+    -- Pretty print a single (application, score) tuple.
     showItem :: (ByteString, Double) -> ByteString
     showItem (k, v) = k <> " " <> toShortest v
 

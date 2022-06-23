@@ -96,7 +96,7 @@ infixr 5 </>
     | Just '/' == listToMaybe b = b  -- leading path separator
     | otherwise = combineAlways a b
   where
-    -- | Combine two paths, assuming rhs is NOT absolute.
+    -- Combine two paths, assuming rhs is NOT absolute.
     combineAlways :: FilePath -> FilePath -> FilePath
     combineAlways z w
         | null z        = w
