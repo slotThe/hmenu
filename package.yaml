@@ -27,10 +27,10 @@ default-extensions:
   - BlockArguments
   - ScopedTypeVariables
   - LambdaCase
+  - NoImplicitPrelude
 
 dependencies:
   - name: base
-    mixin: hiding (Prelude)
   - base-prelude
   - containers
   - text

@@ -1,6 +1,18 @@
 module Core.Util
-    ( -- * Types
-      ShowBS              -- type alias: ByteString -> ByteString
+    ( -- * Better prelude
+      module BasePrelude
+    , ByteString
+    , Map
+    , XdgDirectory(XdgConfig)
+    , ifM
+    , doesFileExist
+    , proc
+    , getXdgDirectory
+    , spawnCommand
+    , createDirectoryIfMissing
+
+      -- * Types
+    , ShowBS              -- type alias: ByteString -> ByteString
     , OpenIn(Term, Open)
     , Items               -- type alias: Map ByteString Int
 
@@ -18,10 +30,19 @@ module Core.Util
     , openWith            -- :: OpenIn -> ShowBS -> ByteString -> ByteString
     ) where
 
+import BasePrelude
+import Data.ByteString (ByteString)
 import Data.ByteString.Char8 qualified as BS
 import Data.ByteString.UTF8  (toString)
+import Data.Map.Strict (Map)
+import System.Directory (XdgDirectory (XdgConfig), createDirectoryIfMissing, doesFileExist, getXdgDirectory)
 import System.Posix.FilePath qualified as BS -- used for ByteString version of </>
+import System.Process (proc, spawnCommand)
 
+-- | Like 'if', but in a monadic context.
+ifM :: Monad m => m Bool -> m a -> m a -> m a
+ifM p x y = p >>= \b -> if b then x else y
+{-# INLINE ifM #-}
 
 -- | Type for an Map that describes all of the executables with their
 -- ratings.

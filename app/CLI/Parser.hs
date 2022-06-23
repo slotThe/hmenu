@@ -4,14 +4,13 @@ module CLI.Parser
     , options      -- :: ParserInfo Options
     ) where
 
-import Prelude hiding (option)
-
+import Core.Util hiding (option)
 import Options.Applicative (Parser, ParserInfo, argument, auto, fullDesc, header, help, helper, info, long, metavar, option, short, str, strOption, switch, value)
 
 
 -- | Options the user may specify on the command line.
 data Options = Options
-    { historyPath :: (Maybe FilePath)
+    { historyPath :: Maybe FilePath
     , onlyFiles   :: Bool      -- ^ __Only__ show files
     , decay       :: Double    -- ^ Decay to multiple not-selected-items with
     , dmenuOpts   :: [String]  -- ^ Positional arguments

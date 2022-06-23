@@ -6,7 +6,7 @@ module Core.Parser
     , pFile    -- :: ByteString -> Items
     ) where
 
-import Core.Util (Items)
+import Core.Util
 
 import Data.ByteString.Char8 qualified as BS
 import Data.ByteString.Lex.Fractional (readDecimal)

@@ -20,7 +20,7 @@ module Core.Select
 
 import Core.Parser (getHist)
 import Core.Toml (Config (Config, decay, files, histPath, open, term, tty))
-import Core.Util (Items, OpenIn (Open, Term), openWith, spawn)
+import Core.Util hiding ((</>))
 
 import Data.ByteString.Char8 qualified as BS
 import Data.Map.Strict       qualified as Map

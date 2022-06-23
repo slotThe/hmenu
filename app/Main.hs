@@ -5,7 +5,7 @@ module Main
 import CLI.Parser (Options (Options, dmenuOpts, historyPath, onlyFiles), options)
 import Core.Select (evalDirs, getExecutables, makeNewEntries, runUpdate, selectWith, sortByValues, tryRead)
 import Core.Toml (Config (Config, dmenuExe, files, histPath), getUserConfig)
-import Core.Util (histFile, hmenuPath, tryAddPrefix)
+import Core.Util
 
 import Data.Map.Strict qualified as Map
 

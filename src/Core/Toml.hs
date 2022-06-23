@@ -3,7 +3,7 @@ module Core.Toml
     , getUserConfig  -- :: IO Config
     ) where
 
-import Core.Util (ShowBS, hmenuPath, (<</>>))
+import Core.Util
 
 import Data.Text.IO qualified as T
 import Toml         qualified
