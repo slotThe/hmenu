@@ -27,8 +27,8 @@ import Data.Map.Strict       qualified as Map
 
 import Data.Double.Conversion.ByteString (toShortest)
 import System.Posix.Directory.ByteString (closeDirStream, openDirStream)
-import System.Posix.Directory.Foreign (DirType, dtDir, dtUnknown)
-import System.Posix.Directory.Traversals (getDirectoryContents, readDirEnt)
+import System.Posix.Directory.Foreign (dtDir, dtUnknown)
+import System.Posix.Directory.Traversals (readDirEnt, traverseDirectoryContents)
 import System.Posix.Env.ByteString (getEnvDefault)
 import System.Posix.FilePath ((</>))
 import System.Posix.Files.ByteString (fileExist, getFileStatus, isDirectory)
@@ -96,22 +96,22 @@ listDir :: ByteString -> IO [ByteString]
 listDir dir = ifM (fileExist dir) (getDirContents dir) (pure [])
   where
     getDirContents :: ByteString -> IO [ByteString]
-    getDirContents = fmap (map snd . removeDirs) . getDirectoryContents
-
-    removeDirs :: [(DirType, ByteString)] -> [(DirType, ByteString)]
-    removeDirs = filter \(dt, name) -> dt /= dtDir && name `notElem` [".", ".."]
+    getDirContents =
+        traverseDirectoryContents
+            (\xs (dt, name) -> pure if dt /= dtDir then name : xs else xs)
+            []
 
 -- | Apply 'evalDir' to some list of file paths.
 evalDirs :: [ByteString] -> IO [ByteString]
-evalDirs dirs = concat <$> traverse evalDir dirs
+evalDirs = fmap concat . traverse evalDir
 
 -- | If the given file path is a directory, try to list all of its
 -- contents, but *don't* do so recursively.  Otherwise just return the
 -- file path as is.
 evalDir :: ByteString -> IO [ByteString]
 evalDir dir = do
-    -- Try to make the path absolute, as 'getDirectoryContents' can only
-    -- handle absolute paths.
+    -- Try to make the path absolute, as 'listDir' can only handle
+    -- absolute paths.
     home <- getEnvDefault "HOME" ""
     let absPath = if   "~/" `BS.isPrefixOf` dir
                   then home </> BS.drop 2 dir
@@ -153,4 +153,4 @@ makeNewEntries = Map.fromSet (const 0) . fromList
 -- | Sort 'Items' by its values and return the list of keys.
 -- This will make often used commands bubble up to the top.
 sortByValues :: Items -> [ByteString]
-sortByValues = map fst . sortBy (\(_, a) (_, b) -> compare b a) . toList
+sortByValues = map fst . sortBy (flip compare `on` snd) . toList

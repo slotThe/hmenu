@@ -54,7 +54,7 @@ data OpenIn = Term ShowBS | Open ShowBS
 -- | 'ShowS' for 'ByteString' because it is shorter :>.
 type ShowBS = ByteString -> ByteString
 
-{- | Add a prefix to a string if the string is not starting with "/".
+{- | Add a prefix to a string if it does not start with "/".
 
 This will ensure the user can specify absolute paths to files, but also
 conveniently use relative paths (starting from @$HOME@) if that is
