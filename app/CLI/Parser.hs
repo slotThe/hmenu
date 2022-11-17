@@ -4,11 +4,12 @@ module CLI.Parser
     , options      -- :: ParserInfo Options
     ) where
 
-import Core.Util hiding (option)
+import Core.Util
 import Options.Applicative (Parser, ParserInfo, argument, auto, fullDesc, header, help, helper, info, long, metavar, option, short, str, strOption, switch, value)
 
 
 -- | Options the user may specify on the command line.
+type Options :: Type
 data Options = Options
     { historyPath :: Maybe FilePath
     , onlyFiles   :: Bool      -- ^ __Only__ show files

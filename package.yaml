@@ -5,7 +5,7 @@ license:             GPL-3
 author:              Slot
 maintainer:          soliditsallgood@mailbox.org
 homepage:            https://gitlab.com/slotThe/hmenu
-tested-with:         GHC == 9.0.2
+tested-with:         GHC == 9.2.5
 
 ghc-options:
   -Weverything
@@ -17,24 +17,22 @@ ghc-options:
   -Wno-all-missed-specialisations
   -O2
 
+language: GHC2021
+
 default-extensions:
-  - ImportQualifiedPost
-  - StrictData
-  - OverloadedStrings
-  - NamedFieldPuns
-  - FlexibleContexts
-  - MultiWayIf
   - BlockArguments
-  - ScopedTypeVariables
   - LambdaCase
+  - MultiWayIf
   - NoImplicitPrelude
+  - OverloadedStrings
+  - StrictData
 
 dependencies:
   - name: base
   - base-prelude
   - containers
   - text
-  - bytestring           <  0.11
+  - bytestring
   - bytestring-lexing
   - utf8-string
   - double-conversion

@@ -40,6 +40,7 @@ exit code and @stderr@ output.
 
 See <https://github.com/m0rphism/haskell-dmenu/blob/master/src/DMenu/Run.hs>.
 -}
+type ProcessError :: Type
 type ProcessError = (Int, ByteString)
 
 -- | Do the appropriate things with the user selection and update the

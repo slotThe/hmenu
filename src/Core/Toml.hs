@@ -12,6 +12,7 @@ import Toml (Codec (Codec, codecRead), TomlCodec, (.=), (<!>))
 
 
 -- | The tools config file.
+type Config :: Type
 data Config = Config
     { files    :: [ByteString]
     , open     :: ShowBS

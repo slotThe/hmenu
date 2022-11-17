@@ -11,6 +11,7 @@
 -   We now explicitly ignore directories in when they occur as sub directories
     of specified paths.
 -   Fixed a bug related to parsing filenames with spaces.
+-   Compatibility with GHC 9.2.5, dropped support for GHC < 8.10.x.
 
 # 0.2.3
 ## Changed

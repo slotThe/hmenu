@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.6.
+-- This file has been generated from package.yaml by hpack version 0.35.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 81bf5e57aee7bded5427e7bd59a0e7749b9aad9212b2c5788c08d2ca84a097c2
+-- hash: dd79cabb827af8d82af33e2deef0c0a39b7a57424706714561b3e9e18774ed5c
 
 name:                hmenu
 version:             0.2.3
@@ -16,7 +16,7 @@ author:              Slot
 maintainer:          soliditsallgood@mailbox.org
 build-type:          Simple
 tested-with:
-    GHC == 9.0.2
+    GHC == 9.2.5
 
 library
   exposed-modules:
@@ -29,21 +29,17 @@ library
   hs-source-dirs:
       src/
   default-extensions:
-      ImportQualifiedPost
-      StrictData
-      OverloadedStrings
-      NamedFieldPuns
-      FlexibleContexts
-      MultiWayIf
       BlockArguments
-      ScopedTypeVariables
       LambdaCase
+      MultiWayIf
       NoImplicitPrelude
+      OverloadedStrings
+      StrictData
   ghc-options: -Weverything -Wno-implicit-prelude -Wno-missing-import-lists -Wno-unused-packages -Wno-missing-safe-haskell-mode -Wno-unsafe -Wno-all-missed-specialisations -O2
   build-depends:
       base
     , base-prelude
-    , bytestring <0.11
+    , bytestring
     , bytestring-lexing
     , containers
     , directory
@@ -56,32 +52,28 @@ library
     , tomland >=1.3.0.0
     , unix
     , utf8-string
-  default-language: Haskell2010
+  default-language: GHC2021
 
 executable hmenu
   hs-source-dirs:
       app
   default-extensions:
-      ImportQualifiedPost
-      StrictData
-      OverloadedStrings
-      NamedFieldPuns
-      FlexibleContexts
-      MultiWayIf
       BlockArguments
-      ScopedTypeVariables
       LambdaCase
+      MultiWayIf
       NoImplicitPrelude
+      OverloadedStrings
+      StrictData
   ghc-options: -Weverything -Wno-implicit-prelude -Wno-missing-import-lists -Wno-unused-packages -Wno-missing-safe-haskell-mode -Wno-unsafe -Wno-all-missed-specialisations -O2
   main-is: Main.hs
   other-modules:
       CLI.Parser
       Paths_hmenu
-  default-language: Haskell2010
+  default-language: GHC2021
   build-depends:
       base
     , base-prelude
-    , bytestring <0.11
+    , bytestring
     , bytestring-lexing
     , containers
     , directory
@@ -104,22 +96,18 @@ test-suite spec
   hs-source-dirs:
       test
   default-extensions:
-      ImportQualifiedPost
-      StrictData
-      OverloadedStrings
-      NamedFieldPuns
-      FlexibleContexts
-      MultiWayIf
       BlockArguments
-      ScopedTypeVariables
       LambdaCase
+      MultiWayIf
       NoImplicitPrelude
+      OverloadedStrings
+      StrictData
   ghc-options: -Weverything -Wno-implicit-prelude -Wno-missing-import-lists -Wno-unused-packages -Wno-missing-safe-haskell-mode -Wno-unsafe -Wno-all-missed-specialisations -O2
   build-depends:
       QuickCheck
     , base
     , base-prelude
-    , bytestring <0.11
+    , bytestring
     , bytestring-lexing
     , containers
     , directory
@@ -134,4 +122,4 @@ test-suite spec
     , tomland >=1.3.0.0
     , unix
     , utf8-string
-  default-language: Haskell2010
+  default-language: GHC2021

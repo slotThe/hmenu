@@ -4,6 +4,7 @@ module Core.Util
     , ByteString
     , Map
     , XdgDirectory(XdgConfig)
+    , Type
     , ifM
     , doesFileExist
     , proc
@@ -34,6 +35,7 @@ import BasePrelude
 import Data.ByteString (ByteString)
 import Data.ByteString.Char8 qualified as BS
 import Data.ByteString.UTF8  (toString)
+import Data.Kind (Type)
 import Data.Map.Strict (Map)
 import System.Directory (XdgDirectory (XdgConfig), createDirectoryIfMissing, doesFileExist, getXdgDirectory)
 import System.Posix.FilePath qualified as BS -- used for ByteString version of </>
@@ -46,12 +48,15 @@ ifM p x y = p >>= \b -> if b then x else y
 
 -- | Type for an Map that describes all of the executables with their
 -- ratings.
+type Items :: Type
 type Items = Map ByteString Double
 
 -- | Type for helping to decide how to open something.
+type OpenIn :: Type
 data OpenIn = Term ShowBS | Open ShowBS
 
 -- | 'ShowS' for 'ByteString' because it is shorter :>.
+type ShowBS :: Type
 type ShowBS = ByteString -> ByteString
 
 {- | Add a prefix to a string if it does not start with "/".
