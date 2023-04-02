@@ -6,7 +6,7 @@ module Main
 
 import Core.Parser (pFile)
 import Core.Select (showItems)
-import Core.Util (Items, (</>))
+import Core.Util
 
 import qualified Data.ByteString.Char8 as BS
 
