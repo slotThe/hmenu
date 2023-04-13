@@ -27,10 +27,10 @@ import Data.Map.Strict       qualified as Map
 
 import Data.Double.Conversion.ByteString (toShortest)
 import System.Posix.Directory.ByteString (closeDirStream, openDirStream)
-import System.Posix.Directory.Foreign (dtDir, dtUnknown)
+import System.Posix.Directory.Foreign (DirType, dtDir, dtUnknown)
 import System.Posix.Directory.Traversals (readDirEnt, traverseDirectoryContents)
 import System.Posix.Env.ByteString (getEnvDefault)
-import System.Posix.FilePath ((</>))
+import System.Posix.FilePath (RawFilePath, (</>))
 import System.Posix.Files.ByteString (fileExist, getFileStatus, isDirectory)
 import System.Process.ByteString (readCreateProcessWithExitCode)
 
@@ -87,19 +87,20 @@ tryRead file = ifM (doesFileExist file) (getHist file) (pure mempty)
 -- | Get all executables from all dirs in $PATH.
 getExecutables :: IO [ByteString]
 getExecutables = fmap concat
-               . traverse listDir
+               . traverse listExecutables
                . BS.split ':'
              =<< getEnvDefault "PATH" ""
 
--- | Only try listing the directory if it actually exists.  This is
--- necessary, since people may have non-existent things in their path.
-listDir :: ByteString -> IO [ByteString]
-listDir dir = ifM (fileExist dir) (getDirContents dir) (pure [])
+-- | List all executables in the given directory. Only try listing the
+-- directory if it actually exists; this is necessary, since people may
+-- have non-existent things in their path.
+listExecutables :: ByteString -> IO [ByteString]
+listExecutables dir = ifM (fileExist dir) (getDirContents dir) (pure [])
   where
     getDirContents :: ByteString -> IO [ByteString]
     getDirContents =
         traverseDirectoryContents
-            (\xs (dt, name) -> pure if dt /= dtDir then name : xs else xs)
+            (\xs (dt, name) -> isDirDT dt name <&> \d -> if d then xs else name : xs)
             []
 
 -- | Apply 'evalDir' to some list of file paths.
@@ -120,17 +121,23 @@ evalDir dir = do
     ifM (isDir absPath)
         -- List all things inside the directory and restore the original
         -- naming scheme.
-        (map (dir </>) <$> listDir absPath)
+        (map (dir </>) <$> listExecutables absPath)
         (pure [dir])
 
--- | Check if something is a directory.
-isDir :: ByteString -> IO Bool
+-- | Check if the given file path is a directory.
+isDir :: RawFilePath -> IO Bool
 isDir fp = catch
-    do (dt, name) <- bracket (openDirStream fp) closeDirStream readDirEnt
-       if | dt == dtDir     -> pure True
-          | dt == dtUnknown -> isDirectory <$> getFileStatus (fp </> name)
-          | otherwise       -> pure False
+    do (dt, _) <- bracket (openDirStream fp) closeDirStream readDirEnt
+       isDirDT dt fp
     \(_ :: SomeException) -> pure False
+
+-- | Check if the given file path is a directory. The given directory
+-- type @dt@ is assumed to be the actual one for @fp@.
+isDirDT :: DirType -> RawFilePath -> IO Bool
+isDirDT dt fp
+    | dt == dtDir     = pure True
+    | dt == dtUnknown = isDirectory <$> getFileStatus fp
+    | otherwise       = pure False
 
 -- | Pretty print our items.
 showItems :: Items -> ByteString
