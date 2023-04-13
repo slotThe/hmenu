@@ -23,12 +23,29 @@ history file there.
 
 The config file takes the following arguments:
   - `open` : A custom opening script (default: `xdg-open`).
+
   - `files`: Files one wishes to edit; they will be opened according to
-    `open`.
+    `open`. This can also take directories
+
+    ``` toml
+    files = [ "~/.config/emacs/" ]
+    ```
+
+    in which case all *files* in that directory will be added to the list of files that `hmenu` cares about.
+    Directories can also be traversed recursively:
+
+    ``` toml
+    # Files from `~/.config/emacs/' and all of its subdirectories.
+    files = [ "~/.config/emacs/" ]
+    ```
+
   - `executable`: Custom dmenu executable (default: `dmenu`).
+
   - `terminal`: A terminal emulator (default: `xterm`).
+
   - `tty-programs`: A list of programs to be opened in the above
     terminal emulator.
+
   - `decay`: A frequency decay; all non-selected items will be
     multiplied by this number (default: `1`).  A good value may be
     something like `0.997`.

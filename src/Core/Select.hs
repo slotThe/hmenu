@@ -28,7 +28,7 @@ import Data.Map.Strict       qualified as Map
 import Data.Double.Conversion.ByteString (toShortest)
 import System.Posix.Directory.ByteString (closeDirStream, openDirStream)
 import System.Posix.Directory.Foreign (DirType, dtDir, dtUnknown)
-import System.Posix.Directory.Traversals (readDirEnt, traverseDirectoryContents)
+import System.Posix.Directory.Traversals (allDirectoryContents', readDirEnt, traverseDirectoryContents)
 import System.Posix.Env.ByteString (getEnvDefault)
 import System.Posix.FilePath (RawFilePath, (</>))
 import System.Posix.Files.ByteString (fileExist, getFileStatus, isDirectory)
@@ -107,22 +107,30 @@ listExecutables dir = ifM (fileExist dir) (getDirContents dir) (pure [])
 evalDirs :: [ByteString] -> IO [ByteString]
 evalDirs = fmap concat . traverse evalDir
 
+-- | How to eval a directory.
+type EvalMode :: Type
+data EvalMode = NoRecursion | Recurse
+
 -- | If the given file path is a directory, try to list all of its
--- contents, but *don't* do so recursively.  Otherwise just return the
--- file path as is.
+-- contents; otherwise just return the file path as is.
 evalDir :: ByteString -> IO [ByteString]
 evalDir dir = do
-    -- Try to make the path absolute, as 'listDir' can only handle
-    -- absolute paths.
-    home <- getEnvDefault "HOME" ""
-    let absPath = if   "~/" `BS.isPrefixOf` dir
-                  then home </> BS.drop 2 dir
-                  else dir
-    ifM (isDir absPath)
-        -- List all things inside the directory and restore the original
-        -- naming scheme.
-        (map (dir </>) <$> listExecutables absPath)
+    (r, pth) <- shapePath
+    ifM (isDir pth)
+        (case r of                                    -- list directory
+            NoRecursion -> map (dir </>) <$> listExecutables pth
+            Recurse     -> allDirectoryContents' pth)
         (pure [dir])
+  where
+    shapePath :: IO (EvalMode, ByteString)
+    shapePath = do
+        -- Try to make the path absolute.
+        absPath <- do
+            home <- getEnvDefault "HOME" ""
+            pure $ if "~/" `BS.isPrefixOf` dir then home </> BS.drop 2 dir else dir
+        let recurse | "**" `BS.isSuffixOf` absPath = (Recurse, BS.dropEnd 2 absPath)
+                    | otherwise                    = (NoRecursion, absPath)
+        pure recurse
 
 -- | Check if the given file path is a directory.
 isDir :: RawFilePath -> IO Bool

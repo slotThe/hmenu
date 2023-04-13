@@ -1,3 +1,11 @@
+# ???
+## Added
+-   Directories can now be evaluated recursively; for that, suffix the directory with two stars:
+
+    ``` toml
+        files = [ "~/.config/zsh/**" ]
+    ```
+
 # 0.2.4
 ## Added
 -   Users may now specify directories in the files list.  This lists all their
