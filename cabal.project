@@ -1,4 +1,4 @@
-with-compiler: ghc-9.0.2
+with-compiler: ghc-9.2.7
 
 packages: ./hmenu.cabal
 
