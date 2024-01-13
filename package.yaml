@@ -5,7 +5,7 @@ license:             GPL-3
 author:              Slot
 maintainer:          soliditsallgood@mailbox.org
 homepage:            https://gitlab.com/slotThe/hmenu
-tested-with:         GHC == 9.2.5
+tested-with:         GHC == 9.4.8
 
 ghc-options:
   -Weverything
@@ -36,7 +36,7 @@ dependencies:
   - bytestring-lexing
   - utf8-string
   - double-conversion
-  - posix-paths
+  - posix-paths          >= 0.3
   - directory
   - unix
   - process

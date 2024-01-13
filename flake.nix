@@ -1,16 +1,27 @@
 {
-  description = "Nix flake for hmenu";
-  inputs = {
-    nixpkgs.url     = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-  };
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-  outputs = { flake-utils, nixpkgs, self }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let pkgs = import nixpkgs { inherit system; };
-      in {
-        packages.hmenu-exe = pkgs.haskellPackages.callCabal2nix "hmenu-exe" self {};
-        defaultPackage     = self.packages.${system}."hmenu-exe";
-      }
-    );
+  outputs = { self, nixpkgs }:
+    let
+      package = "hmenu";
+      system  = "x86_64-linux";
+      pkgs    = nixpkgs.legacyPackages.${system};
+      overlay = final: prev: {
+        main = prev.callCabal2nix package ./. { };
+      };
+      haskellPackages = pkgs.haskellPackages.extend overlay;
+    in {
+      # nix build
+      packages.${system}.default = haskellPackages.main;
+
+      # nix develop
+      devShells.${system}.default = haskellPackages.shellFor {
+        packages = p: [ p.main ];
+        buildInputs = with haskellPackages; [
+          cabal-install
+          haskell-language-server
+          hpack
+        ];
+      };
+    };
 }
