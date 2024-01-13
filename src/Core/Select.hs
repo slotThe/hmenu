@@ -26,9 +26,8 @@ import Data.ByteString.Char8 qualified as BS
 import Data.Map.Strict       qualified as Map
 
 import Data.Double.Conversion.ByteString (toShortest)
-import System.Posix.Directory.ByteString (closeDirStream, openDirStream)
 import System.Posix.Directory.Foreign (DirType, dtDir, dtUnknown)
-import System.Posix.Directory.Traversals (allDirectoryContents', readDirEnt, traverseDirectoryContents)
+import System.Posix.Directory.Traversals (allDirectoryContents', traverseDirectoryContents)
 import System.Posix.Env.ByteString (getEnvDefault)
 import System.Posix.FilePath (RawFilePath, (</>))
 import System.Posix.Files.ByteString (fileExist, getFileStatus, isDirectory)
@@ -116,11 +115,13 @@ data EvalMode = NoRecursion | Recurse
 evalDir :: ByteString -> IO [ByteString]
 evalDir dir = do
     (r, pth) <- shapePath
-    ifM (isDir pth)
-        (case r of                                    -- list directory
+    isDir <- catch (isDirectory <$> getFileStatus pth)
+                   (\(_ :: SomeException) -> pure False)
+    if isDir
+    then case r of      -- list directory
             NoRecursion -> map (dir </>) <$> listExecutables pth
-            Recurse     -> allDirectoryContents' pth)
-        (pure [dir])
+            Recurse     -> allDirectoryContents' pth
+    else pure [dir]
   where
     shapePath :: IO (EvalMode, ByteString)
     shapePath = do
@@ -131,13 +132,6 @@ evalDir dir = do
         let recurse | "**" `BS.isSuffixOf` absPath = (Recurse, BS.dropEnd 2 absPath)
                     | otherwise                    = (NoRecursion, absPath)
         pure recurse
-
--- | Check if the given file path is a directory.
-isDir :: RawFilePath -> IO Bool
-isDir fp = catch
-    do (dt, _) <- bracket (openDirStream fp) closeDirStream readDirEnt
-       isDirDT dt fp
-    \(_ :: SomeException) -> pure False
 
 -- | Check if the given file path is a directory. The given directory
 -- type @dt@ is assumed to be the actual one for @fp@.
