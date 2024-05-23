@@ -8,7 +8,7 @@ guess that's the point. It might be most notable for being a discount
 
 1. Display commands in order of usage and, optionally, apply a frequency decay every time an item is selected.
 2. Specify extra files to consider, which will be opened by a program of your choice (e.g., `xdg-open`).
-3. Open certain executable inside of your terminal.
+3. Open certain executables inside of your terminal.
 
 ## Configuration
 

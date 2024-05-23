@@ -1,22 +1,31 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.0.
+-- This file has been generated from package.yaml by hpack version 0.35.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1c9a7191a15504741690660fcef786022291b01464ac45bb9ae0675e7ee91dd8
+-- hash: 6b9f8c7812386a8dfc55d749b6227bfb20802820530200431b26ee23853331a8
 
 name:                hmenu
 version:             0.2.4
 synopsis:            A small wrapper around dmenu
-homepage:            https://gitlab.com/slotThe/hmenu
+description:         hmenu is a small wrapper around dmenu that can 1. Display commands in order of usage and, optionally, apply a frequency decay every time an item is selected. 2. Specify extra files to consider, which will be opened by a program of your choice (e.g., xdg-open). 3. Open certain executable inside of your terminal.
+category:            system
+homepage:            https://github.com/slotThe/hmenu#readme
+bug-reports:         https://github.com/slotThe/hmenu/issues
 license:             GPL-3
 license-file:        LICENSE
-author:              Slot
-maintainer:          soliditsallgood@mailbox.org
+author:              Tony Zorman
+maintainer:          Tony Zorman <soliditsallgood@mailbox.org>
 build-type:          Simple
 tested-with:
-    GHC == 9.2.5
+    GHC == 9.4.8
+extra-source-files:
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/slotThe/hmenu
 
 library
   exposed-modules:
@@ -37,21 +46,21 @@ library
       StrictData
   ghc-options: -Weverything -Wno-implicit-prelude -Wno-missing-import-lists -Wno-unused-packages -Wno-missing-safe-haskell-mode -Wno-unsafe -Wno-all-missed-specialisations -O2
   build-depends:
-      base
-    , base-prelude
-    , bytestring
-    , bytestring-lexing
-    , containers
-    , directory
-    , double-conversion
-    , optparse-applicative
-    , posix-paths
-    , process
-    , process-extras
-    , text
-    , tomland >=1.3.0.0
-    , unix
-    , utf8-string
+      base >=4.17.2 && <4.18
+    , base-prelude >=1.6.1 && <1.7
+    , bytestring >=0.11.5 && <0.12
+    , bytestring-lexing >=0.5.0 && <0.6
+    , containers >=0.6.7 && <0.7
+    , directory >=1.3.7 && <1.4
+    , double-conversion >=2.0.4 && <2.1
+    , optparse-applicative >=0.17.1 && <0.18
+    , posix-paths >=0.3.0 && <0.4
+    , process >=1.6.18 && <1.7
+    , process-extras >=0.7.4 && <0.8
+    , text >=2.0.2 && <2.1
+    , tomland >=1.3.3 && <1.4
+    , unix >=2.7.3 && <2.8
+    , utf8-string >=1.0.2 && <1.1
   default-language: GHC2021
 
 executable hmenu
@@ -71,22 +80,22 @@ executable hmenu
       Paths_hmenu
   default-language: GHC2021
   build-depends:
-      base
-    , base-prelude
-    , bytestring
-    , bytestring-lexing
-    , containers
-    , directory
-    , double-conversion
+      base >=4.17.2 && <4.18
+    , base-prelude >=1.6.1 && <1.7
+    , bytestring >=0.11.5 && <0.12
+    , bytestring-lexing >=0.5.0 && <0.6
+    , containers >=0.6.7 && <0.7
+    , directory >=1.3.7 && <1.4
+    , double-conversion >=2.0.4 && <2.1
     , hmenu
-    , optparse-applicative
-    , posix-paths
-    , process
-    , process-extras
-    , text
-    , tomland >=1.3.0.0
-    , unix
-    , utf8-string
+    , optparse-applicative >=0.17.1 && <0.18
+    , posix-paths >=0.3.0 && <0.4
+    , process >=1.6.18 && <1.7
+    , process-extras >=0.7.4 && <0.8
+    , text >=2.0.2 && <2.1
+    , tomland >=1.3.3 && <1.4
+    , unix >=2.7.3 && <2.8
+    , utf8-string >=1.0.2 && <1.1
 
 test-suite spec
   type: exitcode-stdio-1.0
@@ -105,21 +114,21 @@ test-suite spec
   ghc-options: -Weverything -Wno-implicit-prelude -Wno-missing-import-lists -Wno-unused-packages -Wno-missing-safe-haskell-mode -Wno-unsafe -Wno-all-missed-specialisations -O2
   build-depends:
       QuickCheck
-    , base
-    , base-prelude
-    , bytestring
-    , bytestring-lexing
-    , containers
-    , directory
-    , double-conversion
+    , base >=4.17.2 && <4.18
+    , base-prelude >=1.6.1 && <1.7
+    , bytestring >=0.11.5 && <0.12
+    , bytestring-lexing >=0.5.0 && <0.6
+    , containers >=0.6.7 && <0.7
+    , directory >=1.3.7 && <1.4
+    , double-conversion >=2.0.4 && <2.1
     , hmenu
     , hspec
-    , optparse-applicative
-    , posix-paths
-    , process
-    , process-extras
-    , text
-    , tomland >=1.3.0.0
-    , unix
-    , utf8-string
+    , optparse-applicative >=0.17.1 && <0.18
+    , posix-paths >=0.3.0 && <0.4
+    , process >=1.6.18 && <1.7
+    , process-extras >=0.7.4 && <0.8
+    , text >=2.0.2 && <2.1
+    , tomland >=1.3.3 && <1.4
+    , unix >=2.7.3 && <2.8
+    , utf8-string >=1.0.2 && <1.1
   default-language: GHC2021
