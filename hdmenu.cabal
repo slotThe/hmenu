@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           hdmenu
-version:        0.2.4
+version:        0.3.0
 synopsis:       A small wrapper around dmenu
 description:    hdmenu is a small wrapper around dmenu that can 1. Display commands in order of usage and, optionally, apply a frequency decay every time an item is selected. 2. Specify extra files to consider, which will be opened by a program of your choice (e.g., xdg-open). 3. Open certain executables inside of your terminal.
 category:       system
@@ -20,6 +20,7 @@ tested-with:
     GHC == 9.4.8
 extra-source-files:
     CHANGELOG.md
+    README.md
 
 source-repository head
   type: git
