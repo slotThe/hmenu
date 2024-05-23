@@ -1,5 +1,5 @@
 name:                hdmenu
-version:             0.2.4
+version:             0.3.0
 synopsis:            A small wrapper around dmenu
 license:             GPL-3
 author:              Tony Zorman
