@@ -11,7 +11,7 @@ import Toml         qualified
 import Toml (Codec (Codec, codecRead), TomlCodec, (.=), (<!>))
 
 
--- | The tools config file.
+-- | Hmenu's config file.
 type Config :: Type
 data Config = Config
     { files    :: [ByteString]
@@ -47,7 +47,7 @@ configCodec = Config
     <*> defDecay (Toml.double "decay")                             .= decay
     <*> pure ""
   where
-    -- | Parse an option or—in case it's missing—return a default value.
+    -- Parse an option or—in case it's missing—return a default value.
     tomlWithDefault :: a -> TomlCodec a -> TomlCodec a
     tomlWithDefault def codec@Codec{ codecRead } =
         codec { codecRead = codecRead <!> const (pure def) }
