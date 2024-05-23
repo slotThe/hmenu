@@ -25,7 +25,7 @@ pOptions = Options <$> pHistoryPath <*> pOnlyFiles <*> pDecay <*> pDmenuOpts
 alternative history file to use.
 
 If this is @Nothing@, the path will default to something like
-"$XDG_CONFIG_HOME\/hmenu\/histFile".
+"$XDG_CONFIG_HOME\/hdmenu\/histFile".
 -}
 pHistoryPath :: Parser (Maybe FilePath)
 pHistoryPath = optional $ strOption
@@ -60,6 +60,6 @@ pDmenuOpts = many $ argument str (metavar "-- DMENU_OPTS")
 options :: ParserInfo Options
 options = info
     (helper <*> pOptions)  -- create "--help"
-    (  header "hmenu - a small wrapper around dmenu"
+    (  header "hdmenu - a small wrapper around dmenu"
     <> fullDesc
     )

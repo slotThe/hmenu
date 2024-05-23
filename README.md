@@ -1,6 +1,6 @@
-# hmenu
+# hdmenu
 
-`hmenu` is a small wrapper around dmenu—it can't do very much, though I
+`hdmenu` is a small wrapper around dmenu—it can't do very much, though I
 guess that's the point. It might be most notable for being a discount
 `yeganesh`.
 
@@ -12,11 +12,11 @@ guess that's the point. It might be most notable for being a discount
 
 ## Configuration
 
-Hmenu is configured using a [TOML] file inside the `$XDG_CONFIG_HOME/hmenu` directory (probably `~/.config/hmenu`).
+Hdmenu is configured using a [TOML] file inside the `$XDG_CONFIG_HOME/hdmenu` directory (probably `~/.config/hdmenu`).
 See `example.toml` for an example configuration.
 
 Note that, while having a config file is optional,
-the `$XDG_CONFIG_HOME/hmenu` directory will be created in either case,
+the `$XDG_CONFIG_HOME/hdmenu` directory will be created in either case,
 in order to store the history file there.
 
 ### Configuration option
@@ -32,7 +32,7 @@ The configuration file takes the following arguments:
     files = [ "~/.config/emacs/" ]
     ```
 
-    in which case all *files* in that directory will be added to the list of files that `hmenu` cares about.
+    in which case all *files* in that directory will be added to the list of files that `hdmenu` cares about.
     Directories can also be traversed recursively:
 
     ``` toml
@@ -74,9 +74,7 @@ The configuration file takes the following arguments:
 All options after `--` will be directly forwarded to `dmenu`, so you may
 specify options in the following way:
 
-    hmenu -f /path/to/file -- -i -f -nb '#282A36' -nf '#BBBBBB' -sb '#8BE9FD' -sf '#000000' -fn 'Inconsolata Regular-10'
-
-If you want to only use the "display commands in order of usage feature" of `hmenu`, check out [hmenu-hist].
+    hdmenu -f /path/to/file -- -i -f -nb '#282A36' -nf '#BBBBBB' -sb '#8BE9FD' -sf '#000000' -fn 'Inconsolata Regular-10'
 
 # Installation
 
@@ -91,4 +89,3 @@ local-bin-path).
 Build with `cabal install`.
 
 [TOML]: https://github.com/toml-lang/toml
-[hmenu-hist]: https://gitlab.com/slotThe/hmenu-hist

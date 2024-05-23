@@ -11,7 +11,7 @@ import Toml         qualified
 import Toml (Codec (Codec, codecRead), TomlCodec, (.=), (<!>))
 
 
--- | Hmenu's config file.
+-- | Hdmenu's config file.
 type Config :: Type
 data Config = Config
     { files    :: [ByteString]
@@ -66,8 +66,8 @@ configCodec = Config
 getUserConfig :: IO Config
 getUserConfig = do
     -- Default path where to look for the config file:
-    --          ~/.config/hmenu/hmenu.toml
-    cfgFile <- hmenuPath <</>> "hmenu.toml"
+    --          ~/.config/hdmenu/hdmenu.toml
+    cfgFile <- hdmenuPath <</>> "hdmenu.toml"
     ifM (doesFileExist cfgFile)
         (fromRight defaultCfg . Toml.decode configCodec <$> T.readFile cfgFile)
         (pure defaultCfg)

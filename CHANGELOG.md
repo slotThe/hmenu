@@ -1,4 +1,7 @@
-# ???
+# 0.3.0
+## Breaking changes
+- Changed name from `hmenu` to `hdmenu`. Update your configuration paths accordingly.
+
 ## Added
 -   Directories can now be evaluated recursively; for that, suffix the directory with two stars:
 

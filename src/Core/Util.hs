@@ -23,7 +23,7 @@ module Core.Util
     , (</>)               -- :: FilePath -> FilePath -> FilePath
 
       -- * System file paths
-    , hmenuPath           -- :: IO FilePath
+    , hdmenuPath          -- :: IO FilePath
     , histFile            -- :: IO FilePath
 
       -- * Running commands
@@ -99,15 +99,15 @@ openWith = \case
 xdgConfig :: IO FilePath
 xdgConfig = getXdgDirectory XdgConfig ""
 
--- | Path to the hmenu directory.
--- @XDG_CONFIG_HOME\/hmenu@, so probably @~\/.config\/hmenu@.
-hmenuPath :: IO FilePath
-hmenuPath = xdgConfig <</>> "hmenu"
+-- | Path to the hdmenu directory.
+-- @XDG_CONFIG_HOME\/hdmenu@, so probably @~\/.config\/hdmenu@.
+hdmenuPath :: IO FilePath
+hdmenuPath = xdgConfig <</>> "hdmenu"
 
 -- | Path to the history file.
--- @~\/.config\/hmenu\/histFile@
+-- @~\/.config\/hdmenu\/histFile@
 histFile :: IO FilePath
-histFile = hmenuPath <</>> "histFile"
+histFile = hdmenuPath <</>> "histFile"
 
 -- | Functorial path-append operation.
 infixr 5 <</>>  -- same as </>

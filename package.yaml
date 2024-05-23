@@ -1,4 +1,4 @@
-name:                hmenu
+name:                hdmenu
 version:             0.2.4
 synopsis:            A small wrapper around dmenu
 license:             GPL-3
@@ -7,7 +7,7 @@ maintainer:          Tony Zorman <soliditsallgood@mailbox.org>
 github:              slotThe/hmenu
 category:            system
 tested-with:         GHC == 9.4.8
-description:         hmenu is a small wrapper around dmenu that can
+description:         hdmenu is a small wrapper around dmenu that can
                        1. Display commands in order of usage and,
                           optionally, apply a frequency decay
                           every time an item is selected.
@@ -60,16 +60,16 @@ library:
   source-dirs: src/
 
 executables:
-  hmenu:
+  hdmenu:
     source-dirs: app
     main: Main.hs
-    dependencies: hmenu
+    dependencies: hdmenu
 
 tests:
   spec:
     main: Spec.hs
     source-dirs: test
     dependencies:
-      - hmenu
+      - hdmenu
       - hspec
       - QuickCheck

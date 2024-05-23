@@ -19,9 +19,9 @@ main = do
     -- Get command line options and parse them.
     Options{ historyPath, dmenuOpts, onlyFiles } <- execParser options
 
-    -- Create the `hmenu' directory (and all parents) if necessary and
+    -- Create the `hdmenu' directory (and all parents) if necessary and
     -- parse user config.
-    createDirectoryIfMissing True =<< hmenuPath
+    createDirectoryIfMissing True =<< hdmenuPath
     cfg@Config{ dmenuExe, files } <- getUserConfig
 
     -- Files the user added in the config file; see Note [Caching].
@@ -67,7 +67,7 @@ that's not in the $PATH or in the config anymore, and update the rest.
 {- Note [Caching]
    ~~~~~~~~~~~~~~~~~~~~~~
 Doing the caching *after* the user has selected something may be better
-(in terms of perceived speed), though hmenu would "lag behind" for one
+(in terms of perceived speed), though hdmenu would "lag behind" for one
 execution when things are updated.
 
 As of version 0.2.0, we're almost as fast as before being able to keep

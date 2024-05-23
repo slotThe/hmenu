@@ -1,4 +1,4 @@
-### hmenu config file.
+### hdmenu's config file.
 
 # Special executable.
 executable = "/path/to/other/dmenu/executable/if/not/in/PATH"
@@ -11,9 +11,9 @@ open = "my-open-script"
 files =
     # All of these work, any path not starting with '/' or '~' will get
     # $HOME slapped in front of it.
-    [ ".config/hmenu/hmenu.toml"
-    , "~.config/hmenu/hmenu.toml"
-    , "/home/USER/.config/hmenu/hmenu.toml"
+    [ ".config/hdmenu/hdmenu.toml"
+    , "~.config/hdmenu/hdmenu.toml"
+    , "/home/USER/.config/hdmenu/hdmenu.toml"
 
     , "~/.scripts/"  # All of the files in the .scripts directory
     ]
