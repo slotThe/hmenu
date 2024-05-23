@@ -1,5 +1,3 @@
-with-compiler: ghc-9.4.8
-
 packages: ./hmenu.cabal
 
 optimization: 2
