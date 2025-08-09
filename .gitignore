@@ -4,3 +4,4 @@ dist-newstyle
 dist
 .direnv
 *.prof
+result
