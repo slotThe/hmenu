@@ -37,7 +37,7 @@ The configuration file takes the following arguments:
 
     ``` toml
     # Files from `~/.config/emacs/' and all of its subdirectories.
-    files = [ "~/.config/emacs/" ]
+    files = [ "~/.config/emacs/**" ]
     ```
 
   - `executable`: Custom dmenu executable (default: `dmenu`).
